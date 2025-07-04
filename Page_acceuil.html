@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Accueil - Jul-IA</title>
+  <link rel="shortcut icon" href="Jul-IA_logo.png" />
+  <style>
+    :root {
+      --bg-primary: #181c24;
+      --bg-secondary: #232837;
+      --accent-color: #00fff7;
+      --text-primary: #e8eaed;
+      --text-secondary: #9aa0a6;
+      --border-color: #31364a;
+    }
+    body[data-theme="dark"] {
+      --bg-primary: #181c24;
+      --bg-secondary: #232837;
+      --text-primary: #e8eaed;
+      --text-secondary: #9aa0a6;
+      --accent-color: #00fff7;
+    }
+    body:not([data-theme="dark"]) {
+      --bg-primary: #fff;
+      --bg-secondary: #f7fafd;
+      --text-primary: #181c24;
+      --text-secondary: #5a5f6a;
+      --accent-color: #00bfae;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background 0.6s, color 0.6s;
+      overflow-x: hidden;
+    }
+    .container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 44px 36px 0 36px;
+      width: 100%;
+      max-width: 100vw;
+      text-align: center;
+      box-shadow: none;
+      animation: fadeSlideUp 0.7s ease forwards;
+      position: relative;
+      margin: 0 auto 0 auto;
+      z-index: 2; /* <-- Ajouté pour que le contenu reste au-dessus des bulles */
+    }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .logo {
+      width: 90px;
+      height: 90px;
+      border-radius: 24px;
+      box-shadow: 0 0 18px #00fff7cc;
+      animation: popIn 0.5s ease-in-out forwards, bounceIn 1s cubic-bezier(.68,-0.55,.27,1.55);
+      margin-bottom: 16px;
+      background: #fff;
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.75); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes bounceIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      60% { transform: scale(1.15); opacity: 1; }
+      80% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
+    .logo:hover {
+      animation: rotateLogo 0.8s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+    @keyframes rotateLogo {
+      0% { transform: scale(1) rotate(0deg);}
+      40% { transform: scale(1.15) rotate(18deg);}
+      60% { transform: scale(0.95) rotate(-12deg);}
+      100% { transform: scale(1) rotate(0deg);}
+    }
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--accent-color);
+      margin: 0 0 8px 0;
+      letter-spacing: 1px;
+      text-shadow: 0 0 6px #00fff7aa;
+      background: linear-gradient(90deg, #00fff7 10%, #fff 50%, #00fff7 90%);
+      background-size: 200px 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 2.5s linear infinite, fadeInTitle 1.1s cubic-bezier(.4,1.6,.6,1) 0.4s both;
+    }
+    @keyframes shine {
+      0% { background-position: -200px 0; }
+      100% { background-position: 200px 0; }
+    }
+    @keyframes fadeInTitle {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+        filter: blur(2px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+    }
+    h1:hover {
+      animation: glitch 0.4s linear;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 #00fff7, -2px 0 #fff; }
+      20% { text-shadow: -2px 0 #00fff7, 2px 0 #fff; }
+      40% { text-shadow: 2px 2px #fff, -2px -2px #00fff7; }
+      60% { text-shadow: -2px 2px #00fff7, 2px -2px #fff; }
+      80% { text-shadow: 2px 0 #fff, -2px 0 #00fff7; }
+      100% { text-shadow: 0 0 6px #00fff7aa; }
+    }
+    p {
+      color: var(--text-secondary);
+      font-size: 1.15rem;
+      margin: 0 0 24px 0;
+      text-align: center;
+      max-width: 420px;
+    }
+    .btn-main {
+      padding: 14px 36px;
+      background: var(--accent-color);
+      color: #181c24;
+      border: none;
+      border-radius: 24px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,255,247,0.12);
+      transition: background 0.2s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-main:hover {
+      background: #00bfae;
+      color: #fff;
+      transform: scale(1.06);
+      box-shadow: 0 0 30px 10px #00fff7cc, 0 0 60px 20px #00fff799;
+      animation: haloPulse 0.7s;
+    }
+    @keyframes haloPulse {
+      0% { box-shadow: 0 0 0px #00fff7cc; }
+      70% { box-shadow: 0 0 30px 10px #00fff7cc, 0 0 60px 20px #00fff799; }
+      100% { box-shadow: 0 0 10px var(--accent-color); }
+    }
+    /* Animation bulles */
+    .bubbles {
+      position: absolute; /* <-- Changement de fixed à absolute */
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1; /* <-- Les bulles passent sous le contenu */
+      overflow: hidden;
+    }
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      border-radius: 50%;
+      opacity: 0.25;
+      background: var(--accent-color, #00fff7);
+      animation: bubbleUp 8s linear infinite;
+      filter: blur(1px);
+    }
+    @keyframes bubbleUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.25;
+      }
+      80% {
+        opacity: 0.18;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+    body:not([data-theme="dark"]) .bubble {
+      background: #00bfae;
+      opacity: 0.13;
+    }
+    /* Animation de transition de thème */
+    .theme-transition {
+      animation: themeFade 0.7s cubic-bezier(.4,1.6,.6,1) both;
+    }
+    @keyframes themeFade {
+      0% { filter: brightness(1.2) blur(0px); opacity: 0.7; }
+      60% { filter: brightness(0.95) blur(2px); opacity: 1; }
+      100% { filter: brightness(1) blur(0px); opacity: 1; }
+    }
+    /* Répertoire des IA et Chatbots */
+    #ai-list {
+      padding: 60px 20px;
+      background: var(--bg-secondary, #232837);
+    }
+    #ai-list h2 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 40px;
+      color: var(--accent-color, #00fff7);
+      text-shadow: 0 0 4px #00fff7cc;
+    }
+    .ai-card-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+    }
+    .ai-card {
+      background: #12314f;
+      border: 1px solid #1c3656;
+      border-radius: 12px;
+      padding: 20px;
+      width: 300px;
+      box-shadow: 0 0 12px #00fff766;
+      transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s;
+      opacity: 0;
+      transform: translateY(40px) scale(0.96) rotateZ(-2deg);
+      animation: fadeUp 1s cubic-bezier(.4,1.6,.6,1) forwards;
+      /* Ajout d'une ombre animée au survol */
+    }
+    .ai-card:hover {
+      transform: translateY(-8px) scale(1.03) rotateZ(0deg);
+      box-shadow: 0 8px 32px #00fff799, 0 0 0 2px #00fff7cc;
+      z-index: 2;
+    }
+    .ai-card:nth-child(odd) { animation-delay: 0.3s; }
+    .ai-card:nth-child(even) { animation-delay: 0.6s; }
+    @keyframes fadeUp {
+      0% {
+        opacity: 0;
+        transform: translateY(60px) scale(0.92) rotateZ(-4deg);
+        filter: blur(2px);
+      }
+      60% {
+        opacity: 1;
+        transform: translateY(-8px) scale(1.04) rotateZ(1deg);
+        filter: blur(0.5px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateZ(0deg);
+        filter: blur(0);
+      }
+    }
+    .ai-card h3 {
+      margin-top: 0;
+      color: #00fff7;
+      font-size: 20px;
+    }
+    .ai-card a {
+      color: #00d8ff;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 8px;
+    }
+    .ai-card a:hover {
+      text-decoration: underline;
+      color: #00f0ff;
+    }
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+      color: #88aabb;
+    }
+&    .tri-btn {
+      background: var(--accent-color, #00fff7);
+      color: #181c24;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 24px;
+      margin: 0 8px 12px 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,255,247,0.10);
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+      outline: none;
+    }
+    .tri-btn:hover {
+      background: #00bfae;
+      color: #fff;
+      transform: scale(1.06);
+    }
+    .theme-toggle {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: var(--accent-color);
+      transition: background 0.2s;
+      z-index: 10;
+    }
+    .theme-toggle:hover {
+      background: var(--accent-color);
+      color: #181c24;
+    }
+    /* ...reste du CSS... */
+  </style>
+</head>
+<body>
+    <div class="container" style="position:relative; overflow:hidden;">
+      <div class="bubbles" id="bubbles"></div>
+      <button class="theme-toggle" id="themeToggle" title="Basculer le thème">
+        <span id="themeIcon">🌙</span>
+      </button>
+      <img src="Jul-IA_logo.png" alt="Logo Jul-IA" class="logo" />
+      <h1>Bienvenue sur Jul-IA</h1>
+      <p>Votre assistant IA personnel, multilingue et moderne.<br>
+        Connectez-vous pour commencer à discuter avec Jul-IA !</p>
+      <a href="Connexion_page.html" class="btn-main">Se connecter</a>
+    </div>
+    <!-- Répertoire des IA et Chatbots -->
+    <section id="ai-list">
+      <h2>🌐 Intelligence artificielle grand public</h2>
+      <div style="text-align:center; margin-bottom:32px;">
+        <button class="tri-btn" onclick="window.location.href='ia_textuelles.html'">IA Textuelles</button>
+        <button class="tri-btn" onclick="window.location.href='ia_images.html'">IA Images</button>
+        <button class="tri-btn" onclick="window.location.href='ia_voix.html'">IA Voix</button>
+        <button class="tri-btn" onclick="window.location.href='ia_video.html'">IA Vidéo</button>
+        <button class="tri-btn" onclick="window.location.href='ia_autres.html'">Autres IA</button>
+      </div>
+      <div class="ai-card-container" id="container">
+        <!-- Cartes IA injectées ici -->
+      </div>
+    </section>
+    <footer>
+      © 2025 – Projet IA par Ferrier ✨
+    </footer>
+    <script>
+      // Animation bulles (uniquement dans la première partie)
+      function randomBetween(a, b) {
+        return Math.random() * (b - a) + a;
+      }
+      function createBubble() {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        const size = randomBetween(18, 60);
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        bubble.style.left = `${randomBetween(0, 100)}vw`;
+        bubble.style.animationDuration = `${randomBetween(6, 13)}s`;
+        bubble.style.animationDelay = `${randomBetween(0, 6)}s`;
+        document.getElementById('bubbles').appendChild(bubble);
+        setTimeout(() => bubble.remove(), 14000);
+      }
+      for (let i = 0; i < 18; i++) createBubble();
+      setInterval(createBubble, 1800);
+
+      // Thème nuit/jour
+      function toggleTheme() {
+        const body = document.body;
+        const themeIcon = document.getElementById('themeIcon');
+        body.classList.add('theme-transition');
+        setTimeout(() => body.classList.remove('theme-transition'), 700);
+        if (body.getAttribute('data-theme') === 'dark') {
+          body.removeAttribute('data-theme');
+          if (themeIcon) themeIcon.textContent = '🌙';
+          localStorage.setItem('theme', 'light');
+        } else {
+          body.setAttribute('data-theme', 'dark');
+          if (themeIcon) themeIcon.textContent = '☀️';
+          localStorage.setItem('theme', 'dark');
+        }
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+          themeToggle.addEventListener('click', toggleTheme);
+        }
+        const savedTheme = localStorage.getItem('theme');
+        const themeIcon = document.getElementById('themeIcon');
+        if (savedTheme === 'dark') {
+          document.body.setAttribute('data-theme', 'dark');
+          if (themeIcon) themeIcon.textContent = '☀️';
+        } else {
+          document.body.removeAttribute('data-theme');
+          if (themeIcon) themeIcon.textContent = '🌙';
+        }
+        // Génération dynamique des cartes IA
+        const aiList = [
+          {
+            name: "ChatGPT",
+            creator: "OpenAI",
+            version: "GPT-4o",
+            strengths: "Polyvalent, créatif, multilingue",
+            weaknesses: "Pas toujours à jour en temps réel",
+            link: "https://chat.openai.com"
+          },
+          {
+            name: "Claude",
+            creator: "Anthropic",
+            version: "Claude 3.5 Sonnet",
+            strengths: "Long contexte, excellent raisonnement",
+            weaknesses: "Pas d’image, accès sur liste",
+            link: "https://claude.ai"
+          },
+          {
+            name: "Gemini",
+            creator: "Google DeepMind",
+            version: "Gemini 1.5",
+            strengths: "Très bon en recherches, rapide",
+            weaknesses: "Moins créatif, parfois limité hors Google",
+            link: "https://gemini.google.com"
+          },
+          {
+            name: "Copilot",
+            creator: "Microsoft",
+            version: "GPT-4 Turbo + Bing",
+            strengths: "Recherche web, intégré à Windows et Office",
+            weaknesses: "Pas de personnalisation continue",
+            link: "https://copilot.microsoft.com"
+          },
+          {
+            name: "Pi",
+            creator: "Inflection AI",
+            version: "Pi (2024)",
+            strengths: "Empathique, excellent pour la conversation",
+            weaknesses: "Limité aux discussions simples",
+            link: "https://pi.ai"
+          },
+          {
+            name: "Replika",
+            creator: "Luka Inc.",
+            version: "Replika Pro",
+            strengths: "IA compagnon, personnalisé",
+            weaknesses: "Moins utile pour la productivité ou les faits",
+            link: "https://replika.com"
+          },
+          {
+            name: "Llama",
+            creator: "Meta",
+            version: "Llama 3",
+            strengths: "Open source, multilingue, personnalisable",
+            weaknesses: "Moins performant que GPT-4 sur certains points",
+            link: "https://ai.meta.com/llama/"
+          },
+          {
+            name: "Mistral",
+            creator: "Mistral AI",
+            version: "Mistral Large",
+            strengths: "Open source, rapide, efficace, francophone",
+            weaknesses: "Moins de plugins, contexte plus court",
+            link: "https://mistral.ai"
+          },
+          {
+            name: "Bard (Gemini)",
+            creator: "Google",
+            version: "Gemini 1.5 Bard",
+            strengths: "Créativité, intégration Google",
+            weaknesses: "Accès limité, pas toujours précis",
+            link: "https://bard.google.com"
+          },
+          {
+            name: "DALL-E",
+            creator: "OpenAI",
+            version: "DALL-E 3",
+            strengths: "Génération d'images, créativité",
+            weaknesses: "Coût, accès limité",
+            link: "https://openai.com/dall-e-3/"
+          },
+          {
+            name: "Midjourney",
+            creator: "Midjourney, Inc.",
+            version: "V6",
+            strengths: "Qualité artistique, créativité",
+            weaknesses: "Coût, accès par Discord",
+            link: "https://midjourney.com"
+          },
+          {
+            name: "Stable Diffusion",
+            creator: "Stability AI",
+            version: "Stable Diffusion XL",
+            strengths: "Open source, génération d'images",
+            weaknesses: "Qualité variable, nécessite du réglage",
+            link: "https://stability.ai"
+          },
+          {
+            name: "DeepL Write",
+            creator: "DeepL",
+            version: "2024",
+            strengths: "Correction et reformulation de texte, multilingue",
+            weaknesses: "Pas de génération créative",
+            link: "https://www.deepl.com/write"
+          },
+          {
+            name: "YouChat",
+            creator: "You.com",
+            version: "YouChat 2024",
+            strengths: "Recherche web, réponses rapides",
+            weaknesses: "Moins précis que GPT-4",
+            link: "https://you.com"
+          },
+          {
+            name: "Perplexity AI",
+            creator: "Perplexity",
+            version: "Perplexity 2024",
+            strengths: "Recherche web, citations de sources",
+            weaknesses: "Moins créatif, parfois limité",
+            link: "https://www.perplexity.ai"
+          }
+        ];
+        const container = document.getElementById("container");
+        aiList.forEach((ai, i) => {
+          const card = document.createElement("div");
+          card.className = "ai-card";
+          card.style.animationDelay = `${i * 0.15 + 0.2}s`;
+          card.innerHTML = `
+            <h3>${ai.name}</h3>
+            <p><strong>Créateur :</strong> ${ai.creator}</p>
+            <p><strong>Version :</strong> ${ai.version}</p>
+            <p><strong>Atouts :</strong> ${ai.strengths}</p>
+            <p><strong>Limites :</strong> ${ai.weaknesses}</p>
+            <a href="${ai.link}" target="_blank">🔗 Accéder</a>
+          `;
+          container.appendChild(card);
+          card.classList.add('hidden');
+        });
+
+        function revealCardsOnScroll() {
+          document.querySelectorAll('.ai-card').forEach(card => {
+            const rect = card.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 40) {
+              card.classList.remove('hidden');
+            }
+          });
+        }
+        window.addEventListener('scroll', revealCardsOnScroll);
+        revealCardsOnScroll();
+      });
+    </script>
+  </body>
+</html>
