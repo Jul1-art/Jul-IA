@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <link rel="shortcut icon" href="Jul-IA_logo.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Connexion – Jul-IA</title>
+  <style>
+    :root {
+      --bg: #0a1e35;
+      --text: #e1e9f0;
+      --card: #12314f;
+      --accent: #00fff7;
+      --error: #ff6b6b;
+      --border: #1c3656;
+    }
+
+    [data-theme="dark"] {
+      --bg: #020a1a;
+      --text: #c8eefe;
+      --card: #0d1f30;
+      --accent: #33ffff;
+      --error: #ff8a8a;
+      --border: #204066;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: url("Curseur-style.png"), auto;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: radial-gradient(circle at 50% 50%, #004e71 0%, #001921 80%);
+      background-size: 300% 300%;
+      animation: bgPulse 15s ease-in-out infinite;
+      opacity: 0.45;
+      filter: blur(20px);
+    }
+
+    @keyframes bgPulse {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .theme-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      font-size: 22px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 10px var(--accent);
+      cursor: pointer;
+      animation: pulseGlow 2.5s infinite alternate ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 10px var(--accent); }
+      100% { box-shadow: 0 0 25px var(--accent); }
+    }
+
+    .container {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 44px 36px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 12px #00fff7aa, 0 4px 20px #00fff7bb;
+      animation: fadeSlideUp 0.7s ease forwards;
+      position: relative;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 18px #00fff7cc;
+      animation: popIn 0.5s ease-in-out forwards, bounceIn 1s cubic-bezier(.68,-0.55,.27,1.55);
+      margin-bottom: 16px;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.75); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      60% { transform: scale(1.15); opacity: 1; }
+      80% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
+
+    h2 {
+      font-size: 24px;
+      text-shadow: 0 0 6px #00fff7aa;
+      margin-bottom: 24px;
+      background: linear-gradient(90deg, #00fff7 10%, #fff 50%, #00fff7 90%);
+      background-size: 200px 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 2.5s linear infinite;
+    }
+
+    h2:hover {
+      animation: glitch 0.4s linear;
+    }
+
+    @keyframes shine {
+      0% { background-position: -200px 0; }
+      100% { background-position: 200px 0; }
+    }
+
+    @keyframes glitch {
+      0% { text-shadow: 2px 0 #00fff7, -2px 0 #fff; }
+      20% { text-shadow: -2px 0 #00fff7, 2px 0 #fff; }
+      40% { text-shadow: 2px 2px #fff, -2px -2px #00fff7; }
+      60% { text-shadow: -2px 2px #00fff7, 2px -2px #fff; }
+      80% { text-shadow: 2px 0 #fff, -2px 0 #00fff7; }
+      100% { text-shadow: 0 0 6px #00fff7aa; }
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      background: #022633;
+      color: var(--text);
+      box-shadow: inset 0 0 6px #007f99;
+      transition: 0.4s ease;
+    }
+
+    input:hover {
+      border-color: #00fff7;
+      box-shadow: 0 0 8px #00fff7, 0 0 14px #00fff7;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      background: #00475f;
+      box-shadow: 0 0 12px var(--accent);
+      outline: none;
+      animation: inputGlow 1.2s infinite;
+    }
+
+    @keyframes inputGlow {
+      0% { box-shadow: 0 0 0px #00fff7; }
+      50% { box-shadow: 0 0 16px #00fff7; }
+      100% { box-shadow: 0 0 0px #00fff7; }
+    }
+
+    button {
+      width: 100%;
+      padding: 12px 0;
+      font-weight: bold;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background: var(--accent);
+      color: var(--card);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--accent);
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover {
+      background: #00d8ff;
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #00d8ff;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.5), transparent);
+      transform: skewX(-20deg);
+      animation: lightSweep 2.2s infinite;
+    }
+
+    @keyframes lightSweep {
+      0% { left: -75%; }
+      100% { left: 125%; }
+    }
+
+    #submitBtn {
+      animation: buttonAppear 1s 0.5s both;
+    }
+
+    @keyframes buttonAppear {
+      from { opacity: 0; transform: translateY(30px) scale(0.9);}
+      to { opacity: 1; transform: translateY(0) scale(1);}
+    }
+
+    .reveal {
+      background: none;
+      border: none;
+      font-size: 14px;
+      color: var(--accent);
+      margin-top: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      text-shadow: 0 0 6px var(--accent);
+    }
+
+    .reveal:hover {
+      color: #00fff7;
+      text-decoration: underline;
+    }
+
+    .error {
+      color: var(--error);
+      font-size: 14px;
+      margin-top: 12px;
+      text-shadow: 0 0 6px var(--error);
+    }
+
+    /* Shake effect */
+    .shake {
+      animation: shakeSide 0.45s ease;
+    }
+
+    @keyframes shakeSide {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    /* Effet halo sur le bouton de connexion au survol */
+    #submitBtn:hover {
+      box-shadow: 0 0 30px 10px #00fff7cc, 0 0 60px 20px #00fff799;
+      animation: haloPulse 0.7s;
+    }
+    @keyframes haloPulse {
+      0% { box-shadow: 0 0 0px #00fff7cc; }
+      70% { box-shadow: 0 0 30px 10px #00fff7cc, 0 0 60px 20px #00fff799; }
+      100% { box-shadow: 0 0 10px var(--accent); }
+    }
+
+    /* Effet rotation sur le logo au survol */
+    .logo:hover {
+      animation: rotateLogo 0.8s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+    @keyframes rotateLogo {
+      0% { transform: scale(1) rotate(0deg);}
+      40% { transform: scale(1.15) rotate(18deg);}
+      60% { transform: scale(0.95) rotate(-12deg);}
+      100% { transform: scale(1) rotate(0deg);}
+    }
+
+    /* Vibration sur le champ mot de passe au focus */
+    #pwd:focus {
+      animation: inputGlow 1.2s infinite, pwdVibrate 0.25s;
+    }
+    @keyframes pwdVibrate {
+      0%, 100% { transform: translateX(0);}
+      25% { transform: translateX(-3px);}
+      50% { transform: translateX(3px);}
+      75% { transform: translateX(-2px);}
+    }
+
+    /* Lumière sur le fond du conteneur au survol */
+    .container:hover {
+      box-shadow: 0 0 32px #00fff7ee, 0 4px 40px #00fff7cc;
+      transition: box-shadow 0.3s;
+    }
+
+    .form-animate {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: formFadeIn 0.7s forwards;
+      animation-fill-mode: forwards;
+    }
+    .form-animate[data-animate="1"] { animation-delay: 0.2s; }
+    .form-animate[data-animate="2"] { animation-delay: 0.4s; }
+    .form-animate[data-animate="3"] { animation-delay: 0.6s; }
+    .form-animate[data-animate="4"] { animation-delay: 0.8s; }
+    @keyframes formFadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes sparkleFade {
+      to {
+        opacity: 0;
+        transform: scale(2);
+      }
+    }
+
+    .bubbles {
+      position: fixed;
+      left: 0; top: 0; width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bubble {
+      position: absolute;
+      bottom: -60px;
+      border-radius: 50%;
+      opacity: 0.25;
+      background: #00fff7;
+      animation: bubbleUp 8s linear infinite;
+    }
+    @keyframes bubbleUp {
+      to {
+        transform: translateY(-110vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    /* Curseur personnalisé animé */
+    #custom-cursor {
+      position: fixed;
+      left: 0; top: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      background: radial-gradient(circle, #00fff7 60%, #00ccff 100%, transparent 120%);
+      box-shadow: 0 0 24px 8px #00fff7bb, 0 0 60px 16px #00fff799;
+      mix-blend-mode: lighten;
+      transition: transform 0.18s cubic-bezier(.68,-0.55,.27,1.55), box-shadow 0.18s, background 0.18s;
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.85;
+    }
+    #custom-cursor.active {
+      transform: translate(-50%, -50%) scale(1.7) rotate(8deg);
+      box-shadow: 0 0 60px 24px #00fff7cc, 0 0 120px 48px #00fff799;
+      background: radial-gradient(circle, #fff 80%, #00fff7 100%, transparent 120%);
+      opacity: 1;
+    }
+    #custom-cursor.click {
+      animation: cursorClick 0.4s;
+    }
+    @keyframes cursorClick {
+      0% { transform: translate(-50%, -50%) scale(1.7); }
+      40% { transform: translate(-50%, -50%) scale(2.1) rotate(-8deg);}
+      100% { transform: translate(-50%, -50%) scale(1.7);}
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+
+  <div class="container" id="loginBox">
+    <img src="Jul-IA_logo.png" alt="Logo" class="logo" />
+    <h2>Connexion</h2>
+    <input type="password" id="pwd" placeholder="Mot de passe" autocomplete="off" class="form-animate" data-animate="1" />
+    <button id="submitBtn" onclick="tryLogin(event)" class="form-animate" data-animate="2">Connexion</button>
+    <button class="reveal form-animate" onclick="togglePassword()" data-animate="3">Voir le mot de passe</button>
+    <div class="error form-animate" id="errorMsg" data-animate="4"></div>
+  </div>
+  <div class="bubbles"></div>
+  <div id="custom-cursor"></div>
+
+  <script>
+    let attempts = 0;
+    let locked = false;
+    let lockTimeout = null;
+
+    function tryLogin(e) {
+      if (locked) return;
+      const pwd = document.getElementById("pwd");
+      const error = document.getElementById("errorMsg");
+      const box = document.getElementById("loginBox");
+      const btn = document.getElementById("submitBtn");
+
+      if (pwd.value === "Jul-IA689") {
+        sessionStorage.setItem("apiKey", "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");
+        window.location.href = "Jul-IA.html";
+      } else {
+        attempts++;
+        error.textContent = `❌ Mot de passe incorrect (${attempts}/3)`;
+        box.classList.remove("shake");
+        void box.offsetWidth;
+        box.classList.add("shake");
+
+        // ✨ Sparkle animation
+        const sparkle = document.createElement("div");
+        sparkle.style.position = "absolute";
+        sparkle.style.width = "12px";
+        sparkle.style.height = "12px";
+        sparkle.style.borderRadius = "50%";
+        sparkle.style.background = "#00fff7";
+        sparkle.style.left = (e.target.offsetWidth / 2 - 6) + "px";
+        sparkle.style.top = (e.target.offsetHeight / 2 - 6) + "px";
+        sparkle.style.opacity = "0.8";
+        sparkle.style.boxShadow = "0 0 10px #00fff7";
+        sparkle.style.animation = "sparkleFade 0.6s ease-out forwards";
+        sparkle.style.pointerEvents = "none";
+        e.target.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 600);
+
+        if (attempts >= 3) {
+          lockAccess();
+        }
+      }
+    }
+
+    function lockAccess() {
+      locked = true;
+      const error = document.getElementById("errorMsg");
+      const pwd = document.getElementById("pwd");
+      const btn = document.getElementById("submitBtn");
+      pwd.disabled = true;
+      btn.disabled = true;
+      const until = Date.now() + 15000; // 15 secondes de lock
+      localStorage.setItem("lockedUntil", until);
+      updateLockMessage(until);
+      lockTimeout = setInterval(() => updateLockMessage(until), 1000);
+    }
+
+    function updateLockMessage(until) {
+      const error = document.getElementById("errorMsg");
+      const pwd = document.getElementById("pwd");
+      const btn = document.getElementById("submitBtn");
+      const remaining = Math.ceil((until - Date.now()) / 1000);
+      if (remaining <= 0) {
+        clearInterval(lockTimeout);
+        locked = false;
+        attempts = 0;
+        pwd.disabled = false;
+        btn.disabled = false;
+        error.textContent = "";
+        localStorage.removeItem("lockedUntil");
+      } else {
+        error.textContent = `⏳ Trop de tentatives. Réessayez dans ${remaining}s...`;
+      }
+    }
+
+    function togglePassword() {
+      const input = document.getElementById("pwd");
+      const btn = document.querySelector(".reveal");
+      if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "Masquer le mot de passe";
+      } else {
+        input.type = "password";
+        btn.textContent = "Voir le mot de passe";
+      }
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const icon = document.querySelector(".theme-btn");
+      if (body.hasAttribute("data-theme")) {
+        body.removeAttribute("data-theme");
+        icon.textContent = "🌙";
+        localStorage.setItem("theme", "light");
+      } else {
+        body.setAttribute("data-theme", "dark");
+        icon.textContent = "☀️";
+        localStorage.setItem("theme", "dark");
+      }
+    }
+
+    // Charger le thème sauvegardé et le lock si besoin
+    window.addEventListener('DOMContentLoaded', () => {
+      const theme = localStorage.getItem("theme");
+      if (theme === "dark") {
+        document.body.setAttribute("data-theme", "dark");
+        document.querySelector(".theme-btn").textContent = "☀️";
+      }
+      const lockedUntil = localStorage.getItem("lockedUntil");
+      if (lockedUntil && Date.now() < lockedUntil) {
+        lockAccess();
+      }
+      // Animation d'apparition une seule fois
+      document.querySelectorAll('.form-animate').forEach(el => {
+        el.addEventListener('animationend', () => {
+          el.classList.remove('form-animate');
+        }, { once: true });
+      });
+    });
+
+    // Génère des bulles animées en fond
+    setInterval(() => {
+      const bubbles = document.querySelector('.bubbles');
+      if (!bubbles) return;
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      const size = Math.random() * 24 + 16;
+      bubble.style.width = bubble.style.height = size + 'px';
+      bubble.style.left = (Math.random() * 100) + 'vw';
+      bubble.style.animationDuration = (6 + Math.random() * 4) + 's';
+      bubbles.appendChild(bubble);
+      setTimeout(() => bubble.remove(), 10000);
+    }, 600);
+
+    // === Curseur animé spécial ===
+    const customCursor = document.getElementById('custom-cursor');
+    document.addEventListener('mousemove', e => {
+      customCursor.style.left = e.clientX + 'px';
+      customCursor.style.top = e.clientY + 'px';
+    });
+    document.addEventListener('mousedown', () => {
+      customCursor.classList.add('click');
+    });
+    document.addEventListener('mouseup', () => {
+      customCursor.classList.remove('click');
+    });
+    customCursor.addEventListener('animationend', () => {
+      customCursor.classList.remove('click');
+    });
+
+    // Animation sur hover des champs et boutons
+    ['input', 'button', '.theme-btn', '.logo', '.reveal'].forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        el.addEventListener('mouseenter', () => customCursor.classList.add('active'));
+        el.addEventListener('mouseleave', () => customCursor.classList.remove('active'));
+      });
+    });
+  </script>
+
+
+</html></body>  </script>
+</body>
+</html>

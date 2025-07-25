@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Laboratoire code HTML</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-color: #0f0f1c;
+      --text-color: #00ffb3;
+      --panel-bg: rgba(0, 20, 40, 0.9);
+      --matrix-color: #00ff00;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      background: var(--bg-color);
+      color: var(--text-color);
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .matrix {
+      position: fixed;
+      top: 0; left: 0;
+      height: 100vh; width: 100vw;
+      z-index: 0;
+      color: var(--matrix-color);
+      font-size: 14px;
+      opacity: 0.08;
+      pointer-events: none;
+      white-space: nowrap;
+      animation: matrixScroll 12s linear infinite;
+    }
+
+    @keyframes matrixScroll {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-100%); }
+    }
+
+    .sidebar {
+      width: 320px;
+      background: var(--panel-bg);
+      padding: 25px;
+      z-index: 2;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0,255,255,0.4);
+    }
+
+    .sidebar h2 {
+      font-size: 1.2em;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #444;
+      padding-bottom: 5px;
+    }
+
+    .sidebar label {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .sidebar input, .sidebar select, .sidebar button {
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 1em;
+      border: none;
+      border-radius: 6px;
+      width: 100%;
+      background: #002f3d;
+      color: var(--text-color);
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .sidebar button:hover {
+      background: #004d6d;
+      transform: scale(1.05);
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+      position: relative;
+    }
+
+    .box {
+      width: 180px;
+      height: 180px;
+      background: linear-gradient(135deg, #00c3ff, #005eff);
+      box-shadow: 0 0 30px rgba(0,255,255,0.4);
+      border-radius: 20px;
+      transition: all 0.6s ease;
+    }
+
+    .circle { border-radius: 50%; }
+    .diamond { transform: rotate(45deg); }
+
+    .codepanel {
+      width: 400px;
+      background: #1a1a1a;
+      color: #00ffb3;
+      padding: 20px;
+      font-family: 'Courier New', monospace;
+      box-shadow: -2px 0 15px rgba(0,255,255,0.2);
+      position: relative;
+    }
+
+    .copyBtn {
+      background: #004d6d;
+      color: #00ffb3;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-bottom: 10px;
+      transition: transform 0.2s, background 0.3s;
+    }
+
+    .copyBtn:hover {
+      background: #0078a0;
+      transform: scale(1.05);
+    }
+
+    .copy-popup {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: #00ffb3;
+      color: black;
+      padding: 6px 12px;
+      font-size: 0.9em;
+      border-radius: 5px;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.4s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+
+    .copy-popup.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Animations */
+    @keyframes zoom {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-25px); }
+    }
+    @keyframes shimmer {
+      0% { background-position: -300px; }
+      100% { background-position: 300px; }
+    }
+    @keyframes rotateY {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(360deg); }
+    }
+    @keyframes flip {
+      from { transform: rotateX(0deg); }
+      to { transform: rotateX(180deg); }
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 10px #00f6ff; }
+      50% { box-shadow: 0 0 30px #00f6ff; }
+    }
+    @keyframes swing {
+      0% { transform: rotate(-10deg); }
+      50% { transform: rotate(10deg); }
+      100% { transform: rotate(-10deg); }
+    }
+
+    .zoom { animation: zoom 1s ease-in-out infinite; }
+    .bounce { animation: bounce 1s ease-in-out infinite; }
+    .shimmer {
+      background: linear-gradient(90deg,#00c3ff,#ffffff,#005eff);
+      background-size: 600px 100%;
+      animation: shimmer 2s linear infinite;
+    }
+    .rotateY { animation: rotateY 3s linear infinite; transform-style: preserve-3d; }
+    .flip { animation: flip 2s ease-in-out infinite; }
+    .pulse { animation: pulse 1.5s ease-in-out infinite; }
+    .swing { animation: swing 1s ease-in-out infinite; }
+  </style>
+</head>
+<body>
+  <div class="matrix">
+    <pre>
+0110101011101011001010101101110100010101001011010011010110101010101010110110
+0101010100010110011011101001010101011010110100101010101011011010011010101010
+0110111010100101010101010101010101010101010101010101010101010101010101010101
+    </pre>
+  </div>
+
+  <div class="sidebar">
+    <h2>👨‍💻 Labo HTML</h2>
+
+    <label>Forme :</label>
+    <select id="shapeSelect" onchange="updateBox()">
+      <option value="box">Boîte</option>
+      <option value="box circle">Cercle</option>
+      <option value="box diamond">Losange</option>
+    </select>
+
+    <label>Animation :</label>
+    <button onclick="applyEffect('zoom')">Zoom</button>
+    <button onclick="applyEffect('bounce')">Rebond</button>
+    <button onclick="applyEffect('shimmer')">Scintillement</button>
+    <button onclick="applyEffect('rotateY')">Rotation 3D</button>
+    <button onclick="applyEffect('flip')">Flip vertical</button>
+    <button onclick="applyEffect('pulse')">Lueur pulsée</button>
+    <button onclick="applyEffect('swing')">Oscillation</button>
+    <button onclick="applyEffect('random')">🎲 Aléatoire</button>
+    <button onclick="resetEffect()">Réinitialiser</button>
+
+    <label>Couleur :</label>
+    <input type="color" id="colorPicker" value="#00c3ff" onchange="updateColor()" />
+
+    <label>Taille :</label>
+    <input type="range" id="sizeSlider" min="100" max="300" value="180" oninput="updateSize()" />
+
+    <label>Coins arrondis :</label>
+    <input type="range" id="radiusSlider" min="0" max="100" value="20" oninput="updateRadius()" />
+  </div>
+
+  <div class="container">
+    <div id="testBox" class="box"></div>
+  </div>
+
+  <div class="codepanel">
+    <button onclick="copyCode()" class="copyBtn">📋 Copier le code</button>
+    <pre id="animationCode">// Sélectionne une animation pour afficher son code ici.</pre>
+    <div id="copyPopup" class="copy-popup">✅ Copié !</div>
+  </div>
+
+  <script>
+    const box = document.getElementById('testBox');
+    const shapeSelect = document.getElementById('shapeSelect');
+
+    function updateBox() {
+      box.className = shapeSelect.value;
+      document.getElementById("animationCode").innerText = "// Aucune animation appliquée";
+    }
+
+    function applyEffect(effect) {
+      const base = shapeSelect.value;
+      const effects = ['zoom', 'bounce', 'shimmer', 'rotateY', 'flip', 'pulse', 'swing'];
+      const chosen = effect === 'random'
+        ? effects[Math.floor(Math.random() * effects.length)]
+        : effect;
+      box.className = base + ' ' + chosen;
+
+      const animationMap = {
+        zoom: `@keyframes zoom {\n  0%, 100% { transform: scale(1); }\n  50% { transform: scale(1.3); }\n}`,
+        bounce: `@keyframes bounce {\n  0%,100% { transform: translateY(0); }\n  50% { transform: translateY(-25px); }\n}`,
+        shimmer: `@keyframes shimmer {\n  0% { background-position: -300px; }\n  100% { background-position: 300px; }\n}`,
+        rotateY: `@keyframes rotateY {\n  from { transform: rotateY(0deg); }\n  to { transform: rotateY(360deg); }\n}`,
+        flip: `@keyframes flip {\n  from { transform: rotateX(0deg); }\n  to { transform: rotateX(180deg); }\n}`,
+        pulse: `@keyframes pulse {\n  0%, 100% { box-shadow: 0 0 10px #00f6ff; }\n  50% { box-shadow: 0 0 30px #00f6ff; }\n}`,
+        swing: `@keyframes swing {\n  0% { transform: rotate(-10deg); }\n  50% { transform: rotate(10deg); }\n  100% { transform: rotate(-10deg); }\n}`
+      };
+
+      document.getElementById("animationCode").innerText = animationMap[chosen] || "// Animation non trouvée";
+    }
+
+    function resetEffect() {
+      updateBox();
+      document.getElementById("animationCode").innerText = "// Animation réinitialisée";
+    }
+
+    function updateColor() {
+      const color = document.getElementById('colorPicker').value;
+      box.style.background = `linear-gradient(135deg, ${color}, #005eff)`;
+    }
+
+    function updateSize() {
+      const size = document.getElementById('sizeSlider').value;
+      box.style.width = size + "px";
+      box.style.height = size + "px";
+    }
+
+    function updateRadius() {
+      const radius = document.getElementById('radiusSlider').value;
+      box.style.borderRadius = radius + "px";
+    }
+
+    function copyCode() {
+      const code = document.getElementById("animationCode").innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const popup = document.getElementById("copyPopup");
+        popup.classList.add("show");
+        setTimeout(() => popup.classList.remove("show"), 1200);
+      }).catch(() => {
+        alert("❌ Impossible de copier le code.");
+      });
+    }
+  </script>
+
+</body>
+</html>

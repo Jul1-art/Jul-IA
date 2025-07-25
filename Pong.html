@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pong</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: black;
+    color: white;
+    font-family: 'Press Start 2P', monospace;
+    user-select: none;
+    overflow: hidden;
+  }
+  canvas {
+    display: block;
+    margin: 20px auto;
+    background: #111;
+    border: 3px solid cyan;
+    border-radius: 12px;
+    box-shadow: 0 0 20px cyan;
+  }
+  #controls {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  select, button {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    padding: 8px 15px;
+    margin: 0 10px;
+    border: 2px solid cyan;
+    background: transparent;
+    color: cyan;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  select:hover, button:hover {
+    background: cyan;
+    color: black;
+  }
+  #score-left, #score-right {
+    font-size: 48px;
+    text-shadow:
+      0 0 10px cyan,
+      0 0 20px cyan,
+      0 0 30px cyan;
+    transition: text-shadow 0.4s ease;
+  }
+  .score-glow {
+    text-shadow:
+      0 0 20px #00ffff,
+      0 0 30px #00ffff,
+      0 0 40px #00ffff,
+      0 0 50px #00ffff;
+  }
+</style>
+</head>
+<body>
+
+<div id="controls">
+  <label for="mode">Mode : </label>
+  <select id="mode">
+    <option value="bot-easy">IA Facile</option>
+    <option value="bot-medium" selected>IA Moyen</option>
+    <option value="bot-hard">IA Difficile</option>
+    <option value="1v1">1v1 Joueur</option>
+  </select>
+  <button id="start-btn">Lancer</button>
+</div>
+
+<div style="text-align:center; margin-bottom: 10px;">
+  <span id="score-left">0</span>
+  <span style="font-size: 48px; margin: 0 30px;">-</span>
+  <span id="score-right">0</span>
+</div>
+
+<canvas id="pong" width="800" height="500"></canvas>
+
+<script>
+  const canvas = document.getElementById('pong');
+  const ctx = canvas.getContext('2d');
+
+  const paddleWidth = 12;
+  const paddleHeight = 100;
+
+  let leftY = canvas.height / 2 - paddleHeight / 2;
+  let rightY = canvas.height / 2 - paddleHeight / 2;
+  const paddleSpeed = 6;
+
+  const ball = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    radius: 10,
+    speedX: 5,
+    speedY: 3
+  };
+
+  let scoreLeft = 0;
+  let scoreRight = 0;
+
+  let gameRunning = false;
+  let currentMode = 'bot-medium';
+
+  const scoreLeftEl = document.getElementById('score-left');
+  const scoreRightEl = document.getElementById('score-right');
+  const modeSelect = document.getElementById('mode');
+  const startBtn = document.getElementById('start-btn');
+
+  // Draw functions
+  function drawRect(x, y, w, h, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, w, h);
+  }
+
+  function drawCircle(x, y, r, color) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawNet() {
+    ctx.fillStyle = 'cyan';
+    for (let i = 0; i < canvas.height; i += 20) {
+      ctx.fillRect(canvas.width / 2 - 1, i, 2, 10);
+    }
+  }
+
+  function resetBall() {
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height / 2;
+    ball.speedX = (Math.random() > 0.5 ? 5 : -5);
+    ball.speedY = 3 * (Math.random() > 0.5 ? 1 : -1);
+  }
+
+  // Clamp paddle inside canvas
+  function clampPaddleY(y) {
+    return Math.min(Math.max(y, 0), canvas.height - paddleHeight);
+  }
+
+  // Add glow animation on score
+  function glowScore(element) {
+    element.classList.add('score-glow');
+    setTimeout(() => {
+      element.classList.remove('score-glow');
+    }, 500);
+  }
+
+  // AI logic with error chance
+  function aiMove(paddleY, speed, errorRate = 0.1) {
+    // Introduce some randomness / error so AI sometimes misses or reacts late
+    if (Math.random() < errorRate) {
+      // AI makes an error: don't move this frame
+      return paddleY;
+    }
+
+    if (ball.y < paddleY + paddleHeight / 2) {
+      paddleY -= speed;
+    } else if (ball.y > paddleY + paddleHeight / 2) {
+      paddleY += speed;
+    }
+    return clampPaddleY(paddleY);
+  }
+
+  // Update game logic
+  function update() {
+    if (!gameRunning) return;
+
+    ball.x += ball.speedX;
+    ball.y += ball.speedY;
+
+    // Bounce top/bottom
+    if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
+      ball.speedY *= -1;
+    }
+
+    // Check paddle collision left
+    if (ball.x - ball.radius < paddleWidth) {
+      if (ball.y > leftY && ball.y < leftY + paddleHeight) {
+        ball.speedX *= -1;
+        // add small variation on Y speed
+        ball.speedY += (Math.random() - 0.5) * 2;
+      } else if (ball.x < 0) {
+        // Point for right player
+        scoreRight++;
+        updateScore();
+        resetBall();
+      }
+    }
+
+    // Check paddle collision right
+    if (ball.x + ball.radius > canvas.width - paddleWidth) {
+      if (ball.y > rightY && ball.y < rightY + paddleHeight) {
+        ball.speedX *= -1;
+        ball.speedY += (Math.random() - 0.5) * 2;
+      } else if (ball.x > canvas.width) {
+        // Point for left player
+        scoreLeft++;
+        updateScore();
+        resetBall();
+      }
+    }
+
+    // Update AI or player controls
+    if (currentMode === 'bot-easy') {
+      rightY = aiMove(rightY, paddleSpeed * 0.5, 0.25); // easy AI, slow + 25% error
+    } else if (currentMode === 'bot-medium') {
+      rightY = aiMove(rightY, paddleSpeed * 0.8, 0.12); // medium speed, 12% error
+    } else if (currentMode === 'bot-hard') {
+      rightY = aiMove(rightY, paddleSpeed * 1.2, 0.05); // fast + 5% error
+    }
+  }
+
+  // Draw all elements
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawRect(0, 0, canvas.width, canvas.height, '#111');
+    drawNet();
+    drawRect(0, leftY, paddleWidth, paddleHeight, 'cyan');
+    drawRect(canvas.width - paddleWidth, rightY, paddleWidth, paddleHeight, 'cyan');
+    drawCircle(ball.x, ball.y, ball.radius, 'cyan');
+  }
+
+  // Game loop
+  function gameLoop() {
+    update();
+    draw();
+    requestAnimationFrame(gameLoop);
+  }
+
+  // Update score display and add glow
+  function updateScore() {
+    scoreLeftEl.textContent = scoreLeft;
+    scoreRightEl.textContent = scoreRight;
+    glowScore(scoreLeftEl);
+    glowScore(scoreRightEl);
+  }
+
+  // Mouse controls left paddle
+  canvas.addEventListener('mousemove', e => {
+    if (!gameRunning) return;
+    if (currentMode === '1v1') return; // no mouse control in 1v1
+    const rect = canvas.getBoundingClientRect();
+    let mouseY = e.clientY - rect.top;
+    leftY = clampPaddleY(mouseY - paddleHeight / 2);
+  });
+
+  // Keyboard controls right paddle in 1v1 mode
+  document.addEventListener('keydown', e => {
+    if (!gameRunning || currentMode !== '1v1') return;
+    if (e.key === 'ArrowUp') {
+      rightY = clampPaddleY(rightY - paddleSpeed);
+    } else if (e.key === 'ArrowDown') {
+      rightY = clampPaddleY(rightY + paddleSpeed);
+    }
+  });
+
+  // Start button and mode select
+  startBtn.addEventListener('click', () => {
+    scoreLeft = 0;
+    scoreRight = 0;
+    updateScore();
+    resetBall();
+    currentMode = modeSelect.value;
+    // Reset paddle positions
+    leftY = canvas.height / 2 - paddleHeight / 2;
+    rightY = canvas.height / 2 - paddleHeight / 2;
+    gameRunning = true;
+  });
+
+  // Démarrage boucle
+  gameLoop();
+</script>
+
+</body>
+</html>

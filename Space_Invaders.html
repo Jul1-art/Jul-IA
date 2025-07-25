@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Space Invaders Infini</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at center, #000022, #000000);
+      overflow: hidden;
+      font-family: monospace;
+    }
+
+    canvas {
+      display: block;
+      margin: auto;
+      background: black;
+      border: 3px solid #0ff;
+      box-shadow: 0 0 20px #0ff;
+    }
+
+    @keyframes glow {
+      0% { filter: drop-shadow(0 0 2px #0ff); }
+      50% { filter: drop-shadow(0 0 8px #0ff); }
+      100% { filter: drop-shadow(0 0 2px #0ff); }
+    }
+  </style>
+</head>
+<body>
+<canvas id="game" width="800" height="600"></canvas>
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let keys = {};
+document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keyup", e => keys[e.key] = false);
+
+// Joueur
+const player = {
+  x: canvas.width / 2 - 20,
+  y: canvas.height - 60,
+  width: 40,
+  height: 30,
+  speed: 6,
+  color: "#0ff",
+  cooldown: 0,
+};
+
+let lasers = [], enemies = [], enemyLasers = [], score = 0;
+
+function createEnemy(x, y, type = 0) {
+  const types = ["#f0f", "#ff0", "#0f0"];
+  return {
+    x,
+    y,
+    width: 40,
+    height: 30,
+    color: types[type % types.length],
+    speed: 0.3 + Math.random(),
+    direction: Math.random() > 0.5 ? 1 : -1,
+    type: type
+  };
+}
+
+function spawnWave() {
+  for (let row = 0; row < 3; row++) {
+    for (let i = 0; i < 8; i++) {
+      let x = 80 * i + 20;
+      let y = -Math.random() * 300 - row * 40;
+      enemies.push(createEnemy(x, y, row));
+    }
+  }
+}
+
+function drawShip(x, y, color, type = 0) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x + 20, y);
+  ctx.lineTo(x, y + 30);
+  ctx.lineTo(x + 40, y + 30);
+  ctx.closePath();
+  ctx.fill();
+  if (type === 1) {
+    ctx.fillStyle = '#000';
+    ctx.fillRect(x + 10, y + 10, 20, 10);
+  } else if (type === 2) {
+    ctx.strokeStyle = '#fff';
+    ctx.strokeRect(x + 5, y + 5, 30, 20);
+  }
+}
+
+function drawLaser(x, y, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, 4, 12);
+}
+
+function update() {
+  if (keys["ArrowLeft"] && player.x > 0) player.x -= player.speed;
+  if (keys["ArrowRight"] && player.x + player.width < canvas.width) player.x += player.speed;
+
+  if (keys[" "] && player.cooldown <= 0) {
+    lasers.push({ x: player.x + 18, y: player.y, speed: -8 });
+    player.cooldown = 20;
+  }
+  if (player.cooldown > 0) player.cooldown--;
+
+  lasers.forEach(l => l.y += l.speed);
+  lasers = lasers.filter(l => l.y > -10);
+
+  enemies.forEach(e => {
+    e.x += e.direction * 1.5;
+    e.y += e.speed * 0.3;
+    if (Math.random() < 0.001 + e.type * 0.0005) {
+      enemyLasers.push({ x: e.x + 18, y: e.y + 20, speed: 4 });
+    }
+    if (e.x < 0 || e.x + e.width > canvas.width) e.direction *= -1;
+  });
+
+  enemyLasers.forEach(l => l.y += l.speed);
+  enemyLasers = enemyLasers.filter(l => l.y < canvas.height + 20);
+
+  lasers.forEach((l, li) => {
+    enemies.forEach((e, ei) => {
+      if (l.x > e.x && l.x < e.x + e.width && l.y > e.y && l.y < e.y + e.height) {
+        enemies.splice(ei, 1);
+        lasers.splice(li, 1);
+        score += 100;
+      }
+    });
+  });
+
+  enemyLasers.forEach((l, li) => {
+    if (l.x > player.x && l.x < player.x + player.width && l.y > player.y && l.y < player.y + player.height) {
+      alert("GAME OVER ! Score : " + score);
+      document.location.reload();
+    }
+  });
+
+  if (enemies.length < 5) spawnWave();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < 100; i++) {
+    ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.5})`;
+    ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 1, 1);
+  }
+
+  drawShip(player.x, player.y, player.color);
+  lasers.forEach(l => drawLaser(l.x, l.y, "#0ff"));
+  enemyLasers.forEach(l => drawLaser(l.x, l.y, "#f0f"));
+  enemies.forEach(e => drawShip(e.x, e.y, e.color, e.type));
+
+  ctx.fillStyle = "#fff";
+  ctx.font = "20px monospace";
+  ctx.fillText("Score : " + score, 20, 30);
+}
+
+function loop() {
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+
+spawnWave();
+loop();
+</script>
+</body>
+</html>
