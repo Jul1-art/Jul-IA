@@ -497,16 +497,76 @@
         });
       });
     </script>
-          <section style="text-align:center; margin:60px auto 20px; color:#88aabb;">
-  <h3 style="color:#00fff7; font-size:1.2rem; margin-bottom:16px; text-shadow:0 0 6px #00fff7aa;">
+<section style="
+  text-align:center; 
+  margin:60px auto 20px; 
+  color:#88aabb;
+  animation: fadeSlideIn 1s ease forwards;
+  opacity: 0;
+">
+  <h3 style="
+    color:#00fff7; 
+    font-size:1.2rem; 
+    margin-bottom:16px; 
+    text-shadow: 0 0 6px #00fff7aa;
+    animation: glowPulse 2.5s ease-in-out infinite;
+  ">
     🔧 Autres projets créés par Jules Ferrier
   </h3>
-  <div style="display:flex; flex-direction:column; gap:12px; align-items:center;">
+  <div style="
+    display:flex; 
+    flex-direction:column; 
+    gap:12px; 
+    align-items:center;
+  ">
     <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Laboratoire_CSS.html"
-       style="color:#00fff7; text-decoration:none; font-size:1rem;">
+       style="
+         color:#00fff7; 
+         text-decoration:none; 
+         font-size:1rem;
+         transition: color 0.3s ease, transform 0.3s ease;
+         display:inline-block;
+       "
+       onmouseover="this.style.color='#00ffd7'; this.style.transform='translateX(6px)';"
+       onmouseout="this.style.color='#00fff7'; this.style.transform='translateX(0)';"
+    >
       Laboratoire code HTML
     </a>
+    <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Jeu/Playground.html"
+       style="
+         color:#00fff7; 
+         text-decoration:none; 
+         font-size:1rem;
+         transition: color 0.3s ease, transform 0.3s ease;
+         display:inline-block;
+       "
+       onmouseover="this.style.color='#00ffd7'; this.style.transform='translateX(6px)';"
+       onmouseout="this.style.color='#00fff7'; this.style.transform='translateX(0)';"
+    >
+      Playground
+    </a>
   </div>
+
+  <style>
+    @keyframes fadeSlideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes glowPulse {
+      0%, 100% {
+        text-shadow: 0 0 6px #00fff7aa, 0 0 15px #00fff7cc, 0 0 20px #00fff7ff;
+      }
+      50% {
+        text-shadow: 0 0 12px #00fff7ff, 0 0 25px #00fff7ff, 0 0 40px #00fff7ff;
+      }
+    }
+  </style>
 </section>
     <br>
 </body>
