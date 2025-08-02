@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Documentation – Jul‑IA</title>
+  <link rel="shortcut icon" href="Jul-IA_logo.png" />
+  <style>
+    h1{
+      font-size: 2.5em;
+      color: #58a6ff;
+      text-align: center;
+      margin-top: 20px;
+    }
+    :root {
+      --bg: #0d1117;
+      --bg-alt: #161b22;
+      --primary: #58a6ff;
+      --text: #e6edf3;
+      --secondary: #8b949e;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: linear-gradient(145deg, #0d1117, #0b1a2e);
+      color: var(--text);
+      font-family: 'Segoe UI', sans-serif;
+      line-height: 1.7;
+      padding-top: 70px;
+    }
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: var(--bg-alt);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+    }
+    nav .logo {
+      font-size: 1.4em;
+      color: var(--primary);
+      font-weight: bold;
+    }
+    nav a {
+      color: var(--text);
+      margin-left: 20px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover {
+      color: var(--primary);
+    }
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    .card {
+      background: var(--bg-alt);
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+    h2 {
+      margin-top: 0;
+      color: var(--primary);
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
+      color: var(--secondary);
+      margin-top: 40px;
+    }
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      nav a {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+    }
+    .dropdown:focus-within .dropdown-content,
+    .dropdown:hover .dropdown-content {
+      display: block !important;
+    }
+    .dropdown-content a {
+      color: var(--text);
+      padding: 10px 24px;
+      display: block;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background 0.2s, color 0.2s;
+      border-radius: 0;
+    }
+    .dropdown-content a:hover {
+      background: #1a2537;
+      color: var(--primary);
+    }
+    .nav-links .dropdown > a {
+      cursor: pointer;
+    }
+
+  /* ===== ANIMATIONS AJOUTÉES ===== */
+  @keyframes fadeUp {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .card {
+    animation: fadeUp 0.8s ease forwards;
+    opacity: 0;
+  }
+
+  .card:nth-of-type(1) { animation-delay: 0.2s; }
+  .card:nth-of-type(2) { animation-delay: 0.4s; }
+  .card:nth-of-type(3) { animation-delay: 0.6s; }
+  .card:nth-of-type(4) { animation-delay: 0.8s; }
+
+  h1 {
+    animation: fadeUp 0.6s ease forwards;
+    opacity: 0;
+    animation-delay: 0.1s;
+  }
+  /* ===== FIN ANIMATIONS ===== */
+
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">Jul‑IA</div>
+    <div class="nav-links">
+      <a href="Page_acceuil.html">Accueil</a>
+      <a href="Jul-IA.html">Chatbot</a>
+      <div class="dropdown" tabindex="0" style="display:inline-block;position:relative;">
+        <a href="#" onclick="return false;">Projets</a>
+        <div class="dropdown-content" style="display:none;position:absolute;left:0;top:100%;background:var(--bg-alt);min-width:220px;box-shadow:0 4px 16px #000a;border-radius:0 0 8px 8px;z-index:1001;">
+          <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Laboratoire_CSS.html">Laboratoire code HTML</a>
+          <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Jeu/Playground.html">Playground</a>
+          <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Nouveau_projet.html">File explorer</a>
+        </div>
+      </div>
+      <a href="Documentation.html">Documentation</a>
+      <a href="A_propos.html">À propos</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Documentation</h1>
+
+    <div class="card">
+      <h2>🔑 Clé API obligatoire</h2>
+      <p>Pour utiliser Jul‑IA, une clé API est nécessaire. Cette clé est gratuite et te permet d’accéder à toutes les fonctionnalités de l’intelligence artificielle.</p>
+    </div>
+
+    <div class="card">
+      <h2>🤖 Qu’est-ce que Jul‑IA ?</h2>
+      <p>Jul‑IA est une intelligence artificielle avancée, totalement gratuite et accessible à tous. Elle est conçue pour être simple et performante, capable de comprendre, créer et aider dans de nombreux domaines.</p>
+    </div>
+
+    <div class="card">
+      <h2>🚀 Comment utiliser Jul‑IA ?</h2>
+      <p>Jul‑IA fonctionne comme ChatGPT ou Copilot : tu écris ta demande en langage naturel, et elle te répond simplement et efficacement.</p>
+      <p>Pas besoin d’avoir des connaissances techniques particulières, tout est fait pour que ce soit facile et intuitif.</p>
+    </div>
+
+    <div class="card">
+      <h2>🌍 Fonctionnalités principales</h2>
+      <ul>
+        <li>Dialogue en langage naturel</li>
+        <li>Génération et correction de code</li>
+        <li>Création de contenu visuel et vocal</li>
+        <li>Analyse et automatisation</li>
+        <li>Support multilingue</li>
+      </ul>
+    </div>
+
+    <footer>
+        © 2025 – Projet Jul-IA par Jules Ferrier 
+    </footer>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jeux - Jul‑IA</title>
+  <link rel="shortcut icon" href="video-game.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #0c0c0c;
+      color: #f0f0f0;
+      font-family: 'Press Start 2P', monospace;
+      padding: 40px;
+      animation: flicker 1s infinite;
+      filter: contrast(1.05) brightness(1.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .crt-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.15) 0px,
+        rgba(255,255,255,0.15) 1px,
+        transparent 0px,
+        transparent 4px
+      );
+      z-index: 1000;
+      animation: scanlines 0.15s linear infinite;
+    }
+
+    @keyframes scanlines {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(4px); }
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.98; transform: scale(1.001); }
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 40px;
+      color: #00fff7;
+      text-shadow: 0 0 6px #00fff7aa, 0 0 16px #00fff744;
+      animation: glowTitle 2s infinite alternate;
+    }
+
+    @keyframes glowTitle {
+      from { text-shadow: 0 0 4px #00fff7aa; }
+      to { text-shadow: 0 0 16px #00fff7; }
+    }
+
+    .game-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+    }
+
+    .game-card {
+      background: #161616;
+      border: 2px solid #00fff766;
+      border-radius: 14px;
+      padding: 20px;
+      width: 240px;
+      text-align: center;
+      box-shadow: 0 0 12px #00fff722;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .game-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 24px #00fff7aa;
+    }
+
+    .game-card img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    .game-title {
+      font-size: 1rem;
+      margin-bottom: 12px;
+      color: #00fff7;
+      text-shadow: 0 0 4px #00fff766;
+    }
+
+    .play-button {
+      background: #00fff7;
+      color: #111;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 20px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #00fff744;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .play-button:hover {
+      background: #00bfae;
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    footer {
+      position: fixed;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      z-index: 1100;
+      text-shadow: 0 0 2px #000;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Jeux sélectionnés par Jules</h1>
+
+  <div class="game-grid">
+    <div class="game-card">
+      <img src="assets/pacman_preview.png" alt="Pac-Man">
+      <div class="game-title">Pac-Man (1980)</div>
+      <button class="play-button" onclick="window.location.href='Pac-Man.html'">Jouer</button>
+    </div>
+    <div class="game-card">
+      <img src="assets/pong_preview.png" alt="Pong">
+      <div class="game-title">Pong (1972)</div>
+      <button class="play-button" onclick="window.location.href='Accueil_Pong.html'">Jouer</button>
+    </div>
+    <div class="game-card">
+      <img src="assets/invaders_preview.png" alt="Space Invaders">
+      <div class="game-title">Space Invaders (1978)</div>
+      <button class="play-button" onclick="window.location.href='Space_Invaders.html'">Jouer</button>
+    </div>
+    <div class="game-card">
+      <img src="assets/arkanoid_preview.png" alt="Arkanoid">
+      <div class="game-title">Arkanoid (1986)</div>
+      <button class="play-button" onclick="window.location.href='Arkanoid.html'">Jouer</button>
+    </div>
+    <div class="game-card">
+      <img src="assets/tetris_preview.png" alt="Tetris">
+      <div class="game-title">Tetris (1984)</div>
+      <button class="play-button" onclick="window.location.href='Tetris.html'">Jouer</button>
+    </div>
+  </div>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+  <footer>
+    © 2025 – Projet Jul-IA par Jules Ferrier
+  </footer>
+  <div class="crt-overlay"></div>
+</br>
+</body>
+</html>

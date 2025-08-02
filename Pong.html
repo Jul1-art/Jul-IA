@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pong</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background: radial-gradient(ellipse at center, #0f2027 0%, #2c5364 100%);
+      color: white;
+      font-family: 'Press Start 2P', monospace;
+      user-select: none;
+      overflow: hidden;
+      min-height: 100vh;
+    }
+    #controls {
+      text-align: center;
+      margin-bottom: 18px;
+      margin-top: 24px;
+      background: rgba(0,255,255,0.07);
+      border-radius: 12px;
+      box-shadow: 0 0 18px #00fff7a0;
+      padding: 18px 0 10px 0;
+      width: 600px;
+      max-width: 95vw;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    select, button {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      padding: 8px 15px;
+      margin: 0 10px;
+      border: 2px solid cyan;
+      background: transparent;
+      color: cyan;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px #00fff7a0;
+    }
+    select:hover, button:hover {
+      background: cyan;
+      color: black;
+      box-shadow: 0 0 20px #00fff7cc;
+      transform: scale(1.08);
+    }
+    #scoreboard {
+      text-align:center;
+      margin-bottom: 18px;
+      margin-top: 8px;
+      font-size: 48px;
+      letter-spacing: 8px;
+      color: #fff;
+      text-shadow: 0 0 20px #00fff7, 0 0 40px #00fff7;
+      font-family: 'Press Start 2P', monospace;
+      background: rgba(0,255,255,0.07);
+      border-radius: 12px;
+      width: 400px;
+      max-width: 90vw;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 10px 0;
+      box-shadow: 0 0 18px #00fff7a0;
+    }
+    #score-left, #score-right {
+      font-size: 48px;
+      text-shadow:
+        0 0 10px cyan,
+        0 0 20px cyan,
+        0 0 30px cyan;
+      transition: text-shadow 0.4s ease;
+    }
+    .score-glow {
+      text-shadow:
+        0 0 20px #00ffff,
+        0 0 30px #00ffff,
+        0 0 40px #00ffff,
+        0 0 50px #00ffff;
+    }
+    canvas {
+      display: block;
+      margin: 30px auto 10px auto;
+      background: #111;
+      border: 3px solid cyan;
+      border-radius: 18px;
+      box-shadow: 0 0 40px cyan, 0 0 120px #00fff7a0;
+      transition: box-shadow 0.4s;
+    }
+    /* Animation gagnant */
+    #winner-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s;
+    }
+    #winner-modal.show {
+      opacity: 1;
+      pointer-events: all;
+      animation: modalFadeIn 0.7s cubic-bezier(.4,1.6,.6,1) both;
+    }
+    @keyframes modalFadeIn {
+      0% { opacity: 0; transform: scale(0.7) rotate(-8deg);}
+      60% { opacity: 1; transform: scale(1.08) rotate(2deg);}
+      100% { opacity: 1; transform: scale(1) rotate(0);}
+    }
+    .winner-content {
+      background: linear-gradient(135deg, #00fff7 0%, #283d5c 100%);
+      border-radius: 24px;
+      padding: 48px 32px;
+      text-align: center;
+      box-shadow: 0 0 60px #00fff7cc, 0 0 120px #00fff7a0;
+      animation: winnerPulse 2.5s infinite alternate;
+    }
+    @keyframes winnerPulse {
+      0% { box-shadow: 0 0 60px #00fff7cc, 0 0 120px #00fff7a0;}
+      100% { box-shadow: 0 0 120px #00fff7cc, 0 0 240px #00fff7a0;}
+    }
+    .winner-title {
+      font-size: 2.2rem;
+      color: #fff;
+      text-shadow: 0 0 30px #00fff7, 0 0 60px #00fff7;
+      margin-bottom: 24px;
+      font-family: 'Press Start 2P', monospace;
+      letter-spacing: 2px;
+      animation: winnerTitleAnim 1.2s infinite alternate;
+    }
+    @keyframes winnerTitleAnim {
+      0% { color: #fff;}
+      100% { color: #00fff7;}
+    }
+    .winner-btn {
+      margin-top: 32px;
+      padding: 14px 36px;
+      background: #fff;
+      color: #00fff7;
+      border: none;
+      border-radius: 18px;
+      font-size: 1.1rem;
+      font-family: 'Press Start 2P', monospace;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 0 30px #00fff7cc;
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+    }
+    .winner-btn:hover {
+      background: #00fff7;
+      color: #fff;
+      transform: scale(1.08);
+      box-shadow: 0 0 60px #00fff7cc;
+    }
+    /* Confettis */
+    .confetti {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      z-index: 10000;
+      pointer-events: none;
+      animation: confettiDrop 1.8s linear forwards;
+    }
+    @keyframes confettiDrop {
+      0% { opacity: 1; transform: translateY(-40px) scale(1);}
+      80% { opacity: 1;}
+      100% { opacity: 0; transform: translateY(100vh) scale(1.2);}
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <label for="mode">Mode : </label>
+    <select id="mode">
+      <option value="bot-easy">IA Facile</option>
+      <option value="bot-medium" selected>IA Moyen</option>
+      <option value="bot-hard">IA Difficile</option>
+      <option value="1v1">1v1 Joueur</option>
+    </select>
+    <label for="win-score" style="margin-left:20px;">Score pour gagner :</label>
+    <select id="win-score">
+      <option value="10" selected>10</option>
+      <option value="20">20</option>
+      <option value="30">30</option>
+    </select>
+    <button id="start-btn">Lancer</button>
+  </div>
+
+  <div id="scoreboard">
+    <span id="score-left">0</span>
+    <span style="font-size: 48px; margin: 0 30px;">-</span>
+    <span id="score-right">0</span>
+  </div>
+
+  <canvas id="pong" width="800" height="500"></canvas>
+
+  <!-- Modal gagnant -->
+  <div id="winner-modal">
+    <div class="winner-content">
+      <div class="winner-title" id="winner-title"></div>
+      <button class="winner-btn" id="winner-btn">Rejouer</button>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('pong');
+    const ctx = canvas.getContext('2d');
+
+    const paddleWidth = 12;
+    const paddleHeight = 100;
+
+    let leftY = canvas.height / 2 - paddleHeight / 2;
+    let rightY = canvas.height / 2 - paddleHeight / 2;
+    const paddleSpeed = 6;
+
+    const ball = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      radius: 10,
+      speedX: 5,
+      speedY: 3
+    };
+
+    let scoreLeft = 0;
+    let scoreRight = 0;
+
+    let gameRunning = false;
+    let currentMode = 'bot-medium';
+
+    let winScore = 10;
+    const scoreLeftEl = document.getElementById('score-left');
+    const scoreRightEl = document.getElementById('score-right');
+    const modeSelect = document.getElementById('mode');
+    const startBtn = document.getElementById('start-btn');
+    const winScoreSelect = document.getElementById('win-score');
+
+    // Confetti animation
+    function launchConfetti() {
+      for (let i = 0; i < 40; i++) {
+        const conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.style.left = Math.random() * window.innerWidth + 'px';
+        conf.style.top = '-20px';
+        conf.style.background = `hsl(${Math.random()*360},100%,60%)`;
+        conf.style.animationDelay = (Math.random() * 1.2) + 's';
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 1800);
+      }
+    }
+
+    function drawRect(x, y, w, h, color) {
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, w, h);
+    }
+
+    function drawCircle(x, y, r, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function drawNet() {
+      ctx.fillStyle = 'cyan';
+      for (let i = 0; i < canvas.height; i += 20) {
+        ctx.fillRect(canvas.width / 2 - 1, i, 2, 10);
+      }
+    }
+
+    function resetBall() {
+      ball.x = canvas.width / 2;
+      ball.y = canvas.height / 2;
+      ball.speedX = (Math.random() > 0.5 ? 5 : -5);
+      ball.speedY = 3 * (Math.random() > 0.5 ? 1 : -1);
+    }
+
+    function clampPaddleY(y) {
+      return Math.min(Math.max(y, 0), canvas.height - paddleHeight);
+    }
+
+    function glowScore(element) {
+      element.classList.add('score-glow');
+      setTimeout(() => {
+        element.classList.remove('score-glow');
+      }, 500);
+    }
+
+    function aiMove(paddleY, speed, errorRate = 0.1) {
+      if (Math.random() < errorRate) return paddleY;
+      if (ball.y < paddleY + paddleHeight / 2) {
+        paddleY -= speed;
+      } else if (ball.y > paddleY + paddleHeight / 2) {
+        paddleY += speed;
+      }
+      return clampPaddleY(paddleY);
+    }
+
+    function accelerateBall() {
+      // Augmente la vitesse de 8% à chaque rebond, limite à 18
+      ball.speedX *= 1.08;
+      ball.speedY *= 1.08;
+      ball.speedX = Math.max(Math.min(ball.speedX, 18), -18);
+      ball.speedY = Math.max(Math.min(ball.speedY, 18), -18);
+    }
+
+    function update() {
+      if (!gameRunning) return;
+
+      ball.x += ball.speedX;
+      ball.y += ball.speedY;
+
+      if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
+        ball.speedY *= -1;
+        accelerateBall();
+      }
+
+      // Collision raquette gauche (zone +5px)
+      if (ball.x - ball.radius < paddleWidth + 5) {
+        if (ball.y > leftY && ball.y < leftY + paddleHeight) {
+          ball.speedX = -ball.speedX + (ball.speedX > 0 ? 0.5 : -0.5);
+          ball.speedX = Math.max(Math.min(ball.speedX, 15), -15);
+          ball.speedY += (Math.random() - 0.5) * 2;
+          accelerateBall();
+        } else if (ball.x < 0) {
+          scoreRight++;
+          updateScore();
+          resetBall();
+        }
+      }
+
+      // Collision raquette droite (zone -5px)
+      if (ball.x + ball.radius > canvas.width - paddleWidth - 5) {
+        if (ball.y > rightY && ball.y < rightY + paddleHeight) {
+          ball.speedX = -ball.speedX + (ball.speedX > 0 ? 0.5 : -0.5);
+          ball.speedX = Math.max(Math.min(ball.speedX, 15), -15);
+          ball.speedY += (Math.random() - 0.5) * 2;
+          accelerateBall();
+        } else if (ball.x > canvas.width) {
+          scoreLeft++;
+          updateScore();
+          resetBall();
+        }
+      }
+
+      if (scoreLeft >= winScore || scoreRight >= winScore) {
+        gameRunning = false;
+        showWinner(scoreLeft >= winScore ? "Joueur gauche" : "Joueur droit");
+      }
+
+      if (currentMode === 'bot-easy') {
+        rightY = aiMove(rightY, paddleSpeed * 0.5, 0.25);
+      } else if (currentMode === 'bot-medium') {
+        rightY = aiMove(rightY, paddleSpeed * 0.8, 0.12);
+      } else if (currentMode === 'bot-hard') {
+        rightY = aiMove(rightY, paddleSpeed * 1.2, 0.05);
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawRect(0, 0, canvas.width, canvas.height, '#111');
+      drawNet();
+      drawRect(0, leftY, paddleWidth, paddleHeight, 'cyan');
+      drawRect(canvas.width - paddleWidth, rightY, paddleWidth, paddleHeight, 'cyan');
+      drawCircle(ball.x, ball.y, ball.radius, 'cyan');
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function updateScore() {
+      scoreLeftEl.textContent = scoreLeft;
+      scoreRightEl.textContent = scoreRight;
+      glowScore(scoreLeftEl);
+      glowScore(scoreRightEl);
+    }
+
+    // Mouse controls left paddle
+    canvas.addEventListener('mousemove', e => {
+      if (!gameRunning || currentMode === '1v1') return;
+      const rect = canvas.getBoundingClientRect();
+      let mouseY = e.clientY - rect.top;
+      leftY = clampPaddleY(mouseY - paddleHeight / 2);
+    });
+
+    // Keyboard controls for 1v1 mode
+    document.addEventListener('keydown', e => {
+      if (!gameRunning || currentMode !== '1v1') return;
+      // W/S for left paddle, ArrowUp/ArrowDown for right paddle
+      if (e.key === 'w' || e.key === 'W') {
+        leftY = clampPaddleY(leftY - paddleSpeed);
+      }
+      if (e.key === 's' || e.key === 'S') {
+        leftY = clampPaddleY(leftY + paddleSpeed);
+      }
+      if (e.key === 'ArrowUp') {
+        rightY = clampPaddleY(rightY - paddleSpeed);
+      }
+      if (e.key === 'ArrowDown') {
+        rightY = clampPaddleY(rightY + paddleSpeed);
+      }
+    });
+
+    // Mode select
+    modeSelect.addEventListener('change', e => {
+      currentMode = e.target.value;
+      resetBall();
+      scoreLeft = 0;
+      scoreRight = 0;
+      updateScore();
+    });
+
+    // Start button
+    startBtn.addEventListener('click', () => {
+      gameRunning = true;
+      resetBall();
+      scoreLeft = 0;
+      scoreRight = 0;
+      updateScore();
+      hideWinner();
+    });
+
+    winScoreSelect.addEventListener('change', e => {
+      winScore = parseInt(e.target.value, 10);
+    });
+
+    // Winner modal
+    const winnerModal = document.getElementById('winner-modal');
+    const winnerTitle = document.getElementById('winner-title');
+    const winnerBtn = document.getElementById('winner-btn');
+
+    function showWinner(winner) {
+      winnerTitle.textContent = winner + " a gagné !";
+      winnerModal.classList.add('show');
+      launchConfetti();
+    }
+    function hideWinner() {
+      winnerModal.classList.remove('show');
+    }
+    winnerBtn.addEventListener('click', () => {
+      hideWinner();
+      gameRunning = true;
+      scoreLeft = 0;
+      scoreRight = 0;
+      updateScore();
+      resetBall();
+    });
+
+    // Initial draw and start loop
+    draw();
+    gameLoop();
+  </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Autres IA</title>
+  <link rel="shortcut icon" href="Jul-IA_logo.png" />
+  <style>
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+      color: #88aabb;
+    }
+    body { background: #181c24; color: #e8eaed; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+    h1 { color: #00fff7; text-align: center; margin-top: 36px; }
+    .ai-card-container { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; margin: 40px 0; }
+    .ai-card { background: #232837; border: 1px solid #31364a; border-radius: 12px; padding: 20px; width: 300px; box-shadow: 0 0 12px #00fff766; transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s; opacity: 0; transform: translateY(40px) scale(0.96) rotateZ(-2deg); animation: fadeUp 1s cubic-bezier(.4,1.6,.6,1) forwards; }
+    .ai-card:hover { transform: translateY(-8px) scale(1.03) rotateZ(0deg); box-shadow: 0 8px 32px #00fff799, 0 0 0 2px #00fff7cc; z-index: 2; }
+    @keyframes fadeUp { 0% { opacity: 0; transform: translateY(60px) scale(0.92) rotateZ(-4deg); filter: blur(2px);} 60% { opacity: 1; transform: translateY(-8px) scale(1.04) rotateZ(1deg); filter: blur(0.5px);} 100% { opacity: 1; transform: translateY(0) scale(1) rotateZ(0deg); filter: blur(0);}}
+    .ai-card h3 { margin-top: 0; color: #00fff7; font-size: 20px; }
+    .ai-card a { color: #00d8ff; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 8px; }
+    .ai-card a:hover { text-decoration: underline; color: #00f0ff; }
+    .back-btn { display: block; margin: 24px auto 0 auto; background: #00fff7; color: #181c24; border: none; border-radius: 20px; padding: 10px 24px; font-size: 1rem; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,255,247,0.10); transition: background 0.2s, color 0.2s, transform 0.15s; outline: none; text-align: center;}
+    .back-btn:hover { background: #00bfae; color: #fff; transform: scale(1.06);}
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="window.location.href='Page_acceuil.html'">← Retour à l'accueil</button>
+  <h1>Autres IA</h1>
+  <div class="ai-card-container" id="container"></div>
+    <footer>
+        © 2025 – Projet Jul-IA par Jules Ferrier 
+    </footer>
+  <script>
+    const aiList = [
+      {
+        name: "DeepL Write",
+        creator: "DeepL",
+        version: "2024",
+        strengths: "Correction et reformulation de texte, multilingue",
+        weaknesses: "Pas de génération créative",
+        link: "https://www.deepl.com/write"
+      },
+      {
+        name: "Replika",
+        creator: "Luka Inc.",
+        version: "Replika Pro",
+        strengths: "IA compagnon, personnalisé",
+        weaknesses: "Moins utile pour la productivité ou les faits",
+        link: "https://replika.com"
+      },
+      {
+        name: "Pi",
+        creator: "Inflection AI",
+        version: "Pi (2024)",
+        strengths: "Empathique, excellent pour la conversation",
+        weaknesses: "Limité aux discussions simples",
+        link: "https://pi.ai"
+      },
+      {
+        name: "Perplexity AI",
+        creator: "Perplexity",
+        version: "2024",
+        strengths: "Recherche web, citations de sources",
+        weaknesses: "Moins créatif, parfois limité",
+        link: "https://www.perplexity.ai"
+      }
+    ];
+    const container = document.getElementById("container");
+    aiList.forEach((ai, i) => {
+      const card = document.createElement("div");
+      card.className = "ai-card";
+      card.style.animationDelay = `${i * 0.15 + 0.2}s`;
+      card.innerHTML = `
+        <h3>${ai.name}</h3>
+        <p><strong>Créateur :</strong> ${ai.creator}</p>
+        <p><strong>Version :</strong> ${ai.version}</p>
+        <p><strong>Atouts :</strong> ${ai.strengths}</p>
+        <p><strong>Limites :</strong> ${ai.weaknesses}</p>
+        <a href="${ai.link}" target="_blank">🔗 Accéder</a>
+      `;
+      container.appendChild(card);
+    });
+  </script>
+</body>
+</html>
