@@ -6,19 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="Jul-IA_logo.png" />
     <style>
-        @media (max-width: 400px) {
-        .header h1 {
-            font-size: 18px;
-        }
-        .send-btn {
-            font-size: 14px;
-            padding: 10px;
-        }
-        .input-area input {
-            font-size: 14px;
-            padding: 10px;
-        }
-        }
         :root {
             --bg-primary: #181c24;
             --bg-secondary: #232837;
@@ -298,12 +285,28 @@
             0%, 60%, 100% { transform: translateY(0); }
             30% { transform: translateY(-10px); }
         }
+        @media (max-width: 400px) {
+        .header h1 {
+            font-size: 18px;
+        }
+        .send-btn {
+            font-size: 14px;
+            padding: 10px;
+        }
+        .input-area input {
+            font-size: 14px;
+            padding: 10px;
+        }
+        }
         @media (max-width: 900px) {
             .sidebar { width: 100px; padding: 10px 4px; }
             .sidebar h2, .sidebar button span:not(:first-child) { display: none; }
             .main { min-width: 0; }
             #chatbox { padding: 10px 4px; }
             .input-area { padding: 10px 4px; }
+            .input-area {
+                padding-bottom: 30px; /* Espace supplémentaire en bas */
+            }
         }
         @media (max-width: 600px) {
             body { flex-direction: column; min-width: 100vw; min-height: 100vh; overflow: auto;}
@@ -314,6 +317,9 @@
             .input-area { padding: 10px 4px; flex-direction: column; gap: 8px;}
             .input-container input { font-size: 16px; padding: 12px 10px;}
             .send-btn { width: 100%; padding: 12px 0;}
+            .input-area {
+                padding-bottom: 30px; /* Espace supplémentaire en bas */
+            }
         }
     </style>
 </head>
