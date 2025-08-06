@@ -1,11 +1,10 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <link rel="shortcut icon" href="Jul-IA_logo.png" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Connexion – Jul-IA</title>
+  <link rel="shortcut icon" href="Jul-IA_logo.png" />
   <style>
     :root {
       --bg: #0a1e35;
@@ -15,7 +14,6 @@
       --error: #ff6b6b;
       --border: #1c3656;
     }
-
     [data-theme="dark"] {
       --bg: #020a1a;
       --text: #c8eefe;
@@ -24,7 +22,6 @@
       --error: #ff8a8a;
       --border: #204066;
     }
-
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -38,7 +35,6 @@
       overflow: hidden;
       position: relative;
     }
-
     body::before {
       content: '';
       position: fixed;
@@ -50,12 +46,10 @@
       opacity: 0.45;
       filter: blur(20px);
     }
-
     @keyframes bgPulse {
       0%, 100% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
     }
-
     .theme-btn {
       position: fixed;
       top: 20px;
@@ -73,13 +67,12 @@
       box-shadow: 0 0 10px var(--accent);
       cursor: pointer;
       animation: pulseGlow 2.5s infinite alternate ease-in-out;
+      z-index: 1000;
     }
-
     @keyframes pulseGlow {
       0% { box-shadow: 0 0 10px var(--accent); }
       100% { box-shadow: 0 0 25px var(--accent); }
     }
-
     .container {
       background: var(--card);
       border: 1px solid var(--border);
@@ -92,12 +85,10 @@
       animation: fadeSlideUp 0.7s ease forwards;
       position: relative;
     }
-
     @keyframes fadeSlideUp {
       from { opacity: 0; transform: translateY(24px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     .logo {
       width: 80px;
       height: 80px;
@@ -107,19 +98,16 @@
       animation: popIn 0.5s ease-in-out forwards, bounceIn 1s cubic-bezier(.68,-0.55,.27,1.55);
       margin-bottom: 16px;
     }
-
     @keyframes popIn {
       0% { transform: scale(0.75); opacity: 0; }
       100% { transform: scale(1); opacity: 1; }
     }
-
     @keyframes bounceIn {
       0% { transform: scale(0.7); opacity: 0; }
       60% { transform: scale(1.15); opacity: 1; }
       80% { transform: scale(0.95); }
       100% { transform: scale(1); }
     }
-
     h2 {
       font-size: 24px;
       text-shadow: 0 0 6px #00fff7aa;
@@ -130,16 +118,13 @@
       -webkit-text-fill-color: transparent;
       animation: shine 2.5s linear infinite;
     }
-
     h2:hover {
       animation: glitch 0.4s linear;
     }
-
     @keyframes shine {
       0% { background-position: -200px 0; }
       100% { background-position: 200px 0; }
     }
-
     @keyframes glitch {
       0% { text-shadow: 2px 0 #00fff7, -2px 0 #fff; }
       20% { text-shadow: -2px 0 #00fff7, 2px 0 #fff; }
@@ -148,7 +133,6 @@
       80% { text-shadow: 2px 0 #fff, -2px 0 #00fff7; }
       100% { text-shadow: 0 0 6px #00fff7aa; }
     }
-
     input {
       width: 100%;
       padding: 14px 18px;
@@ -160,12 +144,10 @@
       box-shadow: inset 0 0 6px #007f99;
       transition: 0.4s ease;
     }
-
     input:hover {
       border-color: #00fff7;
       box-shadow: 0 0 8px #00fff7, 0 0 14px #00fff7;
     }
-
     input:focus {
       border-color: var(--accent);
       background: #00475f;
@@ -173,13 +155,11 @@
       outline: none;
       animation: inputGlow 1.2s infinite;
     }
-
     @keyframes inputGlow {
       0% { box-shadow: 0 0 0px #00fff7; }
       50% { box-shadow: 0 0 16px #00fff7; }
       100% { box-shadow: 0 0 0px #00fff7; }
     }
-
     button {
       width: 100%;
       padding: 12px 0;
@@ -194,13 +174,11 @@
       position: relative;
       overflow: hidden;
     }
-
     button:hover {
       background: #00d8ff;
       transform: scale(1.05);
       box-shadow: 0 0 20px #00d8ff;
     }
-
     button::before {
       content: '';
       position: absolute;
@@ -212,21 +190,17 @@
       transform: skewX(-20deg);
       animation: lightSweep 2.2s infinite;
     }
-
     @keyframes lightSweep {
       0% { left: -75%; }
       100% { left: 125%; }
     }
-
     #submitBtn {
       animation: buttonAppear 1s 0.5s both;
     }
-
     @keyframes buttonAppear {
       from { opacity: 0; transform: translateY(30px) scale(0.9);}
       to { opacity: 1; transform: translateY(0) scale(1);}
     }
-
     .reveal {
       background: none;
       border: none;
@@ -237,30 +211,24 @@
       font-weight: 600;
       text-shadow: 0 0 6px var(--accent);
     }
-
     .reveal:hover {
       color: #00fff7;
       text-decoration: underline;
     }
-
     .error {
       color: var(--error);
       font-size: 14px;
       margin-top: 12px;
       text-shadow: 0 0 6px var(--error);
     }
-
-    /* Shake effect */
     .shake {
       animation: shakeSide 0.45s ease;
     }
-
     @keyframes shakeSide {
       0%, 100% { transform: translateX(0); }
       20%, 60% { transform: translateX(-8px); }
       40%, 80% { transform: translateX(8px); }
     }
-
     /* Effet halo sur le bouton de connexion au survol */
     #submitBtn:hover {
       box-shadow: 0 0 30px 10px #00fff7cc, 0 0 60px 20px #00fff799;
@@ -271,7 +239,6 @@
       70% { box-shadow: 0 0 30px 10px #00fff7cc, 0 0 60px 20px #00fff799; }
       100% { box-shadow: 0 0 10px var(--accent); }
     }
-
     /* Effet rotation sur le logo au survol */
     .logo:hover {
       animation: rotateLogo 0.8s cubic-bezier(.68,-0.55,.27,1.55);
@@ -282,7 +249,6 @@
       60% { transform: scale(0.95) rotate(-12deg);}
       100% { transform: scale(1) rotate(0deg);}
     }
-
     /* Vibration sur le champ mot de passe au focus */
     #pwd:focus {
       animation: inputGlow 1.2s infinite, pwdVibrate 0.25s;
@@ -293,104 +259,23 @@
       50% { transform: translateX(3px);}
       75% { transform: translateX(-2px);}
     }
-
     /* Lumière sur le fond du conteneur au survol */
     .container:hover {
       box-shadow: 0 0 32px #00fff7ee, 0 4px 40px #00fff7cc;
       transition: box-shadow 0.3s;
     }
-
-    .form-animate {
-      opacity: 0;
-      transform: translateY(30px);
-      animation: formFadeIn 0.7s forwards;
-      animation-fill-mode: forwards;
-    }
-    .form-animate[data-animate="1"] { animation-delay: 0.2s; }
-    .form-animate[data-animate="2"] { animation-delay: 0.4s; }
-    .form-animate[data-animate="3"] { animation-delay: 0.6s; }
-    .form-animate[data-animate="4"] { animation-delay: 0.8s; }
-    @keyframes formFadeIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes sparkleFade {
-      to {
-        opacity: 0;
-        transform: scale(2);
-      }
-    }
-
-    .bubbles {
-      position: fixed;
-      left: 0; top: 0; width: 100vw; height: 100vh;
-      pointer-events: none;
-      z-index: 0;
-    }
-    .bubble {
-      position: absolute;
-      bottom: -60px;
-      border-radius: 50%;
-      opacity: 0.25;
-      background: #00fff7;
-      animation: bubbleUp 8s linear infinite;
-    }
-    @keyframes bubbleUp {
-      to {
-        transform: translateY(-110vh) scale(1.2);
-        opacity: 0;
-      }
-    }
-
-    /* Curseur personnalisé animé */
-    #custom-cursor {
-      position: fixed;
-      left: 0; top: 0;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      background: radial-gradient(circle, #00fff7 60%, #00ccff 100%, transparent 120%);
-      box-shadow: 0 0 24px 8px #00fff7bb, 0 0 60px 16px #00fff799;
-      mix-blend-mode: lighten;
-      transition: transform 0.18s cubic-bezier(.68,-0.55,.27,1.55), box-shadow 0.18s, background 0.18s;
-      transform: translate(-50%, -50%) scale(1);
-      opacity: 0.85;
-    }
-    #custom-cursor.active {
-      transform: translate(-50%, -50%) scale(1.7) rotate(8deg);
-      box-shadow: 0 0 60px 24px #00fff7cc, 0 0 120px 48px #00fff799;
-      background: radial-gradient(circle, #fff 80%, #00fff7 100%, transparent 120%);
-      opacity: 1;
-    }
-    #custom-cursor.click {
-      animation: cursorClick 0.4s;
-    }
-    @keyframes cursorClick {
-      0% { transform: translate(-50%, -50%) scale(1.7); }
-      40% { transform: translate(-50%, -50%) scale(2.1) rotate(-8deg);}
-      100% { transform: translate(-50%, -50%) scale(1.7);}
-    }
   </style>
 </head>
 <body>
   <button class="theme-btn" onclick="toggleTheme()">🌙</button>
-
   <div class="container" id="loginBox">
     <img src="Jul-IA_logo.png" alt="Logo" class="logo" />
     <h2>Connexion</h2>
-    <input type="password" id="pwd" placeholder="Mot de passe" autocomplete="off" class="form-animate" data-animate="1" />
-    <button id="submitBtn" onclick="tryLogin(event)" class="form-animate" data-animate="2">Connexion</button>
-    <button class="reveal form-animate" onclick="togglePassword()" data-animate="3">Voir le mot de passe</button>
-    <div class="error form-animate" id="errorMsg" data-animate="4"></div>
+    <input type="password" id="pwd" placeholder="Mot de passe" autocomplete="off" />
+    <button id="submitBtn" onclick="tryLogin(event)">Connexion</button>
+    <button class="reveal" onclick="togglePassword()">Voir le mot de passe</button>
+    <div class="error" id="errorMsg"></div>
   </div>
-  <div class="bubbles"></div>
-  <div id="custom-cursor"></div>
-
   <script>
     let attempts = 0;
     let locked = false;
@@ -404,7 +289,7 @@
       const btn = document.getElementById("submitBtn");
 
       if (pwd.value === "Jul-IA689") {
-        window.location.href = "http://localhost:8888/Jul-IA.html";
+        window.location.href = "Jul-IA.html";
       } else {
         attempts++;
         error.textContent = `❌ Mot de passe incorrect (${attempts}/3)`;
@@ -548,481 +433,5 @@
       });
     });
   </script>
-
-
-</html></body>  </script>
 </body>
 </html>
-=======
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Connexion – Jul-IA</title>
-  <style>
-    /* ========== Loader overlay ========== */
-    #loader-overlay {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(135deg, #081229, #022f40);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      transition: opacity 0.6s ease;
-    }
-
-    .spinner {
-      border: 5px solid rgba(0, 204, 255, 0.3);
-      border-top: 5px solid #00eaff;
-      border-radius: 50%;
-      width: 56px;
-      height: 56px;
-      animation: spinSmooth 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-      box-shadow: 0 0 18px #00eaffcc;
-      filter: drop-shadow(0 0 6px #00eaff);
-    }
-
-    @keyframes spinSmooth {
-      0% { transform: rotate(0deg); }
-      50% { transform: rotate(180deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    #loader-overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-      visibility: hidden;
-    }
-
-    /* ========== Nouveau style ========== */
-    body {
-      cursor: url("Curseur-style.png"), auto;
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(145deg, #0a1e35, #02101f);
-      color: #e1e9f0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: background 0.5s ease, color 0.5s ease;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .flamme {
-      position: absolute;
-      width: 16px;
-      height: 28px;
-      background: radial-gradient(circle at 50% 55%, #00fff7 0%, #004e6f 65%, transparent 100%);
-      border-radius: 60% 40% 60% 40% / 50% 60% 40% 50%;
-      pointer-events: none;
-      animation: flameRise 1.1s cubic-bezier(0.65, 0, 0.35, 1) forwards;
-      filter: drop-shadow(0 0 10px #00fff7aa);
-      mix-blend-mode: screen;
-      opacity: 0.9;
-      will-change: transform, opacity;
-    }
-
-    @keyframes flameRise {
-      0% {
-        transform: translateY(0) scale(1) rotate(0deg);
-        opacity: 1;
-      }
-      40% {
-        transform: translateY(-18px) scale(1.3) rotate(8deg);
-        opacity: 0.8;
-      }
-      80% {
-        transform: translateY(-38px) scale(1.6) rotate(-6deg);
-        opacity: 0.5;
-      }
-      100% {
-        transform: translateY(-54px) scale(2) rotate(3deg);
-        opacity: 0;
-      }
-    }
-
-    :root {
-      --bg: #0a1e35;
-      --text: #e1e9f0;
-      --card: #12314f;
-      --accent: #00fff7;
-      --error: #ff6b6b;
-      --border: #1c3656;
-    }
-
-    [data-theme="dark"] {
-      --bg: #020a1a;
-      --text: #c8eefe;
-      --card: #0d1f30;
-      --accent: #33ffff;
-      --error: #ff8a8a;
-      --border: #204066;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    .theme-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      font-size: 22px;
-      background: var(--card);
-      border: 2px solid var(--accent);
-      color: var(--accent);
-      cursor: pointer;
-      z-index: 1000;
-      transition: background 0.3s, color 0.3s, transform 0.6s ease;
-      box-shadow: 0 0 10px var(--accent);
-      animation: pulseGlow 2.5s infinite alternate ease-in-out;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      user-select: none;
-    }
-
-    .theme-btn:hover {
-      background: var(--accent);
-      color: var(--card);
-      transform: rotate(360deg) scale(1.1);
-      box-shadow: 0 0 20px var(--accent);
-    }
-
-    @keyframes pulseGlow {
-      0% {
-        box-shadow: 0 0 10px var(--accent);
-      }
-      100% {
-        box-shadow: 0 0 25px var(--accent);
-      }
-    }
-
-    .container {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow:
-        0 0 8px #00fff7aa,
-        0 4px 30px #00fff7bb;
-      padding: 44px 36px;
-      width: 100%;
-      max-width: 400px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
-      animation: fadeSlideUp 0.7s cubic-bezier(0.6, 0.05, 0.1, 0.9) forwards;
-      position: relative;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s ease;
-    }
-
-    .container.visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    @keyframes fadeSlideUp {
-      from {
-        opacity: 0;
-        transform: translateY(24px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .logo {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      box-shadow: 0 0 18px #00fff7cc;
-      animation: popIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-      filter: drop-shadow(0 0 6px #00fff7);
-    }
-
-    @keyframes popIn {
-      0% {
-        transform: scale(0.75);
-        opacity: 0;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-
-    h2 {
-      margin: 6px 0 0;
-      font-size: 24px;
-      text-align: center;
-      letter-spacing: 1.1px;
-      text-shadow: 0 0 6px #00fff7aa;
-    }
-
-    input {
-      width: 100%;
-      padding: 14px 18px;
-      border-radius: 8px;
-      border: 2px solid var(--border);
-      font-size: 16px;
-      background: #022633;
-      color: var(--text);
-      transition: border-color 0.4s ease, box-shadow 0.4s ease;
-      box-shadow: inset 0 0 6px #007f99;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 12px var(--accent);
-      background: #00475f;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px 0;
-      border: none;
-      border-radius: 8px;
-      background: var(--accent);
-      color: var(--card);
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.4s ease, transform 0.25s ease;
-      box-shadow: 0 0 10px var(--accent);
-      user-select: none;
-    }
-
-    button:hover:not(:disabled) {
-      background: #00d8ff;
-      transform: scale(1.05);
-      box-shadow: 0 0 20px #00d8ff;
-    }
-
-    .reveal {
-      background: none;
-      border: none;
-      font-size: 14px;
-      color: var(--accent);
-      align-self: flex-end;
-      cursor: pointer;
-      user-select: none;
-      margin-top: 12px;
-      font-weight: 600;
-      text-shadow: 0 0 6px var(--accent);
-      transition: color 0.3s ease;
-    }
-
-    .reveal:hover {
-      color: #00fff7;
-      text-decoration: underline;
-    }
-
-    .error {
-      color: var(--error);
-      font-size: 14px;
-      text-align: center;
-      display: none;
-      min-height: 24px;
-      font-weight: 600;
-      text-shadow: 0 0 6px #ff6b6baa;
-    }
-
-    .shake {
-      animation: shakeSide 0.45s cubic-bezier(0.455, 0.03, 0.515, 0.955);
-    }
-
-    @keyframes shakeSide {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-8px); }
-      40%, 80% { transform: translateX(8px); }
-    }
-
-    /* Fond animé plus subtil */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      background: radial-gradient(circle at 50% 50%, #004e71 0%, #001921 80%);
-      background-size: 300% 300%;
-      animation: bgPulse 15s ease-in-out infinite;
-      opacity: 0.45;
-      filter: blur(20px);
-    }
-
-    @keyframes bgPulse {
-      0%, 100% {
-        background-position: 0% 50%;
-      }
-      50% {
-        background-position: 100% 50%;
-      }
-    }
-  </style>
-</head>
-<body>
-  <!-- Loader -->
-  <div id="loader-overlay">
-    <div class="spinner"></div>
-  </div>
-
-  <button class="theme-btn" onclick="toggleTheme()">🌙</button>
-
-  <div class="container" id="loginBox">
-    <img src="Jul-IA_logo.png" alt="Logo" class="logo" />
-    <h2>Connexion</h2>
-    <input type="password" id="pwd" placeholder="Mot de passe" autocomplete="off" />
-    <button id="submitBtn" onclick="tryLogin()">Connexion</button>
-    <button class="reveal" onclick="togglePassword()">Voir le mot de passe</button>
-    <div class="error" id="errorMsg"></div>
-  </div>
-
-  <script>
-    // Gestion du loader
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.getElementById('loader-overlay').classList.add('hidden');
-        const loginBox = document.getElementById('loginBox');
-        loginBox.classList.add('visible');
-      }, 2200);
-    });
-
-    // Variables pour tentatives de connexion
-    let attempts = 0;
-    let locked = false;
-
-    function tryLogin() {
-      if (locked) return;
-      const pwd = document.getElementById("pwd");
-      const error = document.getElementById("errorMsg");
-      const box = document.getElementById("loginBox");
-
-      if (pwd.value === "Jul-IA689") {
-        sessionStorage.setItem("apiKey", "r8_CMm9LPaFy43gtjtqlWoYcXuH8EtSaNc4bNN4d");
-        window.location.href = "Jul-IA.html";
-      } else {
-        attempts++;
-        error.textContent = `❌ Mot de passe incorrect (${attempts}/3)`;
-        error.style.display = "block";
-        box.classList.remove("shake");
-        void box.offsetWidth; // reset animation
-        box.classList.add("shake");
-
-        if (attempts >= 3) lockAccess();
-      }
-    }
-
-    function lockAccess() {
-      const lockUntil = Date.now() + 60000;
-      localStorage.setItem("lockedUntil", lockUntil);
-      applyLock(lockUntil);
-    }
-
-    function applyLock(until) {
-      locked = true;
-      const pwd = document.getElementById("pwd");
-      const btn = document.getElementById("submitBtn");
-      const reveal = document.querySelector(".reveal");
-      const error = document.getElementById("errorMsg");
-
-      pwd.disabled = true;
-      btn.disabled = true;
-      reveal.disabled = true;
-
-      const interval = setInterval(() => {
-        const remaining = Math.ceil((until - Date.now()) / 1000);
-        if (remaining <= 0) {
-          clearInterval(interval);
-          localStorage.removeItem("lockedUntil");
-          attempts = 0;
-          locked = false;
-          pwd.disabled = false;
-          btn.disabled = false;
-          reveal.disabled = false;
-          error.style.display = "none";
-        } else {
-          error.textContent = `⏳ Trop de tentatives. Réessayez dans ${remaining}s...`;
-          error.style.display = "block";
-        }
-      }, 1000);
-    }
-
-    function togglePassword() {
-      const input = document.getElementById("pwd");
-      const btn = document.querySelector(".reveal");
-      if (input.type === "password") {
-        input.type = "text";
-        btn.textContent = "Masquer le mot de passe";
-      } else {
-        input.type = "password";
-        btn.textContent = "Voir le mot de passe";
-      }
-    }
-
-    function toggleTheme() {
-      const body = document.body;
-      const icon = document.querySelector(".theme-btn");
-      if (body.hasAttribute("data-theme")) {
-        body.removeAttribute("data-theme");
-        icon.textContent = "🌙";
-        localStorage.setItem("theme", "light");
-      } else {
-        body.setAttribute("data-theme", "dark");
-        icon.textContent = "☀️";
-        localStorage.setItem("theme", "dark");
-      }
-    }
-
-    // Charger thème sauvegardé
-    window.addEventListener('DOMContentLoaded', () => {
-      const theme = localStorage.getItem("theme");
-      if (theme === "dark") {
-        document.body.setAttribute("data-theme", "dark");
-        document.querySelector(".theme-btn").textContent = "☀️";
-      }
-    });
-
-    // Vérifier si accès est verrouillé au chargement
-    window.addEventListener('DOMContentLoaded', () => {
-      const lockedUntil = localStorage.getItem("lockedUntil");
-      if (lockedUntil && Date.now() < lockedUntil) {
-        applyLock(lockedUntil);
-      }
-    });
-
-    // Flamme qui suit le curseur
-    document.body.style.position = "relative";
-    let flames = [];
-    function createFlame(x, y) {
-      const flame = document.createElement("div");
-      flame.className = "flamme";
-      flame.style.left = x + "px";
-      flame.style.top = y + "px";
-      document.body.appendChild(flame);
-      flames.push(flame);
-      setTimeout(() => {
-        flame.remove();
-        flames = flames.filter(f => f !== flame);
-      }, 1100);
-    }
-
-    window.addEventListener("mousemove", e => {
-      createFlame(e.clientX, e.clientY);
-    });
-  </script>
-</body>
-</html>
->>>>>>> 7281311 (Mise en ligne de Jul-IA)
