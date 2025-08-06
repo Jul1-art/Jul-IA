@@ -171,6 +171,30 @@
         .message.bot {
             text-align: left;
             color: var(--text-primary);
+            white-space: pre-wrap; /* Permet les sauts de ligne */
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .message.bot h1,
+        .message.bot h2,
+        .message.bot h3 {
+            color: var(--accent-color);
+            margin: 12px 0 6px;
+            font-weight: bold;
+        }
+
+        .message.bot p {
+            margin: 10px 0;
+        }
+
+        .message.bot ul {
+            padding-left: 20px;
+            margin: 12px 0;
+        }
+
+        .message.bot li {
+            margin-bottom: 6px;
         }
         @keyframes messageIn {
             0% {
@@ -622,7 +646,7 @@ function addMessage(sender, text) {
 
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', sender);
-    messageDiv.textContent = text;
+    messageDiv.innerHTML = text; 
     messagesDiv.appendChild(messageDiv);
 
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
