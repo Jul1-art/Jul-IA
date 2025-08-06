@@ -550,22 +550,6 @@
       for (let i = 0; i < 18; i++) createBubble();
       setInterval(createBubble, 1800);
 
-      // Thème nuit/jour
-      function toggleTheme() {
-        const body = document.body;
-        const themeIcon = document.getElementById('themeIcon');
-        body.classList.add('theme-transition');
-        setTimeout(() => body.classList.remove('theme-transition'), 700);
-        if (body.getAttribute('data-theme') === 'dark') {
-          body.removeAttribute('data-theme');
-          if (themeIcon) themeIcon.textContent = '🌙';
-          localStorage.setItem('theme', 'light');
-        } else {
-          body.setAttribute('data-theme', 'dark');
-          if (themeIcon) themeIcon.textContent = '☀️';
-          localStorage.setItem('theme', 'dark');
-        }
-      }
       document.addEventListener('DOMContentLoaded', function () {
         const themeToggle = document.getElementById('themeToggle');
         if (themeToggle) {
