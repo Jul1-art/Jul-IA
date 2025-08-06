@@ -321,6 +321,48 @@
                 padding-bottom: 30px; /* Espace supplémentaire en bas */
             }
         }
+    .code-block {
+    background-color: #232837;
+    border-radius: 8px;
+    margin-top: 12px;
+    font-family: monospace;
+    overflow-x: auto;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .code-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1a1e29;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--accent-color);
+    }
+
+    .copy-btn {
+    background-color: transparent;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    }
+
+    .copy-btn:hover {
+    background-color: var(--accent-color);
+    color: #181c24;
+    transform: scale(1.05);
+    }
+
+    pre {
+    margin: 0;
+    padding: 12px;
+    white-space: pre-wrap;
+    color: #e8eaed;
+    }
     </style>
 </head>
 <body>
@@ -501,29 +543,73 @@ async function sendMessage() {
     }
 }
 
-// Animation lettre par lettre pour la réponse du chatbot
 function animateBotText(text) {
-    const messagesDiv = document.getElementById('chatbox');
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message', 'bot');
-    messagesDiv.appendChild(messageDiv);
+  const messagesDiv = document.getElementById('chatbox');
+  const messageDiv = document.createElement('div');
+  messageDiv.classList.add('message', 'bot');
 
+  const codeMatch = text.match(/```(\w+)?\n?([\s\S]*?)```/);
+  if (codeMatch) {
+    const language = codeMatch[1] || 'code';
+    const codeContent = codeMatch[2];
+
+    const codeContainer = document.createElement('div');
+    codeContainer.className = 'code-block';
+
+    // Barre supérieure
+    const topBar = document.createElement('div');
+    topBar.className = 'code-topbar';
+
+    const langLabel = document.createElement('span');
+    langLabel.className = 'code-lang';
+    langLabel.textContent = language;
+
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'copy-btn';
+    copyBtn.textContent = 'Copier';
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(codeContent);
+      copyBtn.textContent = 'Copié';
+      setTimeout(() => copyBtn.textContent = 'Copier', 1500);
+    };
+
+    topBar.appendChild(langLabel);
+    topBar.appendChild(copyBtn);
+
+    const codePre = document.createElement('pre');
+    const codeEl = document.createElement('code');
+    codeEl.textContent = codeContent;
+    codePre.appendChild(codeEl);
+
+    codeContainer.appendChild(topBar);
+    codeContainer.appendChild(codePre);
+    messageDiv.appendChild(codeContainer);
+  } else {
+    // Texte normal avec effet de frappe
     let i = 0;
     function type() {
-        messageDiv.textContent = text.slice(0, i);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        if (i < text.length) {
-            i++;
-            setTimeout(type, 18);
-        }
+      messageDiv.textContent = text.slice(0, i);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      if (i < text.length) {
+        i++;
+        setTimeout(type, 18);
+      }
     }
     type();
+  }
 
-    if (!conversations[currentConversationIndex]) {
-        conversations[currentConversationIndex] = { name: `${translations[currentLang].conversations} ${currentConversationIndex + 1}`, messages: [] };
-    }
-    conversations[currentConversationIndex].messages.push({ sender: "bot", text });
-    localStorage.setItem('conversations', JSON.stringify(conversations));
+  messagesDiv.appendChild(messageDiv);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+  // Sauvegarde dans la conversation
+  if (!conversations[currentConversationIndex]) {
+    conversations[currentConversationIndex] = {
+      name: `${translations[currentLang].conversations} ${currentConversationIndex + 1}`,
+      messages: []
+    };
+  }
+  conversations[currentConversationIndex].messages.push({ sender: "bot", text });
+  localStorage.setItem('conversations', JSON.stringify(conversations));
 }
 
 // Ajout d'un message utilisateur (sans encadrement)
