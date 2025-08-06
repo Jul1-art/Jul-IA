@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Arkanoid Ultra Deluxe++ Solo</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: white;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      margin: auto;
+      background-color: #000;
+      border: 3px solid #fff;
+    }
+    #scoreboard {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-size: 14px;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+<div id="scoreboard">Score: 0 | Niveau: 1</div>
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+const scoreboard = document.getElementById("scoreboard");
+
+let level = 1;
+let score = 0;
+let player = { x: 350, width: 100, height: 12, color: "#0ff", left: false, right: false };
+let ball = { x: 400, y: 500, dx: 3, dy: -4, radius: 8, color: "#fff", trail: [] };
+let bricks = [];
+let particles = [];
+let stars = Array.from({length: 100}, () => ({
+  x: Math.random() * canvas.width,
+  y: Math.random() * canvas.height,
+  speed: Math.random() * 0.5 + 0.2
+}));
+let boss = { x: 300, y: 100, width: 200, height: 30, dx: 2, life: 20, active: false };
+let gameOver = false;
+let win = false;
+
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") player.left = true;
+  if (e.key === "ArrowRight") player.right = true;
+});
+document.addEventListener("keyup", e => {
+  if (e.key === "ArrowLeft") player.left = false;
+  if (e.key === "ArrowRight") player.right = false;
+});
+
+function updateScoreboard() {
+  scoreboard.innerText = `Score: ${score} | Niveau: ${level}`;
+}
+
+function drawStars() {
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#222";
+  stars.forEach(s => {
+    ctx.fillRect(s.x, s.y, 2, 2);
+    s.y += s.speed;
+    if (s.y > canvas.height) s.y = 0;
+  });
+}
+
+function introAnimation() {
+  drawStars();
+  ctx.fillStyle = "#0ff";
+  ctx.font = "24px monospace";
+  ctx.fillText("🎮 Arkanoid Ultra Deluxe++", 200, 280);
+  ctx.fillText("Chargement...", 320, 320);
+}
+
+function transitionAnimation(nextLevel) {
+  drawStars();
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#000";
+  ctx.font = "20px monospace";
+  ctx.fillText(`Niveau ${nextLevel}`, 350, 300);
+}
+
+function initLevel() {
+  player.x = 350;
+  ball.x = 400;
+  ball.y = 500;
+  ball.trail = [];
+  bricks = [];
+  boss.active = (level === 5);
+  boss.life = 20;
+  gameOver = false;
+  win = false;
+
+  if (!boss.active) {
+    for (let i = 0; i < 6; i++) {
+      for (let j = 0; j < 10; j++) {
+        bricks.push({
+          x: j * 75 + 30,
+          y: i * 30 + 60,
+          width: 70,
+          height: 25,
+          color: `hsl(${i * 60}, 100%, 50%)`,
+          status: 1,
+          flash: 0
+        });
+      }
+    }
+  }
+
+  updateScoreboard();
+  transitionAnimation(level);
+  setTimeout(() => requestAnimationFrame(gameLoop), 1000);
+}
+
+function drawPlayer() {
+  ctx.fillStyle = player.color;
+  ctx.fillRect(player.x, canvas.height - player.height - 10, player.width, player.height);
+}
+
+function drawBall() {
+  ball.trail.push({x: ball.x, y: ball.y});
+  if (ball.trail.length > 10) ball.trail.shift();
+  ball.trail.forEach((t, i) => {
+    ctx.beginPath();
+    ctx.arc(t.x, t.y, ball.radius - i * 0.5, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255,255,255,${1 - i * 0.1})`;
+    ctx.fill();
+    ctx.closePath();
+  });
+}
+
+function drawBricks() {
+  bricks.forEach(b => {
+    if (b.status) {
+      ctx.fillStyle = b.flash > 0 ? "#fff" : b.color;
+      ctx.fillRect(b.x, b.y, b.width, b.height);
+      if (b.flash > 0) b.flash--;
+    }
+  });
+}
+
+function drawBoss() {
+  if (!boss.active) return;
+  ctx.fillStyle = "#f00";
+  ctx.fillRect(boss.x, boss.y, boss.width, boss.height);
+  boss.x += boss.dx;
+  if (boss.x < 0 || boss.x + boss.width > canvas.width) boss.dx *= -1;
+}
+
+function spawnParticles(x, y, color) {
+  for (let i = 0; i < 20; i++) {
+    particles.push({
+      x, y,
+      dx: (Math.random() - 0.5) * 4,
+      dy: (Math.random() - 0.5) * 4,
+      life: 30,
+      color
+    });
+  }
+}
+
+function drawParticles() {
+  particles.forEach((p, i) => {
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x, p.y, 2, 2);
+    p.x += p.dx;
+    p.y += p.dy;
+    p.life--;
+    if (p.life <= 0) particles.splice(i, 1);
+  });
+}
+
+function checkCollisions() {
+  if (ball.x < ball.radius || ball.x > canvas.width - ball.radius) ball.dx *= -1;
+  if (ball.y < ball.radius) ball.dy *= -1;
+
+  if (ball.y > canvas.height - player.height - 20 &&
+      ball.x > player.x && ball.x < player.x + player.width) {
+    ball.dy *= -1;
+  }
+
+  if (ball.y > canvas.height) {
+    gameOver = true;
+    showGameOver();
+  }
+
+  bricks.forEach(b => {
+    if (b.status &&
+        ball.x > b.x && ball.x < b.x + b.width &&
+        ball.y > b.y && ball.y < b.y + b.height) {
+      b.status = 0;
+      b.flash = 5;
+      ball.dy *= -1;
+      score += 10;
+      spawnParticles(b.x + b.width / 2, b.y + b.height / 2, b.color);
+    }
+  });
+
+  if (boss.active &&
+      ball.x > boss.x && ball.x < boss.x + boss.width &&
+      ball.y > boss.y && ball.y < boss.y + boss.height) {
+    ball.dy *= -1;
+    boss.life--;
+    score += 20;
+    spawnParticles(ball.x, ball.y, "#f00");
+    if (boss.life <= 0) {
+      win = true;
+      showVictory();
+    }
+  }
+
+  if (!boss.active && bricks.every(b => !b.status)) {
+    level++;
+    if (level <= 5) {
+      initLevel();
+    } else {
+      win = true;
+      showVictory();
+    }
+  }
+}
+
+function showGameOver() {
+  ctx.fillStyle = "#f00";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#fff";
+  ctx.font = "24px monospace";
+  ctx.fillText("💀 GAME OVER 💀", 250, 300);
+}
+
+function showVictory() {
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  for (let i = 0; i < 100; i++) {
+    ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+    ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 4, 4);
+  }
+  ctx.fillStyle = "#0f0";
+  ctx.font = "24px monospace";
+  ctx.fillText("🏆 YOU WIN! 🏆", 280, 300);
+}
+
+function gameLoop() {
+  if (gameOver || win) return;
+
+  drawStars();
+  drawPlayer();
+  drawBall();
+  drawBricks();
+  drawBoss();
+  drawParticles();
+  checkCollisions();
+  updateScoreboard();
+
+  if (player.left && player.x > 0) player.x -= 5;
+  if (player.right && player.x < canvas.width - player.width) player.x += 5;
+
+  ball.x += ball.dx;
+  ball.y += ball.dy;
+
+  requestAnimationFrame(gameLoop);
+}
+
+// Démarrage
+introAnimation();
+setTimeout(() => initLevel(), 1500);
+</script>
+</body>
+</html>

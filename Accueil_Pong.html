@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Jeu de Pong - Accueil</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    background: #000;
+    font-family: 'Press Start 2P', monospace;
+    overflow: hidden;
+  }
+
+  body, #container {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  #container {
+    max-width: 720px;
+    max-height: 480px;
+  }
+
+  #pong-background {
+    display: block;
+    width: 720px;
+    height: 480px;
+    border: 3px solid #0ff;
+    border-radius: 12px;
+    box-shadow: 0 0 25px #0ff;
+    background: #111;
+  }
+
+  #overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* Permet clic sur bouton malgré overlay */
+    color: #0ff;
+    text-align: center;
+    user-select: none;
+  }
+
+  #overlay > * {
+    pointer-events: auto; /* Autorise clics sur enfants */
+  }
+
+  h1 {
+    font-size: 3em;
+    margin: 0 0 20px 0;
+    text-shadow:
+      0 0 8px #0ff,
+      0 0 20px #0ff;
+  }
+
+  #btn-play {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 18px;
+    color: #000;
+    background: #0ff;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow:
+      0 0 10px #0ff,
+      0 0 20px #0ff;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  #btn-play:hover {
+    background: #00cccc;
+    box-shadow:
+      0 0 20px #00cccc,
+      0 0 30px #00cccc;
+  }
+
+  /* Overlay chargement */
+  #loading-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: #0ff;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 24px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 15px #0ff;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 1000;
+  }
+
+  #loading-overlay.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* Animation points ... */
+  @keyframes dots {
+    0% { content: ""; }
+    33% { content: "."; }
+    66% { content: ".."; }
+    100% { content: "..."; }
+  }
+
+  #loading-text::after {
+    content: "";
+    animation: dots 1.5s infinite steps(3, end);
+  }
+</style>
+</head>
+<body>
+
+<div id="container">
+  <canvas id="pong-background" width="720" height="480"></canvas>
+  <div id="overlay">
+    <h1>Jeu de Pong</h1>
+    <button id="btn-play">Jouer</button>
+  </div>
+</div>
+
+<!-- Overlay chargement -->
+<div id="loading-overlay">
+  Chargement<span id="loading-text"></span>
+</div>
+
+<script>
+  const canvas = document.getElementById('pong-background');
+  const ctx = canvas.getContext('2d');
+
+  const paddleWidth = 12;
+  const paddleHeight = 90;
+
+  let leftY = canvas.height / 2 - paddleHeight / 2;
+  let rightY = canvas.height / 2 - paddleHeight / 2;
+  const paddleSpeed = 7;
+
+  const ball = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    radius: 10,
+    speedX: 6,
+    speedY: 4
+  };
+
+  function drawRect(x, y, w, h, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, w, h);
+  }
+
+  function drawCircle(x, y, r, color) {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawNet() {
+    ctx.fillStyle = '#0ff';
+    for (let i = 0; i < canvas.height; i += 20) {
+      ctx.fillRect(canvas.width / 2 - 1, i, 2, 10);
+    }
+  }
+
+  function clampPaddleY(y) {
+    return Math.min(Math.max(y, 0), canvas.height - paddleHeight);
+  }
+
+  function aiMove(paddleY, speed) {
+    if (ball.y < paddleY + paddleHeight / 2) {
+      paddleY -= speed;
+    } else if (ball.y > paddleY + paddleHeight / 2) {
+      paddleY += speed;
+    }
+    return clampPaddleY(paddleY);
+  }
+
+  function resetBall() {
+    ball.x = canvas.width / 2;
+    ball.y = canvas.height / 2;
+    ball.speedX = (Math.random() > 0.5 ? 6 : -6);
+    ball.speedY = 4 * (Math.random() > 0.5 ? 1 : -1);
+  }
+
+  function update() {
+    ball.x += ball.speedX;
+    ball.y += ball.speedY;
+
+    if (ball.y - ball.radius < 0 || ball.y + ball.radius > canvas.height) {
+      ball.speedY *= -1;
+    }
+
+    if (ball.x - ball.radius < paddleWidth) {
+      if (ball.y > leftY && ball.y < leftY + paddleHeight) {
+        ball.speedX *= -1;
+      } else if (ball.x < 0) {
+        resetBall();
+      }
+    }
+
+    if (ball.x + ball.radius > canvas.width - paddleWidth) {
+      if (ball.y > rightY && ball.y < rightY + paddleHeight) {
+        ball.speedX *= -1;
+      } else if (ball.x > canvas.width) {
+        resetBall();
+      }
+    }
+
+    leftY = aiMove(leftY, paddleSpeed);
+    rightY = aiMove(rightY, paddleSpeed);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawRect(0, 0, canvas.width, canvas.height, '#111');
+    drawNet();
+    drawRect(0, leftY, paddleWidth, paddleHeight, '#0ff');
+    drawRect(canvas.width - paddleWidth, rightY, paddleWidth, paddleHeight, '#0ff');
+    drawCircle(ball.x, ball.y, ball.radius, '#0ff');
+  }
+
+  function loop() {
+    update();
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  resetBall();
+  loop();
+
+  // Gestion bouton Jouer
+  const btnPlay = document.getElementById('btn-play');
+  const loadingOverlay = document.getElementById('loading-overlay');
+
+  btnPlay.addEventListener('click', () => {
+    loadingOverlay.classList.add('visible');
+    // Durée aléatoire entre 1.5 et 3.5 sec
+    const delay = 1500 + Math.random() * 2000;
+    setTimeout(() => {
+      window.location.href = "file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Jeu/Pong.html";
+    }, delay);
+  });
+</script>
+
+</body>
+</html>

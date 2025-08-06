@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Accueil - Jul-IA</title>
+  <link rel="shortcut icon" href="Jul-IA_logo.png" />
+  <style>
+    :root {
+      --bg-primary: #181c24;
+      --bg-secondary: #232837;
+      --accent-color: #00fff7;
+      --text-primary: #e8eaed;
+      --text-secondary: #9aa0a6;
+      --border-color: #31364a;
+    }
+    body[data-theme="dark"] {
+      --bg-primary: #181c24;
+      --bg-secondary: #161b22;
+      --text-primary: #e8eaed;
+      --text-secondary: #9aa0a6;
+      --accent-color: #00fff7;
+    }
+    body:not([data-theme="dark"]) {
+      --bg-primary: #fff;
+      --bg-secondary: #f7fafd;
+      --text-primary: #181c24;
+      --text-secondary: #5a5f6a;
+      --accent-color: #00bfae;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background 0.6s, color 0.6s;
+      overflow-x: hidden;
+    }
+    .container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 44px 36px 0 36px;
+      width: 100%;
+      max-width: 100vw;
+      text-align: center;
+      box-shadow: none;
+      animation: fadeSlideUp 0.7s ease forwards;
+      position: relative;
+      margin: 0 auto 0 auto;
+      z-index: 2;
+    }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .logo {
+      width: 70px;
+      height: 70px;
+      border-radius: 16px;
+      box-shadow: 0 0 10px #00fff7cc;
+      margin-bottom: 12px;
+      background: #fff;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-color);
+      margin: 0 0 8px 0;
+      letter-spacing: 1px;
+      text-shadow: 0 0 6px #00fff7aa;
+      background: none;
+      -webkit-background-clip: unset;
+      -webkit-text-fill-color: unset;
+    }
+    p {
+      color: var(--text-secondary);
+      font-size: 1.15rem;
+      margin: 0 0 24px 0;
+      text-align: center;
+      max-width: 420px;
+    }
+    .btn-main {
+      padding: 14px 36px;
+      background: var(--accent-color);
+      color: #181c24;
+      border: none;
+      border-radius: 24px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,255,247,0.12);
+      transition: background 0.2s, transform 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-main:hover {
+      background: #00bfae;
+      color: #fff;
+      transform: scale(1.06);
+      box-shadow: 0 0 30px 10px #00fff7cc, 0 0 60px 20px #00fff799;
+      animation: haloPulse 0.7s;
+    }
+    @keyframes haloPulse {
+      0% { box-shadow: 0 0 0px #00fff7cc; }
+      70% { box-shadow: 0 0 30px 10px #00fff7cc, 0 0 60px 20px #00fff799; }
+      100% { box-shadow: 0 0 10px var(--accent-color); }
+    }
+    /* Animation bulles */
+    .bubbles {
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      border-radius: 50%;
+      opacity: 0.25;
+      background: var(--accent-color, #00fff7);
+      animation: bubbleUp 8s linear infinite;
+      filter: blur(1px);
+    }
+    @keyframes bubbleUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.25;
+      }
+      80% {
+        opacity: 0.18;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+    body:not([data-theme="dark"]) .bubble {
+      background: #00bfae;
+      opacity: 0.13;
+    }
+    /* Animation de transition de thème */
+    .theme-transition {
+      animation: themeFade 0.7s cubic-bezier(.4,1.6,.6,1) both;
+    }
+    @keyframes themeFade {
+      0% { filter: brightness(1.2) blur(0px); opacity: 0.7; }
+      60% { filter: brightness(0.95) blur(2px); opacity: 1; }
+      100% { filter: brightness(1) blur(0px); opacity: 1; }
+    }
+    /* Répertoire des IA et Chatbots */
+    #ai-list {
+      padding: 60px 20px;
+      background: var(--bg-secondary, #232837);
+    }
+    #ai-list h2 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 40px;
+      color: var(--accent-color, #00fff7);
+      text-shadow: 0 0 4px #00fff7cc;
+    }
+    /* Cartes IA stylées et animées */
+    .ai-card-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      justify-content: center;
+    }
+    .ai-card {
+      background: #12314f;
+      border: 1px solid #1c3656;
+      border-radius: 14px;
+      padding: 16px 16px 12px 16px;
+      width: 230px;
+      min-height: 120px;
+      box-shadow: 0 0 12px #00fff744;
+      transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s;
+      opacity: 0;
+      transform: translateY(40px) scale(0.96) rotateZ(-2deg);
+      animation: fadeUpCard 0.9s cubic-bezier(.4,1.6,.6,1) forwards;
+      animation-delay: var(--delay, 0s);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: visible;
+    }
+    .ai-card.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotateZ(0deg);
+    }
+    @keyframes fadeUpCard {
+      0% { opacity: 0; transform: translateY(60px) scale(0.92) rotateZ(-4deg); filter: blur(2px);}
+      60% { opacity: 1; transform: translateY(-8px) scale(1.04) rotateZ(1deg); filter: blur(0.5px);}
+      100% { opacity: 1; transform: translateY(0) scale(1) rotateZ(0deg); filter: blur(0);}
+    }
+    .ai-card h3 {
+      margin: 0 0 4px 0;
+      color: #00fff7;
+      font-size: 1.1rem;
+      text-align: left;
+      letter-spacing: 0.5px;
+      animation: fadeInTitle 0.7s 0.2s both;
+    }
+    @keyframes fadeInTitle {
+      0% { opacity: 0; transform: translateY(20px);}
+      100% { opacity: 1; transform: translateY(0);}
+    }
+    .ai-card .resume {
+      font-size: 0.97rem;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      animation: fadeInText 0.7s 0.3s both;
+    }
+    @keyframes fadeInText {
+      0% { opacity: 0; transform: translateY(10px);}
+      100% { opacity: 1; transform: translateY(0);}
+    }
+    .versions-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+      margin-top: 2px;
+    }
+    .version-box {
+      background: #181c24;
+      color: #00fff7;
+      border: 1px solid #00fff7aa;
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 0.93rem;
+      font-weight: 500;
+      box-shadow: 0 2px 8px #00fff733;
+      transition: background 0.2s, color 0.2s, transform 0.2s;
+      animation: popInVersion 0.5s cubic-bezier(.4,1.6,.6,1) both;
+      opacity: 0;
+      transform: scale(0.8) translateY(10px);
+      animation-delay: var(--delay, 0s);
+      display: inline-block;
+      margin-bottom: 2px;
+    }
+    .version-box.visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    .version-box:hover {
+      background: #00fff7;
+      color: #181c24;
+      transform: scale(1.08) translateY(-2px);
+      box-shadow: 0 4px 16px #00fff799;
+    }
+    @keyframes popInVersion {
+      0% { opacity: 0; transform: scale(0.8) translateY(10px);}
+      100% { opacity: 1; transform: scale(1) translateY(0);}
+    }
+    .ai-card a {
+      color: #00d8ff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.97rem;
+      margin-top: 2px;
+      align-self: flex-start;
+      transition: color 0.2s;
+      animation: fadeInLink 0.7s 0.4s both;
+    }
+    .ai-card a:hover {
+      text-decoration: underline;
+      color: #00f0ff;
+    }
+    @keyframes fadeInLink {
+      0% { opacity: 0; transform: translateY(10px);}
+      100% { opacity: 1; transform: translateY(0);}
+    }
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      font-size: 14px;
+      color: #88aabb;
+    }
+    .tri-btn {
+      background: var(--accent-color, #00fff7);
+      color: #181c24;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 24px;
+      margin: 0 8px 12px 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,255,247,0.10);
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+      outline: none;
+    }
+    .tri-btn:hover {
+      background: #00bfae;
+      color: #fff;
+      transform: scale(1.06);
+    }
+    .theme-toggle {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: var(--accent-color);
+      transition: background 0.2s;
+      z-index: 10;
+    }
+    .theme-toggle:hover {
+      background: var(--accent-color);
+      color: #181c24;
+    }
+    /* BARRE DE NAVIGATION JUL-IA */
+    .navbar {
+      background: var(--bg-secondary, #161b22);
+      position: sticky;
+      top: 0;
+      width: 100%;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      height: 38px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-right: 16px;
+      position: relative;
+    }
+
+    .nav-links a, .nav-links .dropdown {
+      color: #ccc;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+      font-size: 1rem;
+      line-height: 38px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      outline: none;
+      position: relative;
+    }
+
+    .nav-links a:hover, .nav-links .dropdown:hover {
+      color: #58a6ff;
+    }
+
+    .julia-title {
+      font-size: 1.6em;
+      font-weight: bold;
+      color:#58a6ff;
+      letter-spacing: 1px;
+      line-height: 38px;
+      display: inline-block;
+      order: -1;
+    }
+
+    /* Dropdown styles */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background: var(--bg-secondary, #232837);
+      min-width: 210px;
+      box-shadow: 0 4px 16px #000a;
+      z-index: 1001;
+      top: 38px;
+      left: 0;
+      border-radius: 0 0 8px 8px;
+      padding: 8px 0;
+      animation: fadeSlideDown 0.25s;
+    }
+    .dropdown:hover .dropdown-content,
+    .dropdown:focus-within .dropdown-content {
+      display: block;
+    }
+    .dropdown-content a {
+      color: #ccc;
+      padding: 8px 24px;
+      display: block;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: background 0.2s, color 0.2s;
+      border-radius: 0;
+    }
+    .dropdown-content a:hover {
+      background: #1a2537;
+      color: #6280bb;
+    }
+
+    /* Loader styles */
+    #page-loader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(24,28,36,0.92);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.4s;
+      opacity: 1;
+      pointer-events: all;
+    }
+    #page-loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .loader-spinner {
+      border: 6px solid #232837;
+      border-top: 6px solid #00fff7;
+      border-radius: 50%;
+      width: 54px;
+      height: 54px;
+      animation: spinLoader 1s linear infinite;
+    }
+    @keyframes spinLoader {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+    @media (max-width: 768px) {
+      .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        height: auto;
+      }
+      .nav-links {
+        flex-direction: column;
+        width: auto;
+        margin-right: 0;
+      }
+      .julia-title {
+        margin: 8px 0 0 10px;
+      }
+      .dropdown-content {
+        left: 0;
+        min-width: 180px;
+        top: 38px;
+      }
+    }
+  </style>
+</head>
+<body>
+    <!-- BARRE DE NAVIGATION JUL-IA -->
+    <header class="navbar">
+      <div class="nav-container">
+        <span class="julia-title">Jul-IA</span>
+        <nav class="nav-links">
+          <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Jul-IA.html" onclick="showLoader(event)">Chatbot</a>
+          <div class="dropdown" tabindex="0">
+            <span>Projets</span>
+            <div class="dropdown-content">
+              <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Laboratoire_CSS.html" onclick="showLoader(event)">Laboratoire code HTML</a>
+              <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Jeu/Playground.html" onclick="showLoader(event)">Playground</a>
+              <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Fichier.html" onclick="showLoader(event)">File explorer</a>
+            </div>
+          </div>
+          <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Documentation.html" >Documentation</a>
+          <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/A_propos.html" onclick="showLoader(event)">À propos</a>
+        </nav>
+      </div>
+    </header>
+    <div id="page-loader">
+      <div class="loader-spinner"></div>
+    </div>
+    <div class="container" style="position:relative; overflow:hidden;">
+      <div class="bubbles" id="bubbles"></div>
+      <button class="theme-toggle" id="themeToggle" title="Basculer le thème">
+        <span id="themeIcon">🌙</span>
+      </button>
+      <!-- Ajout du logo juste au-dessus du titre -->
+      <img src="Jul-IA_logo.png" alt="Logo Jul-IA" class="logo" style="margin-bottom: 0; margin-top: 12px;" />
+      <h1>Bienvenue sur Jul-IA</h1>
+      <p>Votre assistant IA personnel, multilingue et moderne.<br>
+        Connectez-vous pour commencer à discuter avec Jul-IA !</p>
+      <a href="Connexion_page.html" class="btn-main">Se connecter</a>
+    </div>
+    <!-- Répertoire des IA et Chatbots -->
+    <section id="ai-list">
+      <h2>🌐 Intelligence artificielle grand public</h2>
+      <div style="text-align:center; margin-bottom:32px;">
+        <button class="tri-btn" onclick="window.location.href='ia_textuelles.html'">IA Textuelles</button>
+        <button class="tri-btn" onclick="window.location.href='ia_images.html'">IA Images</button>
+        <button class="tri-btn" onclick="window.location.href='ia_voix.html'">IA Voix</button>
+        <button class="tri-btn" onclick="window.location.href='ia_video.html'">IA Vidéo</button>
+        <button class="tri-btn" onclick="window.location.href='ia_autres.html'">Autres IA</button>
+      </div>
+      <div class="ai-card-container" id="container">
+        <!-- Cartes IA injectées ici -->
+      </div>
+    </section>
+    <footer>
+      © 2025 – Projet Jul-IA par Jules Ferrier 
+    </footer>
+    <script>
+      // Animation bulles (uniquement dans la première partie)
+      function randomBetween(a, b) {
+        return Math.random() * (b - a) + a;
+      }
+      function createBubble() {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        const size = randomBetween(18, 60);
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        bubble.style.left = `${randomBetween(0, 100)}vw`;
+        bubble.style.animationDuration = `${randomBetween(6, 13)}s`;
+        bubble.style.animationDelay = `${randomBetween(0, 6)}s`;
+        document.getElementById('bubbles').appendChild(bubble);
+        setTimeout(() => bubble.remove(), 14000);
+      }
+      for (let i = 0; i < 18; i++) createBubble();
+      setInterval(createBubble, 1800);
+
+      // Thème nuit/jour
+      function toggleTheme() {
+        const body = document.body;
+        const themeIcon = document.getElementById('themeIcon');
+        body.classList.add('theme-transition');
+        setTimeout(() => body.classList.remove('theme-transition'), 700);
+        if (body.getAttribute('data-theme') === 'dark') {
+          body.removeAttribute('data-theme');
+          if (themeIcon) themeIcon.textContent = '🌙';
+          localStorage.setItem('theme', 'light');
+        } else {
+          body.setAttribute('data-theme', 'dark');
+          if (themeIcon) themeIcon.textContent = '☀️';
+          localStorage.setItem('theme', 'dark');
+        }
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+          themeToggle.addEventListener('click', toggleTheme);
+        }
+        const savedTheme = localStorage.getItem('theme');
+        const themeIcon = document.getElementById('themeIcon');
+        if (savedTheme === 'dark') {
+          document.body.setAttribute('data-theme', 'dark');
+          if (themeIcon) themeIcon.textContent = '☀️';
+        } else {
+          document.body.removeAttribute('data-theme');
+          if (themeIcon) themeIcon.textContent = '🌙';
+        }
+        // Génération dynamique des cartes IA
+        const aiList = [
+          {
+            name: "ChatGPT",
+            creator: "OpenAI",
+            versions: ["GPT-3.5", "GPT-4", "GPT-4o"],
+            resume: "Chat polyvalent, créatif, multilingue.",
+            link: "https://chat.openai.com"
+          },
+          {
+            name: "Claude",
+            creator: "Anthropic",
+            versions: ["Claude 2", "Claude 3 Opus", "Claude 3 Sonnet", "Claude 3.5 Sonnet"],
+            resume: "Long contexte, raisonnement avancé.",
+            link: "https://claude.ai"
+          },
+          {
+            name: "Gemini",
+            creator: "Google DeepMind",
+            versions: ["Gemini 1.0", "Gemini 1.5", "Gemini Advanced"],
+            resume: "Très bon en recherches, rapide.",
+            link: "https://gemini.google.com"
+          },
+          {
+            name: "Copilot",
+            creator: "Microsoft",
+            versions: ["GPT-4", "GPT-4 Turbo", "GPT-4o"],
+            resume: "Recherche web, intégré Windows/Office.",
+            link: "https://copilot.microsoft.com"
+          },
+          {
+            name: "Pi",
+            creator: "Inflection AI",
+            versions: ["Pi (2024)"],
+            resume: "Empathique, conversation naturelle.",
+            link: "https://pi.ai"
+          },
+          {
+            name: "Replika",
+            creator: "Luka Inc.",
+            versions: ["Replika Pro", "Replika Free"],
+            resume: "IA compagnon, personnalisable.",
+            link: "https://replika.com"
+          },
+          {
+            name: "Llama",
+            creator: "Meta",
+            versions: ["Llama 2", "Llama 3"],
+            resume: "Open source, multilingue.",
+            link: "https://ai.meta.com/llama/"
+          },
+          {
+            name: "Mistral",
+            creator: "Mistral AI",
+            versions: ["Mistral Medium", "Mistral Large"],
+            resume: "Open source, rapide, francophone.",
+            link: "https://mistral.ai"
+          }
+        ];
+        const container = document.getElementById("container");
+        container.innerHTML = "";
+        aiList.forEach((ai, i) => {
+          const card = document.createElement("div");
+          card.className = "ai-card";
+          card.style.setProperty('--delay', `${i * 0.12 + 0.2}s`);
+          card.innerHTML = `
+            <h3>${ai.name}</h3>
+            <div class="resume">${ai.resume}</div>
+            <div class="versions-list">
+              ${ai.versions.map((v, idx) => `<span class="version-box" style="--delay:${0.3 + idx*0.08}s">${v}</span>`).join('')}
+            </div>
+            <a href="${ai.link}" target="_blank">🔗 Accéder</a>
+          `;
+          container.appendChild(card);
+          setTimeout(() => card.classList.add('visible'), 100 + i * 120);
+          setTimeout(() => {
+            card.querySelectorAll('.version-box').forEach((vb, idx) => {
+              setTimeout(() => vb.classList.add('visible'), 350 + idx * 80);
+            });
+          }, 100 + i * 120);
+        });
+
+        // Ajout du loader à tous les liens et boutons de navigation
+        document.querySelectorAll('a, button, .tri-btn').forEach(el => {
+          // On évite le bouton thème et les liens externes
+          if (
+            el.classList.contains('theme-toggle') ||
+            (el.tagName === 'A' && el.target === '_blank')
+          ) return;
+          el.addEventListener('click', function(e) {
+            // Pour les liens internes seulement
+            let href = el.getAttribute('href');
+            if (href && href.startsWith('file:///')) {
+              e.preventDefault();
+              showLoaderAndRedirect(href);
+            }
+            // Pour les boutons tri-btn
+            if (el.classList.contains('tri-btn')) {
+              e.preventDefault();
+              showLoaderAndRedirect(el.getAttribute('onclick').split("'")[1]);
+            }
+          });
+        });
+      });
+
+      // Loader page : durée infinie, redirection après un temps aléatoire
+      function showLoaderAndRedirect(url) {
+        document.getElementById('page-loader').classList.remove('hidden');
+        const delay = Math.floor(Math.random() * 2000) + 1200; // entre 1,2s et 3,2s
+        setTimeout(() => {
+          window.location.href = url;
+        }, delay);
+      }
+      // Le loader reste visible tant que la page n'a pas changé
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          document.getElementById('page-loader').classList.add('hidden');
+        }, 400);
+      });
+    </script>
+    <br>
+</body>
+</html>

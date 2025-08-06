@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pac-Man</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        canvas {
+            border: 3px solid #0000ff;
+            background: #000;
+            image-rendering: pixelated;
+        }
+        
+        .ui {
+            margin: 10px 0;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffff00;
+        }
+        
+        .controls {
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border: 3px solid #ffff00;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            color: #ffff00;
+        }
+        
+        button {
+            background: #ffff00;
+            color: #000;
+            border: 2px solid #000;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        button:hover {
+            background: #fff;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="ui">
+        <span>SCORE: <span id="score">0</span></span>
+        <span style="margin-left: 30px;">VIES: <span id="lives">3</span></span>
+        <span style="margin-left: 30px;">NIVEAU: <span id="level">1</span></span>
+    </div>
+    
+    <canvas id="gameCanvas" width="1020" height="240"></canvas>
+    
+    <div class="controls">
+        <p>🡸 🡹 🡺 🡻 Utilisez les flèches du clavier pour déplacer Pac-Man</p>
+        <button onclick="startGame()">🎮 NOUVELLE PARTIE</button>
+        <button onclick="togglePause()">⏸️ PAUSE</button>
+    </div>
+    
+    <div class="game-over" id="gameOver">
+        <h2>GAME OVER!</h2>
+        <p>Score final: <span id="finalScore">0</span></p>
+        <button onclick="startGame()">🔄 REJOUER</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Configuration du jeu
+        const CELL_SIZE = 20;
+        let gameRunning = false;
+        let gamePaused = false;
+        let animationId;
+        
+        // Map du jeu
+        const map = [
+            "###################################################",
+            "#.................................................#",
+            "#.###.#######.#############.#######....##.###.###.#",
+            "#.....#######..........................##.........#",
+            "#####.##......######.######..###   ###.##.#####.###",
+            "#####.##.####.######.######..#       #.##.#####.###",
+            "#####.##...##.######.######..#########.##.##....###",
+            "#####.#######.######.######............##.#####.###",
+            "#............................#########............#",
+            "#.####.########.##.########......##....######.###.#",
+            "#...............##...........#.......#............#",
+            "###################################################"
+        ];
+        
+        const ROWS = map.length;
+        const COLS = map[0].length;
+        
+        // Variables du jeu
+        let score = 0;
+        let lives = 3;
+        let level = 1;
+        let totalDots = 0;
+        let dotsEaten = 0;
+        let powerPelletTimer = 0;
+        let ghostScaredTimer = 0;
+        
+        // Joueur (Pac-Man) avec position fluide
+        const player = {
+            x: 1,
+            y: 1,
+            pixelX: 1 * CELL_SIZE,
+            pixelY: 1 * CELL_SIZE,
+            direction: 0, // 0: droite, 1: bas, 2: gauche, 3: haut
+            nextDirection: 0,
+            speed: 2,
+            animFrame: 0,
+            moving: false
+        };
+        
+        // Fantômes avec positions fluides basées sur ghostElements
+        const ghostElements = [
+            { id: 'blinky', x: 630, y: 100, dx: 1, dy: 0 },
+            { id: 'pinky', x: 640, y: 100, dx: -1, dy: 0 },
+            { id: 'inky', x: 650, y: 100, dx: 0, dy: 1 },
+            { id: 'clyde', x: 660, y: 100, dx: 0, dy: -1 }
+        ];
+
+        const ghosts = [
+            { 
+                id: 'blinky',
+                x: Math.floor(630 / CELL_SIZE), y: Math.floor(100 / CELL_SIZE), 
+                pixelX: 630, pixelY: 100,
+                direction: 0, // dx: 1, dy: 0 = droite
+                color: '#ff0000', speed: 1.5,
+                mode: 'chase', target: {x: 0, y: 0}
+            },
+            { 
+                id: 'pinky',
+                x: Math.floor(640 / CELL_SIZE), y: Math.floor(100 / CELL_SIZE), 
+                pixelX: 640, pixelY: 100,
+                direction: 2, // dx: -1, dy: 0 = gauche
+                color: '#ffb6ff', speed: 1.5,
+                mode: 'scatter', target: {x: COLS-1, y: 0}
+            },
+            { 
+                id: 'inky',
+                x: Math.floor(650 / CELL_SIZE), y: Math.floor(100 / CELL_SIZE), 
+                pixelX: 650, pixelY: 100,
+                direction: 1, // dx: 0, dy: 1 = bas
+                color: '#00ffff', speed: 1.5,
+                mode: 'ambush', target: {x: 0, y: ROWS-1}
+            },
+            { 
+                id: 'clyde',
+                x: Math.floor(660 / CELL_SIZE), y: Math.floor(100 / CELL_SIZE), 
+                pixelX: 660, pixelY: 100,
+                direction: 3, // dx: 0, dy: -1 = haut
+                color: '#ffb852', speed: 1.2,
+                mode: 'patrol', target: {x: COLS-1, y: ROWS-1}
+            }
+        ];
+        
+        // Directions
+        const directions = [
+            { x: 1, y: 0 },   // droite
+            { x: 0, y: 1 },   // bas
+            { x: -1, y: 0 },  // gauche
+            { x: 0, y: -1 }   // haut
+        ];
+        
+        // Créer la grille de navigation
+        let gameGrid = [];
+        
+        function initGrid() {
+            gameGrid = [];
+            totalDots = 0;
+            
+            for (let y = 0; y < ROWS; y++) {
+                gameGrid[y] = [];
+                for (let x = 0; x < COLS; x++) {
+                    const char = map[y][x];
+                    if (char === '#') {
+                        gameGrid[y][x] = 'wall';
+                    } else if (char === '.') {
+                        gameGrid[y][x] = 'dot';
+                        totalDots++;
+                    } else if (char === 'o') {
+                        gameGrid[y][x] = 'power';
+                        totalDots++;
+                    } else {
+                        gameGrid[y][x] = 'empty';
+                    }
+                }
+            }
+            
+            // Ajouter quelques power pellets
+            gameGrid[1][1] = 'power';
+            gameGrid[1][COLS-2] = 'power';
+            gameGrid[ROWS-2][1] = 'power';
+            gameGrid[ROWS-2][COLS-2] = 'power';
+            totalDots += 4;
+        }
+        
+        // Vérifier les collisions
+        function canMove(x, y) {
+            if (x < 0 || x >= COLS || y < 0 || y >= ROWS) {
+                return false;
+            }
+            return gameGrid[y][x] !== 'wall';
+        }
+        
+        // Dessiner le labyrinthe avec style rétro
+        function drawMaze() {
+            for (let y = 0; y < ROWS; y++) {
+                for (let x = 0; x < COLS; x++) {
+                    const cell = gameGrid[y][x];
+                    const drawX = x * CELL_SIZE;
+                    const drawY = y * CELL_SIZE;
+                    
+                    if (cell === 'wall') {
+                        // Murs avec effet 3D
+                        ctx.fillStyle = '#0033ff';
+                        ctx.fillRect(drawX, drawY, CELL_SIZE, CELL_SIZE);
+                        ctx.fillStyle = '#0066ff';
+                        ctx.fillRect(drawX + 1, drawY + 1, CELL_SIZE - 2, CELL_SIZE - 2);
+                    } else if (cell === 'dot') {
+                        // Points avec lueur
+                        ctx.fillStyle = '#ffff88';
+                        ctx.beginPath();
+                        ctx.arc(drawX + CELL_SIZE/2, drawY + CELL_SIZE/2, 2, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Effet de lueur
+                        ctx.fillStyle = 'rgba(255, 255, 136, 0.3)';
+                        ctx.beginPath();
+                        ctx.arc(drawX + CELL_SIZE/2, drawY + CELL_SIZE/2, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (cell === 'power') {
+                        // Power pellets animés
+                        const pulse = Math.sin(Date.now() * 0.01) * 0.3 + 0.7;
+                        ctx.fillStyle = `rgba(255, 255, 0, ${pulse})`;
+                        ctx.beginPath();
+                        ctx.arc(drawX + CELL_SIZE/2, drawY + CELL_SIZE/2, 8, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Effet de lueur
+                        ctx.fillStyle = 'rgba(255, 255, 0, 0.2)';
+                        ctx.beginPath();
+                        ctx.arc(drawX + CELL_SIZE/2, drawY + CELL_SIZE/2, 12, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+        }
+        
+        // Dessiner Pac-Man avec animation fluide
+        function drawPlayer() {
+            const centerX = player.pixelX + CELL_SIZE/2;
+            const centerY = player.pixelY + CELL_SIZE/2;
+            
+            // Corps principal
+            ctx.fillStyle = '#ffff00';
+            ctx.beginPath();
+            
+            // Animation de la bouche plus réaliste
+            const mouthOpenness = Math.abs(Math.sin(player.animFrame * 0.3)) * 0.8;
+            let startAngle, endAngle;
+            
+            switch(player.direction) {
+                case 0: // droite
+                    startAngle = mouthOpenness * 0.5;
+                    endAngle = Math.PI * 2 - mouthOpenness * 0.5;
+                    break;
+                case 1: // bas
+                    startAngle = Math.PI * 0.5 + mouthOpenness * 0.5;
+                    endAngle = Math.PI * 1.5 - mouthOpenness * 0.5;
+                    break;
+                case 2: // gauche
+                    startAngle = Math.PI + mouthOpenness * 0.5;
+                    endAngle = Math.PI - mouthOpenness * 0.5;
+                    break;
+                case 3: // haut
+                    startAngle = Math.PI * 1.5 + mouthOpenness * 0.5;
+                    endAngle = Math.PI * 0.5 - mouthOpenness * 0.5;
+                    break;
+            }
+            
+            ctx.arc(centerX, centerY, CELL_SIZE/2 - 2, startAngle, endAngle);
+            ctx.lineTo(centerX, centerY);
+            ctx.fill();
+            
+            // Ombre
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.beginPath();
+            ctx.arc(centerX + 2, centerY + 2, CELL_SIZE/2 - 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            player.animFrame++;
+        }
+        
+        // Dessiner les fantômes avec animation
+        function drawGhosts() {
+            ghosts.forEach((ghost, index) => {
+                const centerX = ghost.pixelX + CELL_SIZE/2;
+                const centerY = ghost.pixelY + CELL_SIZE/2;
+                
+                // Couleur selon l'état
+                let bodyColor = ghost.color;
+                if (ghostScaredTimer > 0) {
+                    if (ghostScaredTimer < 100 && Math.floor(ghostScaredTimer / 10) % 2) {
+                        bodyColor = '#ffffff';
+                    } else {
+                        bodyColor = '#0066ff';
+                    }
+                }
+                
+                // Corps du fantôme avec forme ondulée
+                ctx.fillStyle = bodyColor;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY - 2, CELL_SIZE/2 - 2, Math.PI, 0);
+                
+                // Base ondulée
+                const waveOffset = Math.sin(Date.now() * 0.01 + index) * 2;
+                ctx.lineTo(centerX + CELL_SIZE/2 - 2, centerY + CELL_SIZE/2 - 4);
+                ctx.lineTo(centerX + CELL_SIZE/3, centerY + CELL_SIZE/2 - 6 + waveOffset);
+                ctx.lineTo(centerX, centerY + CELL_SIZE/2 - 4);
+                ctx.lineTo(centerX - CELL_SIZE/3, centerY + CELL_SIZE/2 - 6 - waveOffset);
+                ctx.lineTo(centerX - CELL_SIZE/2 + 2, centerY + CELL_SIZE/2 - 4);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Yeux
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(centerX - 4, centerY - 2, 3, 0, Math.PI * 2);
+                ctx.arc(centerX + 4, centerY - 2, 3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Pupilles
+                ctx.fillStyle = '#000000';
+                const eyeOffsetX = directions[ghost.direction].x;
+                const eyeOffsetY = directions[ghost.direction].y;
+                ctx.beginPath();
+                ctx.arc(centerX - 4 + eyeOffsetX, centerY - 2 + eyeOffsetY, 1.5, 0, Math.PI * 2);
+                ctx.arc(centerX + 4 + eyeOffsetX, centerY - 2 + eyeOffsetY, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+        
+        // Mouvement fluide du joueur
+        function movePlayer() {
+            // Vérifier si on peut changer de direction
+            const nextGridX = Math.floor((player.pixelX + CELL_SIZE/2) / CELL_SIZE);
+            const nextGridY = Math.floor((player.pixelY + CELL_SIZE/2) / CELL_SIZE);
+            
+            if (player.pixelX % CELL_SIZE === 0 && player.pixelY % CELL_SIZE === 0) {
+                const nextX = nextGridX + directions[player.nextDirection].x;
+                const nextY = nextGridY + directions[player.nextDirection].y;
+                
+                if (canMove(nextX, nextY)) {
+                    player.direction = player.nextDirection;
+                }
+            }
+            
+            // Mouvement continu
+            const moveX = directions[player.direction].x * player.speed;
+            const moveY = directions[player.direction].y * player.speed;
+            
+            const newPixelX = player.pixelX + moveX;
+            const newPixelY = player.pixelY + moveY;
+            
+            // Vérifier les collisions
+            const futureGridX = Math.floor((newPixelX + CELL_SIZE/2) / CELL_SIZE);
+            const futureGridY = Math.floor((newPixelY + CELL_SIZE/2) / CELL_SIZE);
+            
+            if (canMove(futureGridX, futureGridY)) {
+                player.pixelX = newPixelX;
+                player.pixelY = newPixelY;
+                player.x = Math.floor((player.pixelX + CELL_SIZE/2) / CELL_SIZE);
+                player.y = Math.floor((player.pixelY + CELL_SIZE/2) / CELL_SIZE);
+                player.moving = true;
+                
+                // Manger les objets
+                if (gameGrid[player.y] && gameGrid[player.y][player.x] === 'dot') {
+                    gameGrid[player.y][player.x] = 'empty';
+                    score += 10;
+                    dotsEaten++;
+                } else if (gameGrid[player.y] && gameGrid[player.y][player.x] === 'power') {
+                    gameGrid[player.y][player.x] = 'empty';
+                    score += 50;
+                    dotsEaten++;
+                    ghostScaredTimer = 300; // 5 secondes
+                }
+            } else {
+                player.moving = false;
+            }
+        }
+        
+        // IA améliorée des fantômes
+        function moveGhosts() {
+            ghosts.forEach((ghost, index) => {
+                // Changer de direction aux intersections
+                const gridX = Math.floor((ghost.pixelX + CELL_SIZE/2) / CELL_SIZE);
+                const gridY = Math.floor((ghost.pixelY + CELL_SIZE/2) / CELL_SIZE);
+                
+                if (ghost.pixelX % CELL_SIZE === 0 && ghost.pixelY % CELL_SIZE === 0) {
+                    const possibleDirections = [];
+                    
+                    for (let i = 0; i < 4; i++) {
+                        const testX = gridX + directions[i].x;
+                        const testY = gridY + directions[i].y;
+                        
+                        if (canMove(testX, testY) && i !== (ghost.direction + 2) % 4) {
+                            possibleDirections.push(i);
+                        }
+                    }
+                    
+                    if (possibleDirections.length > 1) {
+                        // Choisir la direction selon le mode du fantôme
+                        if (ghostScaredTimer > 0) {
+                            // Fuir le joueur
+                            ghost.direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
+                        } else {
+                            // Comportement selon le fantôme
+                            switch(ghost.mode) {
+                                case 'chase':
+                                    ghost.target = { x: player.x, y: player.y };
+                                    break;
+                                case 'ambush':
+                                    ghost.target = { 
+                                        x: player.x + directions[player.direction].x * 4,
+                                        y: player.y + directions[player.direction].y * 4 
+                                    };
+                                    break;
+                            }
+                            
+                            // Choisir la direction qui se rapproche le plus de la cible
+                            let bestDirection = ghost.direction;
+                            let bestDistance = Infinity;
+                            
+                            possibleDirections.forEach(dir => {
+                                const testX = gridX + directions[dir].x;
+                                const testY = gridY + directions[dir].y;
+                                const distance = Math.abs(testX - ghost.target.x) + Math.abs(testY - ghost.target.y);
+                                
+                                if (distance < bestDistance) {
+                                    bestDistance = distance;
+                                    bestDirection = dir;
+                                }
+                            });
+                            
+                            ghost.direction = bestDirection;
+                        }
+                    }
+                }
+                
+                // Mouvement fluide
+                const moveX = directions[ghost.direction].x * ghost.speed;
+                const moveY = directions[ghost.direction].y * ghost.speed;
+                
+                const newPixelX = ghost.pixelX + moveX;
+                const newPixelY = ghost.pixelY + moveY;
+                
+                const futureGridX = Math.floor((newPixelX + CELL_SIZE/2) / CELL_SIZE);
+                const futureGridY = Math.floor((newPixelY + CELL_SIZE/2) / CELL_SIZE);
+                
+                if (canMove(futureGridX, futureGridY)) {
+                    ghost.pixelX = newPixelX;
+                    ghost.pixelY = newPixelY;
+                    ghost.x = futureGridX;
+                    ghost.y = futureGridY;
+                } else {
+                    ghost.direction = Math.floor(Math.random() * 4);
+                }
+            });
+        }
+        
+        // Vérifier les collisions avec les fantômes
+        function checkGhostCollisions() {
+            ghosts.forEach((ghost, index) => {
+                const distance = Math.sqrt(
+                    Math.pow(player.pixelX - ghost.pixelX, 2) + 
+                    Math.pow(player.pixelY - ghost.pixelY, 2)
+                );
+                
+                if (distance < CELL_SIZE * 0.8) {
+                    if (ghostScaredTimer > 0) {
+                        // Manger le fantôme
+                        score += 200 * (index + 1);
+                        // Renvoyer le fantôme à sa position initiale
+                        const ghostElement = ghostElements[index];
+                        ghost.pixelX = ghostElement.x;
+                        ghost.pixelY = ghostElement.y;
+                        ghost.x = Math.floor(ghostElement.x / CELL_SIZE);
+                        ghost.y = Math.floor(ghostElement.y / CELL_SIZE);
+                    } else {
+                        // Perdre une vie
+                        lives--;
+                        resetPositions();
+                        if (lives <= 0) {
+                            gameOver();
+                        }
+                        return;
+                    }
+                }
+            });
+        }
+        
+        // Réinitialiser les positions
+        function resetPositions() {
+            player.pixelX = 1 * CELL_SIZE;
+            player.pixelY = 1 * CELL_SIZE;
+            player.x = 1;
+            player.y = 1;
+            player.direction = 0;
+            player.nextDirection = 0;
+            
+            // Réinitialiser les fantômes aux positions de ghostElements
+            ghosts.forEach((ghost, index) => {
+                const ghostElement = ghostElements[index];
+                ghost.pixelX = ghostElement.x;
+                ghost.pixelY = ghostElement.y;
+                ghost.x = Math.floor(ghostElement.x / CELL_SIZE);
+                ghost.y = Math.floor(ghostElement.y / CELL_SIZE);
+                
+                // Définir la direction initiale basée sur dx, dy
+                if (ghostElement.dx === 1 && ghostElement.dy === 0) ghost.direction = 0; // droite
+                else if (ghostElement.dx === 0 && ghostElement.dy === 1) ghost.direction = 1; // bas
+                else if (ghostElement.dx === -1 && ghostElement.dy === 0) ghost.direction = 2; // gauche
+                else if (ghostElement.dx === 0 && ghostElement.dy === -1) ghost.direction = 3; // haut
+            });
+        }
+        
+        // Mettre à jour l'affichage
+        function updateUI() {
+            document.getElementById('score').textContent = score.toLocaleString();
+            document.getElementById('lives').textContent = lives;
+            document.getElementById('level').textContent = level;
+        }
+        
+        // Game Over
+        function gameOver() {
+            gameRunning = false;
+            cancelAnimationFrame(animationId);
+            document.getElementById('finalScore').textContent = score.toLocaleString();
+            document.getElementById('gameOver').style.display = 'block';
+        }
+        
+        // Boucle de jeu principale avec requestAnimationFrame
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            if (!gamePaused) {
+                // Effacer le canvas
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Mettre à jour la logique
+                movePlayer();
+                moveGhosts();
+                checkGhostCollisions();
+                
+                if (ghostScaredTimer > 0) {
+                    ghostScaredTimer--;
+                }
+                
+                // Vérifier si tous les points sont mangés
+                if (dotsEaten >= totalDots) {
+                    level++;
+                    initGrid();
+                    dotsEaten = 0;
+                    resetPositions();
+                    ghostScaredTimer = 0;
+                }
+                
+                // Dessiner
+                drawMaze();
+                drawPlayer();
+                drawGhosts();
+                
+                updateUI();
+            }
+            
+            animationId = requestAnimationFrame(gameLoop);
+        }
+        
+        // Contrôles
+        document.addEventListener('keydown', (e) => {
+            if (!gameRunning) return;
+            
+            switch(e.key) {
+                case 'ArrowRight':
+                    player.nextDirection = 0;
+                    e.preventDefault();
+                    break;
+                case 'ArrowDown':
+                    player.nextDirection = 1;
+                    e.preventDefault();
+                    break;
+                case 'ArrowLeft':
+                    player.nextDirection = 2;
+                    e.preventDefault();
+                    break;
+                case 'ArrowUp':
+                    player.nextDirection = 3;
+                    e.preventDefault();
+                    break;
+                case ' ':
+                    togglePause();
+                    e.preventDefault();
+                    break;
+            }
+        });
+        
+        // Fonctions de contrôle
+        function startGame() {
+            score = 0;
+            lives = 3;
+            level = 1;
+            dotsEaten = 0;
+            ghostScaredTimer = 0;
+            gameRunning = true;
+            gamePaused = false;
+            
+            initGrid();
+            resetPositions();
+            document.getElementById('gameOver').style.display = 'none';
+            gameLoop();
+        }
+        
+        function togglePause() {
+            if (gameRunning) {
+                gamePaused = !gamePaused;
+                if (!gamePaused) {
+                    gameLoop();
+                }
+            }
+        }
+        
+        // Initialisation
+        canvas.width = COLS * CELL_SIZE;
+        canvas.height = ROWS * CELL_SIZE;
+        initGrid();
+        
+        // Dessiner l'état initial
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        drawMaze();
+        
+        // Positionner Pac-Man et les fantômes à l'initialisation
+        player.pixelX = 1 * CELL_SIZE;
+        player.pixelY = 1 * CELL_SIZE;
+        drawPlayer();
+        drawGhosts();
+        updateUI();
+    </script>
+</body>
+</html>
