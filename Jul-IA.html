@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="Jul-IA_logo.png" />
     <style>
+        @media (max-width: 400px) {
+        .header h1 {
+            font-size: 18px;
+        }
+        .send-btn {
+            font-size: 14px;
+            padding: 10px;
+        }
+        .input-area input {
+            font-size: 14px;
+            padding: 10px;
+        }
+        }
         :root {
             --bg-primary: #181c24;
             --bg-secondary: #232837;
@@ -34,7 +47,8 @@
             min-width: 100vw;
         }
         .sidebar {
-            width: 320px;
+            width: 100%;
+            max-width: 320px;
             background: var(--bg-sidebar);
             display: flex;
             flex-direction: column;
@@ -145,7 +159,7 @@
             display: flex;
             flex-direction: column;
             gap: 18px;
-            min-height: 0;
+            min-height: 200px;
             transition: background 0.8s, opacity 0.7s, transform 0.7s;
         }
         @keyframes bgMove {
@@ -182,6 +196,7 @@
             }
         }
         .input-area {
+            flex-wrap: wrap;
             display: flex;
             border-top: 1px solid var(--border-color);
             padding: 18px 40px;
@@ -242,10 +257,12 @@
             transform: translate(-50%, -50%);
             transition: width 0.3s, height 0.3s;
             z-index: 0;
+            box-sizing: border-box;
         }
         .send-btn:active::after {
             width: 120%;
             height: 120%;
+            box-sizing: border-box;
         }
         .empty-state {
             display: flex;
