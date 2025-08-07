@@ -1,705 +1,704 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Accueil - Jul-IA</title>
-  <link rel="shortcut icon" href="Jul-IA_logo.png" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jul-IA - Votre assistant intelligent</title>
+  <link rel="shortcut icon" href="Jul-IA_logo.png">
   <style>
     :root {
-      --bg-primary: #181c24;
-      --bg-secondary: #232837;
-      --accent-color: #00fff7;
-      --text-primary: #e8eaed;
-      --text-secondary: #9aa0a6;
-      --border-color: #31364a;
+      --primary-color: #58a6ff;
+      --secondary-color: #3a0ca3;
+      --accent-color: #7209b7;
+      --text-color: #e6edf3;
+      --text-secondary: #8b949e;
+      --bg-color: #0d1117;
+      --bg-alt: #161b22;
+      --card-bg: #1a1a2e;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
-    body[data-theme="dark"] {
-      --bg-primary: #181c24;
-      --bg-secondary: #161b22;
-      --text-primary: #e8eaed;
-      --text-secondary: #9aa0a6;
-      --accent-color: #00fff7;
-    }
-    body:not([data-theme="dark"]) {
-      --bg-primary: #fff;
-      --bg-secondary: #f7fafd;
-      --text-primary: #181c24;
-      --text-secondary: #5a5f6a;
-      --accent-color: #00bfae;
-    }
-    html, body {
+
+    * {
       margin: 0;
       padding: 0;
-      width: 100vw;
-      height: 100vh;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      transition: background 0.6s, color 0.6s;
-      overflow-x: hidden;
+      box-sizing: border-box;
     }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Segoe UI', sans-serif;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animation de fond en vague améliorée */
+    .wave-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--bg-color) 0%, var(--bg-alt) 100%);
+    }
+
+    .wave {
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(88, 166, 255, 0.15) 0%, transparent 70%);
+      animation: waveMove 20s linear infinite;
+      opacity: 0.8;
+      transform-origin: center;
+    }
+
+    .wave:nth-child(2) {
+      background: radial-gradient(circle at 70% 30%, rgba(114, 9, 183, 0.15) 0%, transparent 70%);
+      animation-delay: -7s;
+    }
+
+    .wave:nth-child(3) {
+      background: radial-gradient(circle at 50% 80%, rgba(58, 12, 163, 0.15) 0%, transparent 70%);
+      animation-delay: -14s;
+    }
+
+    @keyframes waveMove {
+      0% {
+        transform: translate(-25%, -25%) rotate(0deg);
+      }
+      25% {
+        transform: translate(-30%, -20%) rotate(2deg);
+      }
+      50% {
+        transform: translate(-35%, -25%) rotate(0deg);
+      }
+      75% {
+        transform: translate(-40%, -30%) rotate(-2deg);
+      }
+      100% {
+        transform: translate(-25%, -25%) rotate(0deg);
+      }
+    }
+
+    /* Particules flottantes améliorées */
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+      animation: float 15s linear infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.7;
+      }
+      90% {
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateY(-10vh) translateX(100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Éléments flottants */
+    .floating-element {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.1;
+      animation: floatElements 25s linear infinite;
+      backdrop-filter: blur(5px);
+    }
+
+    @keyframes floatElements {
+      0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+      }
+      25% {
+        transform: translateY(-30px) translateX(20px) rotate(5deg);
+      }
+      50% {
+        transform: translateY(10px) translateX(-15px) rotate(-3deg);
+      }
+      75% {
+        transform: translateY(-20px) translateX(10px) rotate(2deg);
+      }
+      100% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+      }
+    }
+
+    /* Barre de navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: var(--bg-alt);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    nav a {
+      color: var(--text-color);
+      text-decoration: none;
+      position: relative;
+      transition: var(--transition);
+      padding: 0.5rem 0;
+    }
+
+    nav a:hover {
+      color: var(--primary-color);
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary-color);
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* Conteneur principal */
     .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5rem 1.5rem 3rem;
+    }
+
+    /* Section héro */
+    .hero-section {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 32px;
-      background: transparent;
-      border: none;
-      border-radius: 0;
-      padding: 44px 36px 0 36px;
-      width: 100%;
-      max-width: 100vw;
+      padding: 0 2rem;
       text-align: center;
-      box-shadow: none;
-      animation: fadeSlideUp 0.7s ease forwards;
       position: relative;
-      margin: 0 auto 0 auto;
-      z-index: 2;
+      z-index: 1;
     }
-    @keyframes fadeSlideUp {
-      from { opacity: 0; transform: translateY(24px); }
+
+    .main-title {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+      animation: fadeIn 0.8s ease-out, textGlow 3s infinite alternate;
+      text-shadow: 0 0 10px rgba(88, 166, 255, 0.3);
+    }
+
+    @keyframes textGlow {
+      from { text-shadow: 0 0 10px rgba(88, 166, 255, 0.3); }
+      to { text-shadow: 0 0 20px rgba(88, 166, 255, 0.5), 0 0 30px rgba(88, 166, 255, 0.2); }
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-secondary);
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+      animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .logo {
-      width: 70px;
-      height: 70px;
-      border-radius: 16px;
-      box-shadow: 0 0 10px #00fff7cc;
-      margin-bottom: 12px;
-      background: #fff;
-    }
-    h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--accent-color);
-      margin: 0 0 8px 0;
-      letter-spacing: 1px;
-      text-shadow: 0 0 6px #00fff7aa;
-      background: none;
-      -webkit-background-clip: unset;
-      -webkit-text-fill-color: unset;
-    }
-    p {
-      color: var(--text-secondary);
-      font-size: 1.15rem;
-      margin: 0 0 24px 0;
-      text-align: center;
-      max-width: 420px;
-    }
-    .btn-main {
-      padding: 14px 36px;
-      background: var(--accent-color);
-      color: #181c24;
+
+    /* Bouton principal */
+    .cta-button {
+      background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+      color: white;
       border: none;
-      border-radius: 24px;
+      padding: 1rem 2.5rem;
       font-size: 1.1rem;
       font-weight: 600;
+      border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,255,247,0.12);
-      transition: background 0.2s, transform 0.15s;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
       position: relative;
       overflow: hidden;
-    }
-    .btn-main:hover {
-      background: #00bfae;
-      color: #fff;
-      transform: scale(1.06);
-      box-shadow: 0 0 30px 10px #00fff7cc, 0 0 60px 20px #00fff799;
-      animation: haloPulse 0.7s;
-    }
-    @keyframes haloPulse {
-      0% { box-shadow: 0 0 0px #00fff7cc; }
-      70% { box-shadow: 0 0 30px 10px #00fff7cc, 0 0 60px 20px #00fff799; }
-      100% { box-shadow: 0 0 10px var(--accent-color); }
-    }
-    /* Animation bulles */
-    .bubbles {
-      position: absolute;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
       z-index: 1;
-      overflow: hidden;
+      animation: fadeIn 1.2s ease-out, buttonPulse 2s infinite alternate;
+      transform-origin: center;
     }
-    .bubble {
-      position: absolute;
-      bottom: -100px;
-      border-radius: 50%;
-      opacity: 0.25;
-      background: var(--accent-color, #00fff7);
-      animation: bubbleUp 8s linear infinite;
-      filter: blur(1px);
+
+    @keyframes buttonPulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.02); }
     }
-    @keyframes bubbleUp {
-      0% {
-        transform: translateY(0) scale(1);
-        opacity: 0.25;
-      }
-      80% {
-        opacity: 0.18;
-      }
-      100% {
-        transform: translateY(-110vh) scale(1.2);
-        opacity: 0;
-      }
+
+    .cta-button:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 20px rgba(88, 166, 255, 0.4);
     }
-    body:not([data-theme="dark"]) .bubble {
-      background: #00bfae;
-      opacity: 0.13;
+
+    .cta-button::after {
+      content: "→";
+      font-size: 1.2rem;
+      transition: var(--transition);
     }
-    /* Animation de transition de thème */
-    .theme-transition {
-      animation: themeFade 0.7s cubic-bezier(.4,1.6,.6,1) both;
+
+    .cta-button:hover::after {
+      transform: translateX(5px);
     }
-    @keyframes themeFade {
-      0% { filter: brightness(1.2) blur(0px); opacity: 0.7; }
-      60% { filter: brightness(0.95) blur(2px); opacity: 1; }
-      100% { filter: brightness(1) blur(0px); opacity: 1; }
+
+    /* Section des fonctionnalités */
+    .features-section {
+      padding: 4rem 0;
+      position: relative;
     }
-    /* Répertoire des IA et Chatbots */
-    #ai-list {
-      padding: 60px 20px;
-      background: var(--bg-secondary, #232837);
-    }
-    #ai-list h2 {
+
+    .section-title {
       text-align: center;
-      font-size: 28px;
-      margin-bottom: 40px;
-      color: var(--accent-color, #00fff7);
-      text-shadow: 0 0 4px #00fff7cc;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: var(--text-color);
+      position: relative;
+      display: inline-block;
     }
-    /* Cartes IA stylées et animées */
-    .ai-card-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 24px;
-      justify-content: center;
+
+    .section-title::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+      border-radius: 3px;
     }
-    .ai-card {
-      background: #12314f;
-      border: 1px solid #1c3656;
-      border-radius: 14px;
-      padding: 16px 16px 12px 16px;
-      width: 230px;
-      min-height: 120px;
-      box-shadow: 0 0 12px #00fff744;
-      transition: transform 0.3s, box-shadow 0.3s, opacity 0.5s;
-      opacity: 0;
-      transform: translateY(40px) scale(0.96) rotateZ(-2deg);
-      animation: fadeUpCard 0.9s cubic-bezier(.4,1.6,.6,1) forwards;
-      animation-delay: var(--delay, 0s);
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      position: relative;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 1.5rem;
+      transition: var(--transition);
+      border: 1px solid rgba(114, 9, 183, 0.2);
       display: flex;
       flex-direction: column;
-      align-items: stretch;
-      gap: 10px;
-      margin-bottom: 10px;
+      gap: 1rem;
+      animation: fadeUp 0.5s ease-out;
       position: relative;
-      overflow: visible;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    .ai-card.visible {
-      opacity: 1;
-      transform: translateY(0) scale(1) rotateZ(0deg);
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    @keyframes fadeUpCard {
-      0% { opacity: 0; transform: translateY(60px) scale(0.92) rotateZ(-4deg); filter: blur(2px);}
-      60% { opacity: 1; transform: translateY(-8px) scale(1.04) rotateZ(1deg); filter: blur(0.5px);}
-      100% { opacity: 1; transform: translateY(0) scale(1) rotateZ(0deg); filter: blur(0);}
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      border-color: rgba(114, 9, 183, 0.4);
     }
-    .ai-card h3 {
-      margin: 0 0 4px 0;
-      color: #00fff7;
-      font-size: 1.1rem;
-      text-align: left;
-      letter-spacing: 0.5px;
-      animation: fadeInTitle 0.7s 0.2s both;
-    }
-    @keyframes fadeInTitle {
-      0% { opacity: 0; transform: translateY(20px);}
-      100% { opacity: 1; transform: translateY(0);}
-    }
-    .ai-card .resume {
-      font-size: 0.97rem;
-      color: var(--text-primary);
-      margin-bottom: 6px;
-      animation: fadeInText 0.7s 0.3s both;
-    }
-    @keyframes fadeInText {
-      0% { opacity: 0; transform: translateY(10px);}
-      100% { opacity: 1; transform: translateY(0);}
-    }
-    .versions-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 8px;
-      margin-top: 2px;
-    }
-    .version-box {
-      background: #181c24;
-      color: #00fff7;
-      border: 1px solid #00fff7aa;
-      border-radius: 8px;
-      padding: 4px 10px;
-      font-size: 0.93rem;
-      font-weight: 500;
-      box-shadow: 0 2px 8px #00fff733;
-      transition: background 0.2s, color 0.2s, transform 0.2s;
-      animation: popInVersion 0.5s cubic-bezier(.4,1.6,.6,1) both;
-      opacity: 0;
-      transform: scale(0.8) translateY(10px);
-      animation-delay: var(--delay, 0s);
-      display: inline-block;
-      margin-bottom: 2px;
-    }
-    .version-box.visible {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
-    .version-box:hover {
-      background: #00fff7;
-      color: #181c24;
-      transform: scale(1.08) translateY(-2px);
-      box-shadow: 0 4px 16px #00fff799;
-    }
-    @keyframes popInVersion {
-      0% { opacity: 0; transform: scale(0.8) translateY(10px);}
-      100% { opacity: 1; transform: scale(1) translateY(0);}
-    }
-    .ai-card a {
-      color: #00d8ff;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 0.97rem;
-      margin-top: 2px;
-      align-self: flex-start;
-      transition: color 0.2s;
-      animation: fadeInLink 0.7s 0.4s both;
-    }
-    .ai-card a:hover {
-      text-decoration: underline;
-      color: #00f0ff;
-    }
-    @keyframes fadeInLink {
-      0% { opacity: 0; transform: translateY(10px);}
-      100% { opacity: 1; transform: translateY(0);}
-    }
-    footer {
-      text-align: center;
-      padding: 40px 20px;
-      font-size: 14px;
-      color: #88aabb;
-    }
-    .tri-btn {
-      background: var(--accent-color, #00fff7);
-      color: #181c24;
-      border: none;
-      border-radius: 20px;
-      padding: 10px 24px;
-      margin: 0 8px 12px 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0,255,247,0.10);
-      transition: background 0.2s, color 0.2s, transform 0.15s;
-      outline: none;
-    }
-    .tri-btn:hover {
-      background: #00bfae;
-      color: #fff;
-      transform: scale(1.06);
-    }
-    .theme-toggle {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 50%;
-      width: 44px;
-      height: 44px;
+
+    .feature-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
+      color: white;
       font-size: 1.5rem;
-      color: var(--accent-color);
-      transition: background 0.2s;
-      z-index: 10;
-    }
-    .theme-toggle:hover {
-      background: var(--accent-color);
-      color: #181c24;
-    }
-    /* BARRE DE NAVIGATION JUL-IA */
-    .navbar {
-      background: var(--bg-secondary, #161b22);
-      position: sticky;
-      top: 0;
-      width: 100%;
-      padding: 15px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
-      z-index: 1000;
+      margin-bottom: 1rem;
+      transition: var(--transition);
     }
 
-    .nav-container {
+    .feature-card:hover .feature-icon {
+      transform: rotate(15deg) scale(1.1);
+    }
+
+    .feature-card h3 {
+      color: var(--text-color);
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Section IA populaires */
+    .ai-section {
+      padding: 4rem 0;
+      position: relative;
+    }
+
+    .ai-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .ai-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1rem;
+      transition: var(--transition);
+      border: 1px solid rgba(114, 9, 183, 0.2);
       display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      animation: fadeUp 0.5s ease-out;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .ai-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .ai-card h3 {
+      color: var(--text-color);
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .ai-card p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .ai-link {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
-      width: 100%;
+      gap: 0.3rem;
+      margin-top: auto;
+      transition: var(--transition);
+    }
+
+    .ai-link:hover {
+      text-decoration: underline;
+      color: var(--primary-color);
+      transform: translateX(3px);
+    }
+
+    .ai-link::after {
+      content: "→";
+      font-size: 0.8rem;
+    }
+
+    /* Pied de page */
+    footer {
+      background: var(--bg-alt);
+      padding: 2rem;
+      text-align: center;
+      margin-top: 3rem;
+      position: relative;
+    }
+
+    .footer-content {
       max-width: 1200px;
       margin: 0 auto;
-      flex-wrap: wrap;
-      height: 38px;
-    }
-
-    .nav-links {
       display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-right: 16px;
-      position: relative;
+      flex-direction: column;
+      gap: 1rem;
     }
 
-    .nav-links a, .nav-links .dropdown {
-      color: #ccc;
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s ease;
-      font-size: 1rem;
-      line-height: 38px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      outline: none;
-      position: relative;
-    }
-
-    .nav-links a:hover, .nav-links .dropdown:hover {
-      color: #58a6ff;
-    }
-
-    .julia-title {
-      font-size: 1.6em;
-      font-weight: bold;
-      color:#58a6ff;
-      letter-spacing: 1px;
-      line-height: 38px;
-      display: inline-block;
-      order: -1;
-    }
-
-    /* Dropdown styles */
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background: var(--bg-secondary, #232837);
-      min-width: 210px;
-      box-shadow: 0 4px 16px #000a;
-      z-index: 1001;
-      top: 38px;
-      left: 0;
-      border-radius: 0 0 8px 8px;
-      padding: 8px 0;
-      animation: fadeSlideDown 0.25s;
-    }
-    .dropdown:hover .dropdown-content,
-    .dropdown:focus-within .dropdown-content {
-      display: block;
-    }
-    .dropdown-content a {
-      color: #ccc;
-      padding: 8px 24px;
-      display: block;
-      text-decoration: none;
-      font-size: 1rem;
-      transition: background 0.2s, color 0.2s;
-      border-radius: 0;
-    }
-    .dropdown-content a:hover {
-      background: #1a2537;
-      color: #6280bb;
-    }
-
-    /* Loader styles */
-    #page-loader {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(24,28,36,0.92);
-      z-index: 3000;
+    .social-links {
       display: flex;
-      align-items: center;
       justify-content: center;
-      transition: opacity 0.4s;
-      opacity: 1;
-      pointer-events: all;
+      gap: 1rem;
+      margin-bottom: 1rem;
     }
-    #page-loader.hidden {
-      opacity: 0;
-      pointer-events: none;
+
+    .social-links a {
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      transition: var(--transition);
     }
-    .loader-spinner {
-      border: 6px solid #232837;
-      border-top: 6px solid #00fff7;
-      border-radius: 50%;
-      width: 54px;
-      height: 54px;
-      animation: spinLoader 1s linear infinite;
+
+    .social-links a:hover {
+      color: var(--primary-color);
+      transform: translateY(-3px);
     }
-    @keyframes spinLoader {
-      0% { transform: rotate(0deg);}
-      100% { transform: rotate(360deg);}
+
+    .copyright {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
     }
+
+    /* Responsive */
     @media (max-width: 768px) {
-      .nav-container {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-        height: auto;
-      }
       .nav-links {
-        flex-direction: column;
-        width: auto;
-        margin-right: 0;
+        display: none;
       }
-      .julia-title {
-        margin: 8px 0 0 10px;
+
+      .hero-section {
+        padding: 0 1rem;
       }
-      .dropdown-content {
-        left: 0;
-        min-width: 180px;
-        top: 38px;
+
+      .main-title {
+        font-size: 2rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ai-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .ai-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-button {
+        width: 100%;
+        padding: 1rem;
       }
     }
   </style>
 </head>
 <body>
-    <!-- BARRE DE NAVIGATION JUL-IA -->
-    <header class="navbar">
-      <div class="nav-container">
-        <span class="julia-title">Jul-IA</span>
-        <nav class="nav-links">
-          <a href="Jul-IA.html" onclick="showLoader(event)">Chatbot</a>
-          <div class="dropdown" tabindex="0">
-            <span>Projets</span>
-            <div class="dropdown-content">
-              <a href="Laboratoire_CSS.html" onclick="showLoader(event)">Laboratoire code HTML</a>
-              <a href="Playground.html" onclick="showLoader(event)">Playground</a>
-              <a href="Fichier.html" onclick="showLoader(event)">File explorer</a>
-            </div>
-          </div>
-          <a href="Documentation.html" >Documentation</a>
-          <a href="A_propos.html" onclick="showLoader(event)">À propos</a>
-        </nav>
-      </div>
-    </header>
-    <div id="page-loader">
-      <div class="loader-spinner"></div>
+  <!-- Animation de fond en vague -->
+  <div class="wave-background">
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <!-- Barre de navigation -->
+  <nav>
+    <div class="logo">
+      <img src="Jul-IA_logo.png" alt="Logo Jul-IA">
+      <span>Jul-IA</span>
     </div>
-    <div class="container" style="position:relative; overflow:hidden;">
-      <div class="bubbles" id="bubbles"></div>
-      <button class="theme-toggle" id="themeToggle" title="Basculer le thème">
-        <span id="themeIcon">🌙</span>
-      </button>
-      <!-- Ajout du logo juste au-dessus du titre -->
-      <img src="Jul-IA_logo.png" alt="Logo Jul-IA" class="logo" style="margin-bottom: 0; margin-top: 12px;" />
-      <h1>Bienvenue sur Jul-IA</h1>
-      <p>Votre assistant IA personnel, multilingue et moderne.<br>
-        Connectez-vous pour commencer à discuter avec Jul-IA !</p>
-      <a href="Connexion_page.html" class="btn-main">Se connecter</a>
+    <div class="nav-links">
+      <a href="#features">Fonctionnalités</a>
+      <a href="#ai-list">IA populaires</a>
+      <a href="Documentation.html">Documentation</a>
+      <a href="A_propos.html">À propos</a>
     </div>
-    <!-- Répertoire des IA et Chatbots -->
-    <section id="ai-list">
-      <h2>🌐 Intelligence artificielle grand public</h2>
-      <div style="text-align:center; margin-bottom:32px;">
-        <button class="tri-btn" onclick="window.location.href='ia_textuelles.html'">IA Textuelles</button>
-        <button class="tri-btn" onclick="window.location.href='ia_images.html'">IA Images</button>
-        <button class="tri-btn" onclick="window.location.href='ia_voix.html'">IA Voix</button>
-        <button class="tri-btn" onclick="window.location.href='ia_video.html'">IA Vidéo</button>
-        <button class="tri-btn" onclick="window.location.href='ia_autres.html'">Autres IA</button>
-      </div>
-      <div class="ai-card-container" id="container">
-        <!-- Cartes IA injectées ici -->
+  </nav>
+
+  <div class="container">
+    <!-- Section héro -->
+    <section class="hero-section">
+      <h1 class="main-title">Votre assistant IA intelligent et personnalisé</h1>
+      <p class="subtitle">
+        Jul-IA est votre compagnon d'intelligence artificielle qui comprend et répond à vos besoins en temps réel.
+        Que ce soit pour la productivité, la créativité ou simplement pour discuter, Jul-IA est là pour vous.
+      </p>
+      <a href="Connexion_page.html" class="cta-button">Commencer à discuter</a>
+    </section>
+
+    <!-- Section Fonctionnalités -->
+    <section id="features" class="features-section">
+      <h2 class="section-title">Fonctionnalités principales</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Conversation naturelle</h3>
+          <p>Discutez avec Jul-IA comme avec un humain, avec des réponses contextuelles et pertinentes.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌍</div>
+          <h3>Multilingue</h3>
+          <p>Jul-IA comprend et répond dans plusieurs langues pour une expérience globale.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📚</div>
+          <h3>Connaissances étendues</h3>
+          <p>Accédez à une vaste base de connaissances constamment mise à jour.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3>Créativité</h3>
+          <p>Génération de contenu créatif comme des histoires, des poèmes ou des idées.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>Recherche intelligente</h3>
+          <p>Obtenez des informations précises et à jour sur une multitude de sujets.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔄</div>
+          <h3>Apprentissage continu</h3>
+          <p>Jul-IA s'adapte et apprend de vos interactions pour mieux vous servir.</p>
+        </div>
       </div>
     </section>
-    <footer>
-      © 2025 – Projet Jul-IA par Jules Ferrier 
-    </footer>
-    <script>
-      // Animation bulles (uniquement dans la première partie)
-      function randomBetween(a, b) {
-        return Math.random() * (b - a) + a;
-      }
-      function createBubble() {
-        const bubble = document.createElement('div');
-        bubble.className = 'bubble';
-        const size = randomBetween(18, 60);
-        bubble.style.width = `${size}px`;
-        bubble.style.height = `${size}px`;
-        bubble.style.left = `${randomBetween(0, 100)}vw`;
-        bubble.style.animationDuration = `${randomBetween(6, 13)}s`;
-        bubble.style.animationDelay = `${randomBetween(0, 6)}s`;
-        document.getElementById('bubbles').appendChild(bubble);
-        setTimeout(() => bubble.remove(), 14000);
-      }
-      for (let i = 0; i < 18; i++) createBubble();
-      setInterval(createBubble, 1800);
 
-      // Thème nuit/jour
-      function toggleTheme() {
-        const body = document.body;
-        const themeIcon = document.getElementById('themeIcon');
-        body.classList.add('theme-transition');
-        setTimeout(() => body.classList.remove('theme-transition'), 700);
-        if (body.getAttribute('data-theme') === 'dark') {
-          body.removeAttribute('data-theme');
-          if (themeIcon) themeIcon.textContent = '🌙';
-          localStorage.setItem('theme', 'light');
-        } else {
-          body.setAttribute('data-theme', 'dark');
-          if (themeIcon) themeIcon.textContent = '☀️';
-          localStorage.setItem('theme', 'dark');
-        }
-      }
-      document.addEventListener('DOMContentLoaded', function () {
-        const themeToggle = document.getElementById('themeToggle');
-        if (themeToggle) {
-          themeToggle.addEventListener('click', toggleTheme);
-        }
-        const savedTheme = localStorage.getItem('theme');
-        const themeIcon = document.getElementById('themeIcon');
-        if (savedTheme === 'dark') {
-          document.body.setAttribute('data-theme', 'dark');
-          if (themeIcon) themeIcon.textContent = '☀️';
-        } else {
-          document.body.removeAttribute('data-theme');
-          if (themeIcon) themeIcon.textContent = '🌙';
-        }
-        // Génération dynamique des cartes IA
-        const aiList = [
-          {
-            name: "ChatGPT",
-            creator: "OpenAI",
-            versions: ["GPT-3.5", "GPT-4", "GPT-4o"],
-            resume: "Chat polyvalent, créatif, multilingue.",
-            link: "https://chat.openai.com"
-          },
-          {
-            name: "Claude",
-            creator: "Anthropic",
-            versions: ["Claude 2", "Claude 3 Opus", "Claude 3 Sonnet", "Claude 3.5 Sonnet"],
-            resume: "Long contexte, raisonnement avancé.",
-            link: "https://claude.ai"
-          },
-          {
-            name: "Gemini",
-            creator: "Google DeepMind",
-            versions: ["Gemini 1.0", "Gemini 1.5", "Gemini Advanced"],
-            resume: "Très bon en recherches, rapide.",
-            link: "https://gemini.google.com"
-          },
-          {
-            name: "Copilot",
-            creator: "Microsoft",
-            versions: ["GPT-4", "GPT-4 Turbo", "GPT-4o"],
-            resume: "Recherche web, intégré Windows/Office.",
-            link: "https://copilot.microsoft.com"
-          },
-          {
-            name: "Pi",
-            creator: "Inflection AI",
-            versions: ["Pi (2024)"],
-            resume: "Empathique, conversation naturelle.",
-            link: "https://pi.ai"
-          },
-          {
-            name: "Replika",
-            creator: "Luka Inc.",
-            versions: ["Replika Pro", "Replika Free"],
-            resume: "IA compagnon, personnalisable.",
-            link: "https://replika.com"
-          },
-          {
-            name: "Llama",
-            creator: "Meta",
-            versions: ["Llama 2", "Llama 3"],
-            resume: "Open source, multilingue.",
-            link: "https://ai.meta.com/llama/"
-          },
-          {
-            name: "Mistral",
-            creator: "Mistral AI",
-            versions: ["Mistral Medium", "Mistral Large"],
-            resume: "Open source, rapide, francophone.",
-            link: "https://mistral.ai"
-          }
-        ];
-        const container = document.getElementById("container");
-        container.innerHTML = "";
-        aiList.forEach((ai, i) => {
-          const card = document.createElement("div");
-          card.className = "ai-card";
-          card.style.setProperty('--delay', `${i * 0.12 + 0.2}s`);
-          card.innerHTML = `
-            <h3>${ai.name}</h3>
-            <div class="resume">${ai.resume}</div>
-            <div class="versions-list">
-              ${ai.versions.map((v, idx) => `<span class="version-box" style="--delay:${0.3 + idx*0.08}s">${v}</span>`).join('')}
-            </div>
-            <a href="${ai.link}" target="_blank">🔗 Accéder</a>
-          `;
-          container.appendChild(card);
-          setTimeout(() => card.classList.add('visible'), 100 + i * 120);
-          setTimeout(() => {
-            card.querySelectorAll('.version-box').forEach((vb, idx) => {
-              setTimeout(() => vb.classList.add('visible'), 350 + idx * 80);
-            });
-          }, 100 + i * 120);
-        });
+    <!-- Section IA populaires -->
+    <section id="ai-list" class="ai-section">
+      <h2 class="section-title">Découvrez d'autres IA populaires</h2>
+      <div class="ai-grid">
+        <!-- Les cartes IA seront générées dynamiquement -->
+      </div>
+    </section>
+  </div>
 
-        // Ajout du loader à tous les liens et boutons de navigation
-        document.querySelectorAll('a, button, .tri-btn').forEach(el => {
-          // On évite le bouton thème et les liens externes
-          if (
-            el.classList.contains('theme-toggle') ||
-            (el.tagName === 'A' && el.target === '_blank')
-          ) return;
-          el.addEventListener('click', function(e) {
-            // Pour les liens internes seulement
-            let href = el.getAttribute('href');
-            if (href && href.startsWith('file:///')) {
-              e.preventDefault();
-              showLoaderAndRedirect(href);
-            }
-            // Pour les boutons tri-btn
-            if (el.classList.contains('tri-btn')) {
-              e.preventDefault();
-              showLoaderAndRedirect(el.getAttribute('onclick').split("'")[1]);
-            }
-          });
-        });
+  <!-- Pied de page -->
+  <footer>
+    <div class="footer-content">
+      <div class="social-links">
+        <a href="#" title="GitHub">✦</a>
+        <a href="#" title="Twitter">🐦</a>
+        <a href="#" title="Discord">💬</a>
+      </div>
+      <p class="copyright">© 2025 Jul-IA. Tous droits réservés.</p>
+      <p style="font-size: 0.8rem; color: var(--primary-color);">Créé avec passion par Jules Ferrier</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Génération dynamique des cartes IA
+      const aiList = [
+        {
+          name: "ChatGPT",
+          description: "Chat polyvalent avec des capacités avancées de traitement du langage.",
+          link: "https://chat.openai.com"
+        },
+        {
+          name: "Claude",
+          description: "IA axée sur la sécurité et la compréhension contextuelle approfondie.",
+          link: "https://claude.ai"
+        },
+        {
+          name: "Gemini",
+          description: "Modèle de Google avec une intégration étroite avec les services Google.",
+          link: "https://gemini.google.com"
+        },
+        {
+          name: "Copilot",
+          description: "Assistant IA intégré à Microsoft 365 pour la productivité.",
+          link: "https://copilot.microsoft.com"
+        },
+        {
+          name: "Pi",
+          description: "IA conversationnelle avec une approche particulièrement empathique.",
+          link: "https://pi.ai"
+        },
+        {
+          name: "Replika",
+          description: "Compagnon IA conçu pour des conversations personnelles et émotionnelles.",
+          link: "https://replika.com"
+        }
+      ];
+
+      const aiGrid = document.querySelector('.ai-grid');
+      aiList.forEach((ai, index) => {
+        const card = document.createElement('div');
+        card.className = 'ai-card';
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.innerHTML = `
+          <h3>${ai.name}</h3>
+          <p>${ai.description}</p>
+          <a href="${ai.link}" class="ai-link" target="_blank" rel="noopener noreferrer">Essayer</a>
+        `;
+        aiGrid.appendChild(card);
       });
 
-      // Loader page : durée infinie, redirection après un temps aléatoire
-      function showLoaderAndRedirect(url) {
-        document.getElementById('page-loader').classList.remove('hidden');
-        const delay = Math.floor(Math.random() * 2000) + 1200; // entre 1,2s et 3,2s
-        setTimeout(() => {
-          window.location.href = url;
-        }, delay);
+      // Ajout de particules supplémentaires
+      const background = document.querySelector('.wave-background');
+      const colors = [
+        'rgba(88, 166, 255, 0.5)',
+        'rgba(114, 9, 183, 0.5)',
+        'rgba(58, 12, 163, 0.5)'
+      ];
+
+      for (let i = 0; i < 30; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+
+        const size = Math.random() * 8 + 3;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+
+        background.appendChild(particle);
       }
-      // Le loader reste visible tant que la page n'a pas changé
-      window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-          document.getElementById('page-loader').classList.add('hidden');
-        }, 400);
+
+      // Animation du bouton principal
+      const ctaButton = document.querySelector('.cta-button');
+      ctaButton.addEventListener('mouseenter', () => {
+        ctaButton.style.transform = 'translateY(-3px) scale(1.05)';
+        ctaButton.style.boxShadow = '0 6px 20px rgba(88, 166, 255, 0.4), 0 0 20px rgba(88, 166, 255, 0.3)';
       });
-    </script>
-    <br>
+
+      ctaButton.addEventListener('mouseleave', () => {
+        ctaButton.style.transform = 'scale(1)';
+        ctaButton.style.boxShadow = '0 4px 15px rgba(88, 166, 255, 0.3)';
+      });
+    });
+  </script>
 </body>
 </html>

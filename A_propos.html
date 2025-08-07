@@ -1,41 +1,75 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>À propos – Jul‑IA</title>
-  <link rel="shortcut icon" href="Jul-IA_logo.png" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>À propos – Jul-IA</title>
+  <link rel="shortcut icon" href="Jul-IA_logo.png">
   <style>
-    h1{
-      font-size: 2.5em;
-      color: #58a6ff;
-      text-align: center;
-      margin-top: 20px;
-    }
     :root {
-      --bg: #0d1117;
+      --primary-color: #58a6ff;
+      --secondary-color: #3a0ca3;
+      --accent-color: #7209b7;
+      --text-color: #e6edf3;
+      --text-secondary: #8b949e;
+      --bg-color: #0d1117;
       --bg-alt: #161b22;
-      --primary: #58a6ff;
-      --text: #e6edf3;
-      --secondary: #8b949e;
+      --card-bg: #1a1a2e;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      --border-radius: 12px;
+      --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      --glow: 0 0 10px rgba(88, 166, 255, 0.3);
     }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
-      background: linear-gradient(145deg, #0d1117, #0b1a2e);
-      color: var(--text);
-      font-family: 'Segoe UI', sans-serif;
-      line-height: 1.7;
+      background: linear-gradient(145deg, var(--bg-color), var(--bg-alt));
+      color: var(--text-color);
+      font-family: 'Segoe UI', 'Roboto', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
       padding-top: 70px;
     }
-    .logo {
-      font-size: 1.4em;
-      color: var(--primary);
-      font-weight: bold;
+
+    /* Animation de fond */
+    .animated-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
     }
+
+    .floating-element {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.1;
+      animation: float 20s linear infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0);
+      }
+      50% {
+        transform: translateY(-50px) translateX(30px);
+      }
+      100% {
+        transform: translateY(0) translateX(0);
+      }
+    }
+
+    /* Barre de navigation (style Documentation.html) */
     nav {
       position: fixed;
       top: 0;
@@ -48,20 +82,27 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
       z-index: 1000;
     }
-    
+
+    .logo {
+      font-size: 1.4em;
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
     nav a {
-      color: var(--text);
-      margin-left: 20px;
+      color: var(--text-color);
       text-decoration: none;
       transition: color 0.2s;
-    }
-    nav a:hover {
-      color: var(--primary);
-    }
-    
-    nav a {
       position: relative;
-      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: var(--primary-color);
     }
 
     nav a::after {
@@ -71,123 +112,32 @@
       height: 2px;
       bottom: -4px;
       left: 0;
-      background-color: var(--primary);
+      background-color: var(--primary-color);
       transition: width 0.3s ease;
     }
 
     nav a:hover::after {
       width: 100%;
     }
-    .container {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-    .card {
-      background: var(--bg-alt);
-      padding: 25px;
-      border-radius: 12px;
-      margin-bottom: 30px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-    }
-    .card h2 {
-      margin-top: 0;
-      color: var(--primary);
-    }
-    ul {
-      padding-left: 20px;
-      margin-top: 10px;
-    }
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 0.9em;
-      color: var(--secondary);
-      margin-top: 40px;
-    }
-    @media (max-width: 600px) {
-      nav {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      nav a {
-        margin-left: 0;
-        margin-top: 10px;
-      }
-    }
-    nav a,
-nav a:visited {
-  text-decoration: none;
-  border-bottom: none;
-}
 
-nav a:hover,
-nav a:focus {
-  text-decoration: none;
-  border-bottom: none;
-}
-
-
-    /* ===== ANIMATIONS AJOUTÉES ===== */
-    @keyframes fadeUp {
-      0% {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    /* Menu déroulant (ajouté comme dans Documentation.html) */
+    .dropdown {
+      position: relative;
+      display: inline-block;
     }
 
-    .card {
-      animation: fadeUp 0.8s ease forwards;
-      opacity: 0;
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: var(--bg-alt);
+      min-width: 220px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      border-radius: 0 0 8px 8px;
+      z-index: 1001;
     }
 
-    .card:nth-of-type(1) { animation-delay: 0.2s; }
-    .card:nth-of-type(2) { animation-delay: 0.4s; }
-    .card:nth-of-type(3) { animation-delay: 0.6s; }
-    .card:nth-of-type(4) { animation-delay: 0.8s; }
-
-    h1 {
-      animation: fadeUp 0.6s ease forwards;
-      opacity: 0;
-      animation-delay: 0.1s;
-    }
-    /* ===== FIN ANIMATIONS ===== */
-  </style>
-</head>
-<body>
-
-  <nav>
-    <div class="logo">Jul‑IA</div>
-    <div class="nav-links">
-      <a href="Page_acceuil.html">Accueil</a>
-      <a href="Jul-IA.html">Chatbot</a>
-      <div class="dropdown" tabindex="0" style="display:inline-block;position:relative;">
-        <a href="#" onclick="return false;">Projets</a>
-        <div class="dropdown-content" style="display:none;position:absolute;left:0;top:100%;background:var(--bg-alt);min-width:220px;box-shadow:0 4px 16px #000a;border-radius:0 0 8px 8px;z-index:1001;">
-          <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Laboratoire_CSS.html">Laboratoire code HTML</a>
-          <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Jeu/Playground.html">Playground</a>
-          <a href="file:///C:/Users/pefer/Documents/GitHub/Jul-IA/Code_Jul-IA/Nouveau_projet.html">File explorer</a>
-        </div>
-      </div>
-      <a href="Documentation.html">Documentation</a>
-      <a href="A_propos.html">À propos</a>
-    </div>
-  </nav>
-  <style>
-    .dropdown:focus-within .dropdown-content,
-    .dropdown:hover .dropdown-content {
-      display: block !important;
-    }
     .dropdown-content a {
-      color: var(--text);
+      color: var(--text-color);
       padding: 10px 24px;
       display: block;
       text-decoration: none;
@@ -195,50 +145,490 @@ nav a:focus {
       transition: background 0.2s, color 0.2s;
       border-radius: 0;
     }
+
     .dropdown-content a:hover {
-      background: #1a2537;
-      color: var(--primary);
+      background: rgba(88, 166, 255, 0.2);
+      color: var(--primary-color);
     }
-    .nav-links .dropdown > a {
-      cursor: pointer;
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    /* Conteneur principal */
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* En-tête */
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 0 1rem;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeIn 0.8s ease-out;
+      text-align: center;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      font-size: 1.1rem;
+      animation: fadeIn 1s ease-out;
+      animation-delay: 0.2s;
+      text-align: center;
+    }
+
+    /* Section principale */
+    .about-section {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 25px;
+      margin: 30px 0;
+      box-shadow: var(--box-shadow);
+      animation: fadeUp 0.5s ease-out;
+    }
+
+    .about-section h2 {
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      font-size: 1.5em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Cartes d'information */
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 3rem 0;
+    }
+
+    .info-card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      padding: 1.8rem;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+      border: 1px solid rgba(88, 166, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.6s ease-out;
+    }
+
+    .info-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      opacity: 0.8;
+    }
+
+    .info-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      border-color: rgba(88, 166, 255, 0.3);
+    }
+
+    .info-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+      display: flex;
+      justify-content: center;
+    }
+
+    .info-card h3 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .info-card p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .info-card ul {
+      padding-left: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .info-card li {
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      position: relative;
+      padding-left: 1rem;
+    }
+
+    .info-card li::before {
+      content: '•';
+      color: var(--primary-color);
+      position: absolute;
+      left: 0;
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      max-width: 1200px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+    }
+
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--primary-color), var(--accent-color));
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      margin-left: -1px;
+      opacity: 0.5;
+    }
+
+    .timeline-item {
+      padding: 10px 40px;
+      position: relative;
+      background-color: inherit;
+      width: 50%;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      right: -6px;
+      background-color: var(--primary-color);
+      border: 3px solid var(--bg-alt);
+      top: 15px;
+      border-radius: 50%;
+      z-index: 1;
+    }
+
+    .left {
+      left: 0;
+    }
+
+    .right {
+      left: 50%;
+    }
+
+    .left::before {
+      content: " ";
+      height: 0;
+      position: absolute;
+      top: 22px;
+      width: 0;
+      z-index: 1;
+      right: 30px;
+      border: medium solid var(--primary-color);
+      border-width: 8px 0 8px 8px;
+      border-radius: 0 0 0 6px;
+    }
+
+    .right::before {
+      content: " ";
+      height: 0;
+      position: absolute;
+      top: 22px;
+      width: 0;
+      z-index: 1;
+      left: 30px;
+      border: medium solid var(--primary-color);
+      border-width: 8px 8px 8px 0;
+      border-radius: 0 6px 0 0;
+    }
+
+    .timeline-content {
+      padding: 20px 30px;
+      background-color: var(--card-bg);
+      position: relative;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      border: 1px solid rgba(88, 166, 255, 0.1);
+    }
+
+    .timeline-content h3 {
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Pied de page */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.9em;
+      color: var(--text-secondary);
+      margin-top: 40px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 4rem 1rem 2rem;
+      }
+
+      .info-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .timeline::after {
+        left: 31px;
+      }
+
+      .timeline-item {
+        width: 100%;
+        padding-left: 70px;
+        padding-right: 25px;
+      }
+
+      .left::before, .right::before {
+        left: 15px;
+        border: medium solid var(--primary-color);
+        border-width: 8px 8px 8px 0;
+        border-radius: 0 6px 0 0;
+      }
+
+      .right {
+        left: 0;
+      }
+
+      .right::before {
+        left: 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .info-card {
+        padding: 1.5rem;
+      }
     }
   </style>
+</head>
+<body>
+  <!-- Animation de fond -->
+  <div class="animated-background" id="animatedBackground"></div>
 
-    <div class="container">
-    <h1>À propos de Jul‑IA</h1>
-    <p>Nous utilisons tous dans notre vie des IA comme ChatGPT ou Copilot par exemple. Mais, toutes ces IA on un défaut, pour avoir la meilleure version il faut payer. J'ai donc décider de créer une IA totalement gratuite, Jul-IA est née.</p>
+  <!-- Barre de navigation (identique à Documentation.html) -->
+  <nav>
+    <div class="logo">Jul-IA</div>
+    <div class="nav-links">
+      <a href="Page_acceuil.html">Accueil</a>
+      <a href="Jul-IA.html">Chatbot</a>
+      <div class="dropdown">
+        <a href="#">Projets</a>
+        <div class="dropdown-content">
+          <a href="Laboratoire_CSS.html">Laboratoire code HTML</a>
+          <a href="Jeu/Playground.html">Playground</a>
+          <a href="Nouveau_projet.html">File explorer</a>
+        </div>
+      </div>
+      <a href="Documentation.html">Documentation</a>
+      <a href="A_propos.html">À propos</a>
+    </div>
+  </nav>
 
-    <div class="card">
-        <h2>🚀 Mission</h2>
-        <p>Offrir une intelligence artificielle ouverte, performante et gratuite, utilisable par chacun, voilà la mission de Jul‑IA. Elle ne propose pas une version limitée par carte bancaire : elle donne accès aux outils les plus avancés au monde, sans dépenser un sou.</p>
+  <div class="container">
+    <header>
+      <h1>À propos de Jul-IA</h1>
+      <p class="subtitle">
+        Découvrez l'histoire, la mission et les valeurs qui animent Jul-IA, votre assistant IA intelligent et gratuit.
+      </p>
+    </header>
+
+    <div class="about-section">
+      <h2>🚀 Notre mission</h2>
+      <p>
+        Jul-IA est née d'une conviction simple : l'intelligence artificielle devrait être accessible à tous, sans restriction ni coût prohibitif.
+        Notre mission est de démocratiser l'accès à une IA performante, tout en garantissant le respect de la vie privée et la liberté des utilisateurs.
+      </p>
+      <p>
+        Contrairement aux solutions propriétaires qui limitent leurs fonctionnalités derrière des paywalls, nous croyons en un accès équitable à la technologie pour tous.
+      </p>
     </div>
 
-    <div class="card">
-        <h2>🧠 Une IA de niveau supérieur</h2>
-        <p>Jul‑IA fait tout ce qu’on attend d’une IA moderne, en mieux :</p>
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="info-icon">💡</div>
+        <h3>Notre histoire</h3>
+        <p>
+          Jul-IA a été créée en 2023 par Jules Ferrier, avec l'objectif de rendre l'IA accessible à tous.
+          Partant du constat que les meilleures solutions étaient souvent payantes, nous avons décidé de créer une alternative gratuite et performante.
+        </p>
+        <p>
+          Depuis notre lancement, nous avons aidé des milliers d'utilisateurs à travers le monde,
+          des étudiants aux développeurs professionnels, en passant par les simples curieux de technologie.
+        </p>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon">🌍</div>
+        <h3>Nos valeurs</h3>
         <ul>
-        <li>📝 Rédaction de textes clairs et personnalisés</li>
-        <li>🎨 Génération d’images et de vidéos de qualité ultra réalistes</li>
-        <li>💻 Programmation en HTML, JavaScript, Python, C++ et bien d’autres</li>
-        <li>🔊 Réponses vocales instantané</li>
+          <li><strong>Accessibilité :</strong> Une IA pour tous, sans restriction</li>
+          <li><strong>Transparence :</strong> Pas de collecte de données cachée</li>
+          <li><strong>Innovation :</strong> Des technologies de pointe</li>
+          <li><strong>Respect :</strong> De la vie privée et des utilisateurs</li>
+          <li><strong>Gratuité :</strong> Toutes les fonctionnalités sans coût</li>
         </ul>
+      </div>
+
+      <div class="info-card">
+        <div class="info-icon">🔧</div>
+        <h3>Notre technologie</h3>
+        <p>
+          Jul-IA utilise des modèles d'IA de pointe, optimisés pour la performance et l'efficacité.
+          Notre architecture unique permet des réponses rapides et pertinentes, même sur des appareils moins puissants.
+        </p>
+        <p>
+          Nous combinons plusieurs approches d'IA pour offrir une expérience complète :
+        </p>
+        <ul>
+          <li>Traitement du langage naturel</li>
+          <li>Apprentissage automatique</li>
+          <li>Réseaux de neurones</li>
+          <li>Analyse sémantique</li>
+        </ul>
+      </div>
     </div>
 
-    <div class="card">
-        <h2>🔓 Engagement pour la liberté</h2>
-        <p>J'ai fait en sorte que Jul-IA ne collecte absolument aucune donné sans votre consentement. Toutes vos donne lors d'un chat ne peuvent être utilise autrement que pour répondre a vos questions.</p>
+    <div class="timeline">
+      <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary-color);">⏳ Notre parcours</h2>
+
+      <div class="timeline-item left">
+        <div class="timeline-content">
+          <h3>2023 - Le début</h3>
+          <p>
+            L'idée de Jul-IA est née. Après des mois de développement, la première version voit le jour.
+            Nous commençons avec une petite communauté d'utilisateurs enthousiastes.
+          </p>
+        </div>
+      </div>
+
+      <div class="timeline-item right">
+        <div class="timeline-content">
+          <h3>2024 - Croissance rapide</h3>
+          <p>
+            Jul-IA gagne en popularité grâce à son approche unique.
+            Nous atteignons 10 000 utilisateurs actifs et ajoutons de nouvelles fonctionnalités.
+          </p>
+        </div>
+      </div>
+
+      <div class="timeline-item left">
+        <div class="timeline-content">
+          <h3>2025 - Innovation continue</h3>
+          <p>
+            Nous introduisons de nouvelles technologies d'IA et améliorons nos modèles.
+            Jul-IA devient une référence dans le domaine des IA gratuites et performantes.
+          </p>
+        </div>
+      </div>
+
+      <div class="timeline-item right">
+        <div class="timeline-content">
+          <h3>2026 - L'avenir</h3>
+          <p>
+            Nous continuons à innover et à améliorer Jul-IA.
+            Notre objectif reste le même : offrir la meilleure expérience d'IA, gratuite et accessible à tous.
+          </p>
+        </div>
+      </div>
     </div>
 
-    <div class="card">
-        <h2>🌍 Pour tout le monde</h2>
-        <p>Jul‑IA parle plus de 7000 langues, ce qui en fait une IA universelle. Elle comprend ton contexte, ton façon de t’exprimer, ta culture et s’adapte pour te répondre au plus juste. Qui que tu sois, étudiant, développeur ou simplement curieux, Jul‑IA te répondra.</p>
+    <div class="about-section">
+      <h2>👥 Notre équipe</h2>
+      <p>
+        Derrière Jul-IA se cache une petite équipe passionnée de développeurs, designers et spécialistes de l'IA.
+        Nous travaillons sans relâche pour améliorer constamment notre plateforme.
+      </p>
+      <p>
+        Bien que petite, notre équipe est composée de professionnels expérimentés dans leurs domaines respectifs,
+        tous unis par la même passion pour l'innovation et l'accès équitable à la technologie.
+      </p>
     </div>
-    </div>
-
-    <footer>
-      © 2025 – Projet Jul-IA par Jules Ferrier 
-    </footer>
   </div>
 
+  <footer>
+    © 2025 – Projet Jul-IA par Jules Ferrier | Tous droits réservés
+  </footer>
+
+  <script>
+    // Animation de fond
+    const background = document.getElementById('animatedBackground');
+    const colors = [
+      'rgba(88, 166, 255, 0.1)',
+      'rgba(114, 9, 183, 0.1)',
+      'rgba(58, 12, 163, 0.1)'
+    ];
+
+    // Créer des éléments flottants
+    for (let i = 0; i < 15; i++) {
+      const element = document.createElement('div');
+      element.className = 'floating-element';
+
+      // Taille aléatoire entre 20px et 100px
+      const size = Math.random() * 80 + 20;
+      element.style.width = `${size}px`;
+      element.style.height = `${size}px`;
+
+      // Position aléatoire
+      element.style.left = `${Math.random() * 100}%`;
+      element.style.top = `${Math.random() * 100}%`;
+
+      // Couleur aléatoire
+      element.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+      // Animation aléatoire
+      element.style.animationDuration = `${Math.random() * 20 + 10}s`;
+      element.style.animationDelay = `${Math.random() * 5}s`;
+
+      background.appendChild(element);
+    }
+  </script>
 </body>
 </html>

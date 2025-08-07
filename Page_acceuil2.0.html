@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bienvenue sur Jul-IA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #181c24;
+      color: #e8eaed;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #00fff7;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 18px;
+      color: #9aa0a6;
+      max-width: 600px;
+      margin-bottom: 24px;
+    }
+
+    select {
+      padding: 10px 16px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #31364a;
+      background: #232837;
+      color: #e8eaed;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 12px 24px;
+      background: #00fff7;
+      color: #181c24;
+      border: none;
+      border-radius: 24px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 24px; }
+      p { font-size: 16px; }
+      button { font-size: 14px; padding: 10px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Bienvenue sur Jul-IA</h1>
+  <p>Jul-IA est ton assistant IA personnel, rapide, multilingue et toujours prêt à discuter. Choisis ta langue et lance la conversation.</p>
+
+  <label for="langSelect" style="font-size: 18px; margin-bottom: 8px;">🌍 Choisissez votre langue :</label>
+  <select id="langSelect">
+    <option value="fr">🇫🇷 Français</option>
+    <option value="en">🇺🇸 English</option>
+    <option value="de">🇩🇪 Deutsch</option>
+  </select>
+
+  <button onclick="launchJulIA()">🚀 Commencer</button>
+
+  <script>
+    function launchJulIA() {
+      const lang = document.getElementById('langSelect').value;
+      localStorage.setItem('language', lang);
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
