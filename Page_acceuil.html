@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QLH05NH8LD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QLH05NH8LD');
+</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jul-IA - Votre assistant intelligent</title>
@@ -34,7 +42,7 @@
       position: relative;
     }
 
-    /* Animation de fond en vague améliorée */
+    /* Animation de fond en vague */
     .wave-background {
       position: fixed;
       top: 0;
@@ -84,7 +92,7 @@
       }
     }
 
-    /* Particules flottantes améliorées */
+    /* Particules flottantes */
     .particle {
       position: absolute;
       border-radius: 50%;
@@ -381,6 +389,76 @@
       line-height: 1.5;
     }
 
+    /* Section versions de Jul-IA */
+    .versions-section {
+      padding: 4rem 0;
+      position: relative;
+    }
+
+    .versions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .version-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: var(--transition);
+      border: 1px solid rgba(114, 9, 183, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 200px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      animation: fadeUp 0.5s ease-out;
+    }
+
+    .version-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .version-logo {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .version-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .version-card:hover .version-logo {
+      transform: scale(1.2) rotate(10deg);
+    }
+
+    .version-card h3 {
+      color: var(--text-color);
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .version-tag {
+      display: inline-block;
+      background: rgba(88, 166, 255, 0.2);
+      color: var(--text-color);
+      padding: 0.3rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+    }
+
     /* Section IA populaires */
     .ai-section {
       padding: 4rem 0;
@@ -501,7 +579,7 @@
         font-size: 2rem;
       }
 
-      .features-grid {
+      .features-grid, .versions-grid {
         grid-template-columns: 1fr;
       }
 
@@ -538,6 +616,7 @@
     </div>
     <div class="nav-links">
       <a href="#features">Fonctionnalités</a>
+      <a href="#versions">Versions</a>
       <a href="#ai-list">IA populaires</a>
       <a href="Documentation.html">Documentation</a>
       <a href="A_propos.html">À propos</a>
@@ -588,6 +667,30 @@
           <div class="feature-icon">🔄</div>
           <h3>Apprentissage continu</h3>
           <p>Jul-IA s'adapte et apprend de vos interactions pour mieux vous servir.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Versions de Jul-IA -->
+    <section id="versions" class="versions-section">
+      <h2 class="section-title">Évolution de Jul-IA</h2>
+      <div class="versions-grid">
+        <!-- Version 1.0 -->
+        <div class="version-card">
+          <div class="version-logo">
+            <img src="Jul-IA_logo.png" alt="Logo Jul-IA v1.0">
+          </div>
+          <h3>Jul-IA v1.0</h3>
+          <span class="version-tag">Première version</span>
+        </div>
+
+        <!-- Version 2.0 avec le logo -->
+        <div class="version-card">
+          <div class="version-logo">
+            <img src="Jul-IA_logo.png" alt="Logo Jul-IA v2.0">
+          </div>
+          <h3>Jul-IA v2.0</h3>
+          <span class="version-tag">Version en cours de développement</span>
         </div>
       </div>
     </section>
