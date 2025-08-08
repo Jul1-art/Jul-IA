@@ -801,7 +801,7 @@ async function sendMessage() {
         const response = await fetch("https://api.mistral.ai/v1/chat/completions", {
             method: "POST",
             headers: {
-                "Authorization": "Bearer vkL2MBCpeg11R2KtgnvkC8l470PM6EGh",
+                "Authorization": "Bearer rZhHBEyvgPdhECcW00xVDq3r01VYZRGU",
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -903,7 +903,7 @@ function addMessage(sender, text) {
 
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', sender);
-    messageDiv.innerHTML = text; 
+    messageDiv.innerHTML = text; // au lieu de textContent
     messagesDiv.appendChild(messageDiv);
 
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
