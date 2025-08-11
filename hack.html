@@ -1,199 +1,940 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>!!! SYSTEM BREACH !!!</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: black;
-      color: red;
-      font-family: 'Courier New', monospace;
-      height: 100vh;
-      overflow: hidden;
-      cursor: none;
-    }
+    <title>Terminal Hacker Crash - Windows Reboot</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Consolas&display=swap');
 
-    #terminal {
-      padding: 20px;
-      white-space: pre-wrap;
-      font-size: 16px;
-      text-shadow: 0 0 5px red;
-    }
+        :root {
+            --primary: #00ff00;
+            --secondary: #00aa00;
+            --tertiary: #005500;
+            --background: #0a0a0a;
+            --text: #e0e0e0;
+            --error: #ff5555;
+            --warning: #ffaa00;
+            --success: #00ff00;
+            --blue: #00a2ff;
+            --windows-blue: #0078d7;
+            --windows-dark: #0063b1;
+            --glow: 0 0 10px rgba(0, 255, 0, 0.7);
+            --windows-glow: 0 0 15px rgba(0, 120, 215, 0.7);
+        }
 
-    .glitch {
-      animation: glitch 0.2s infinite;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            cursor: none !important;
+        }
 
-    @keyframes glitch {
-      0% { transform: translate(1px, -1px); }
-      25% { transform: translate(-2px, 2px); }
-      50% { transform: translate(3px, 0); }
-      75% { transform: translate(-1px, -3px); }
-      100% { transform: translate(2px, 1px); }
-    }
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: var(--background);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
 
-    .flash {
-      animation: flash 0.1s infinite;
-    }
+        .terminal-container {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            height: 80vh;
+            background-color: #121212;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--tertiary);
+            z-index: 10;
+        }
 
-    @keyframes flash {
-      0%, 100% { background: black; }
-      50% { background: #2b0000; }
-    }
+        .terminal-header {
+            background-color: #1a1a1a;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--tertiary);
+        }
 
-    .fakeWindow {
-      position: fixed;
-      background: rgba(0, 0, 0, 0.95);
-      color: #f00;
-      border: 2px solid #a00;
-      padding: 10px;
-      font-size: 14px;
-      box-shadow: 0 0 10px red;
-      z-index: 9999;
-    }
+        .terminal-title {
+            color: var(--primary);
+            font-size: 1rem;
+            font-family: 'Fira Code', monospace;
+        }
 
-    #overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      z-index: 99999;
-      background: rgba(0,0,0,0.9);
-      pointer-events: none;
-      animation: flicker 0.15s infinite;
-    }
+        .terminal-controls {
+            display: flex;
+            gap: 10px;
+        }
 
-    @keyframes flicker {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
-    }
+        .terminal-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid var(--tertiary);
+        }
 
-    #reboot-screen {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: radial-gradient(circle at center, #001a33, #000);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: sans-serif;
-      font-size: 18px;
-      z-index: 100000;
-      opacity: 0;
-      pointer-events: none;
-    }
+        .terminal-control.close {
+            background-color: var(--error);
+        }
 
-    #loading-circle {
-      width: 50px;
-      height: 50px;
-      border: 5px solid #ccc;
-      border-top: 5px solid #09f;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-top: 20px;
-    }
+        .terminal-control.minimize {
+            background-color: var(--warning);
+        }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  </style>
+        .terminal-control.maximize {
+            background-color: var(--success);
+        }
+
+        .terminal-body {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .terminal-line {
+            margin-bottom: 5px;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .terminal-prompt {
+            color: var(--primary);
+            margin-right: 5px;
+        }
+
+        .terminal-input {
+            color: var(--text);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background-color: var(--primary);
+            animation: blink 1s infinite;
+            margin-left: 2px;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .typing-text {
+            border-right: 0.1em solid var(--primary);
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 0),
+                rgba(0, 0, 0, 0) 1px,
+                rgba(0, 255, 0, 0.05) 1px,
+                rgba(0, 255, 0, 0.05) 2px
+            );
+            pointer-events: none;
+            animation: scanlines 0.3s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes scanlines {
+            from { transform: translateY(0); }
+            to { transform: translateY(-5px); }
+        }
+
+        .matrix-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .matrix-drop {
+            position: absolute;
+            color: var(--primary);
+            font-size: 1rem;
+            opacity: 0;
+            animation: drop 10s linear infinite;
+            font-family: 'Fira Code', monospace;
+        }
+
+        @keyframes drop {
+            0% {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.5;
+            }
+            95% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .loading-text {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: var(--glow);
+        }
+
+        .progress-bar {
+            width: 300px;
+            height: 20px;
+            background-color: #222;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 1px solid var(--tertiary);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .loading-dots {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-top: 20px;
+            animation: loadingDots 1s infinite;
+        }
+
+        @keyframes loadingDots {
+            0%, 100% { content: '.'; }
+            33% { content: '..'; }
+            66% { content: '...'; }
+        }
+
+        .crash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            overflow: hidden;
+        }
+
+        .crash-text {
+            color: var(--error);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 0 0 10px var(--error);
+            animation: flicker 0.5s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .glitch-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 0, 0, 0.1);
+            pointer-events: none;
+            z-index: 300;
+            display: none;
+            animation: glitch 0.1s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0, 0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+            60% { transform: translate(-2px, -2px); }
+            80% { transform: translate(2px, 2px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .distortion-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 255, 0.1);
+            pointer-events: none;
+            z-index: 300;
+            display: none;
+            animation: distortion 0.5s infinite;
+        }
+
+        @keyframes distortion {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .error-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none"/><rect x="0" y="0" width="100" height="100" fill="rgba(255,0,0,0.1)" opacity="0.3"/></svg>');
+            pointer-events: none;
+            z-index: 400;
+            display: none;
+        }
+
+        /* Windows Reboot Screen */
+        .windows-reboot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 500;
+            color: white;
+            font-family: 'Consolas', monospace;
+            overflow: hidden;
+        }
+
+        .windows-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .windows-logo .logo-part {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: var(--windows-blue);
+            animation: windowsLogoAnimation 2s ease-in-out infinite;
+        }
+
+        .windows-logo .logo-part:nth-child(1) {
+            top: 0;
+            left: 0;
+            animation-delay: 0s;
+        }
+
+        .windows-logo .logo-part:nth-child(2) {
+            top: 0;
+            right: 0;
+            animation-delay: 0.2s;
+        }
+
+        .windows-logo .logo-part:nth-child(3) {
+            bottom: 0;
+            left: 0;
+            animation-delay: 0.4s;
+        }
+
+        .windows-logo .logo-part:nth-child(4) {
+            bottom: 0;
+            right: 0;
+            animation-delay: 0.6s;
+        }
+
+        @keyframes windowsLogoAnimation {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(0, 120, 215, 0.7);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 20px 5px rgba(0, 120, 215, 0.7);
+            }
+        }
+
+        .windows-reboot-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: white;
+            text-shadow: var(--windows-glow);
+        }
+
+        .windows-progress-container {
+            width: 300px;
+            height: 30px;
+            margin-top: 30px;
+            position: relative;
+        }
+
+        .windows-progress-track {
+            width: 100%;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .windows-progress-fill {
+            height: 100%;
+            background-color: var(--windows-blue);
+            width: 0%;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+            box-shadow: var(--windows-glow);
+        }
+
+        .windows-progress-dots {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .windows-progress-dot {
+            width: 8px;
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: dotPulse 1.5s infinite;
+        }
+
+        .windows-progress-dot:nth-child(1) { animation-delay: 0s; }
+        .windows-progress-dot:nth-child(2) { animation-delay: 0.2s; }
+        .windows-progress-dot:nth-child(3) { animation-delay: 0.4s; }
+        .windows-progress-dot:nth-child(4) { animation-delay: 0.6s; }
+        .windows-progress-dot:nth-child(5) { animation-delay: 0.8s; }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .windows-version {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* BIOS Screen */
+        .bios-screen {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: #000;
+            color: var(--primary);
+            font-family: 'Fira Code', monospace;
+            text-align: center;
+            padding-top: 50px;
+            overflow-y: auto;
+        }
+
+        .bios-text {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .bios-progress {
+            width: 300px;
+            height: 20px;
+            background-color: #222;
+            border-radius: 10px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .bios-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* New animations */
+        @keyframes flickerText {
+            0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+                opacity: 0.99;
+                text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+            }
+            20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+                opacity: 0.4;
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        .flicker-animation {
+            animation: flickerText 3s infinite;
+        }
+
+        @keyframes scanEffect {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 0 100%;
+            }
+        }
+
+        .scan-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(0, 255, 0, 0.1) 50%,
+                rgba(0, 0, 0, 0) 50%
+            );
+            background-size: 100% 2px;
+            animation: scanEffect 0.5s linear infinite;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Error messages styling */
+        .error-message {
+            color: var(--error);
+            font-weight: bold;
+            text-shadow: 0 0 5px var(--error);
+            animation: errorPulse 1.5s infinite;
+        }
+
+        @keyframes errorPulse {
+            0%, 100% { text-shadow: 0 0 5px var(--error); }
+            50% { text-shadow: 0 0 15px var(--error), 0 0 20px var(--error); }
+        }
+    </style>
 </head>
 <body>
+    <div class="scan-effect"></div>
 
-<div id="terminal"></div>
-<div id="overlay"></div>
-<div id="reboot-screen">
-  <div>Redémarrage de Windows</div>
-  <div id="loading-circle"></div>
-</div>
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-text">Initializing Hacker Terminal</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="loading-dots" id="loading-dots">.</div>
+    </div>
 
-<script>
-  const terminal = document.getElementById('terminal');
+    <div class="glitch-effect" id="glitch-effect"></div>
+    <div class="distortion-effect" id="distortion-effect"></div>
+    <div class="error-screen" id="error-screen"></div>
 
-  const lines = [
-    "[ ! ] Initialisation du protocole d'accès...",
-    "[ * ] Injection du module système...",
-    "[ * ] Ouverture du port 31337...",
-    "[ ! ] Tentative de contournement du pare-feu...",
-    "[ + ] Accès root obtenu.",
-    "[ ! ] Téléchargement des données personnelles...",
-    "[ ! ] Suppression des sauvegardes...",
-    "[ ! ] Altération du système de fichiers...",
-    "[ X ] CORRUPTION FATALE DETECTÉE",
-    "[ !!! ] SYSTEM OVERLOAD",
-    "[ !!! ] DESTRUCTION EN COURS...",
-    "[ !!! ] VIRUS ACTIF - FERMETURE DÉFINITIVE"
-  ];
+    <div class="windows-reboot-screen" id="windows-reboot-screen">
+        <div class="windows-logo">
+            <div class="logo-part"></div>
+            <div class="logo-part"></div>
+            <div class="logo-part"></div>
+            <div class="logo-part"></div>
+        </div>
+        <div class="windows-reboot-text">Windows is restarting...</div>
+        <div class="windows-progress-container">
+            <div class="windows-progress-track">
+                <div class="windows-progress-fill" id="windows-progress-fill"></div>
+            </div>
+            <div class="windows-progress-dots">
+                <div class="windows-progress-dot"></div>
+                <div class="windows-progress-dot"></div>
+                <div class="windows-progress-dot"></div>
+                <div class="windows-progress-dot"></div>
+                <div class="windows-progress-dot"></div>
+            </div>
+        </div>
+        <div class="windows-version">Windows 11 Pro | Version 23H2</div>
+    </div>
 
-  let index = 0;
-  let charIndex = 0;
+    <div class="terminal-container" id="terminal-container">
+        <div class="scanlines"></div>
+        <div class="matrix-rain" id="matrix-rain"></div>
+        <div class="terminal-header">
+            <div class="terminal-title">HACKER TERMINAL v4.2.7</div>
+            <div class="terminal-controls">
+                <div class="terminal-control close"></div>
+                <div class="terminal-control minimize"></div>
+                <div class="terminal-control maximize"></div>
+            </div>
+        </div>
+        <div class="terminal-body" id="terminal-body">
+            <!-- Les lignes seront ajoutées dynamiquement -->
+        </div>
+    </div>
 
-  function typeLine() {
-    if (index < lines.length) {
-      if (charIndex < lines[index].length) {
-        terminal.innerHTML += lines[index][charIndex];
-        charIndex++;
-        setTimeout(typeLine, 30);
-      } else {
-        terminal.innerHTML += '\n';
-        index++;
-        charIndex = 0;
-        setTimeout(typeLine, 300);
-      }
-    } else {
-      triggerDestruction();
-    }
-  }
+    <script>
+        // Variables globales
+        const terminalBody = document.getElementById('terminal-body');
+        const loadingScreen = document.getElementById('loading-screen');
+        const progressFill = document.getElementById('progress-fill');
+        const loadingDots = document.getElementById('loading-dots');
+        const matrixRain = document.getElementById('matrix-rain');
+        const terminalContainer = document.getElementById('terminal-container');
+        const glitchEffect = document.getElementById('glitch-effect');
+        const distortionEffect = document.getElementById('distortion-effect');
+        const errorScreen = document.getElementById('error-screen');
+        const windowsRebootScreen = document.getElementById('windows-reboot-screen');
+        const windowsProgressFill = document.getElementById('windows-progress-fill');
 
-  function triggerDestruction() {
-    document.body.classList.add('flash');
-    terminal.classList.add('glitch');
-    disableInput();
-    spawnWindows(0);
-    setTimeout(simulateReboot, 8000);
-  }
+        // Commandes possibles
+        const commands = [
+            "sudo hack -a --force",
+            "Accessing mainframe...",
+            "Bypassing firewall...",
+            "Decrypting data...",
+            "Downloading files...",
+            "Hack successful!",
+            "root@hacker:~$ ls -la",
+            "root@hacker:~$ cat secret_files.txt",
+            "root@hacker:~$ rm -rf /",
+            "Scanning network...",
+            "Finding vulnerabilities...",
+            "Exploiting security flaws...",
+            "Accessing database...",
+            "Downloading confidential files...",
+            "Hack completed successfully!",
+            "Initializing connection...",
+            "Establishing secure tunnel...",
+            "Running exploit script...",
+            "Extracting sensitive data...",
+            "Covering tracks...",
+            "Connection terminated."
+        ];
 
-  function disableInput() {
-    document.body.onkeydown = e => e.preventDefault();
-    document.body.onmousemove = e => e.preventDefault();
-    document.body.onmousedown = e => e.preventDefault();
-    document.body.oncontextmenu = e => e.preventDefault();
-  }
+        const errorMessages = [
+            "ERROR: Memory access violation at 0x00007FFE",
+            "CRITICAL: Kernel panic - not syncing: Fatal exception",
+            "WARNING: CPU temperature critical (105°C)",
+            "ERROR: Disk read error on device sda1",
+            "FATAL: System security breach detected",
+            "CRITICAL: Network connection lost",
+            "ERROR: Invalid opcode at 0x00000000",
+            "WARNING: High voltage detected on USB port",
+            "ERROR: Graphics driver crashed",
+            "CRITICAL: System files corrupted"
+        ];
 
-  function spawnWindows(count) {
-    if (count > 20) return;
-    const win = document.createElement('div');
-    win.className = 'fakeWindow';
-    win.style.top = `${Math.random() * window.innerHeight}px`;
-    win.style.left = `${Math.random() * window.innerWidth}px`;
-    win.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
-    win.innerText = '⚠️ CORRUPTION\n📁 SYSTEM32 DETRUIT\n💀 VIRUS ACTIF';
-    document.body.appendChild(win);
-    setTimeout(() => spawnWindows(count + 1), 300 + Math.random() * 300);
-  }
+        // Initialisation du terminal
+        function initTerminal() {
+            // Simulation de chargement
+            simulateLoading();
 
-  function simulateReboot() {
-    document.body.classList.remove('flash');
-    terminal.classList.remove('glitch');
-    terminal.innerHTML = '';
-    document.querySelectorAll('.fakeWindow').forEach(w => w.remove());
+            // Après le chargement, on commence le terminal
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                startTerminal();
+                createMatrixRain();
+                startCrashSequence();
+            }, 5000);
+        }
 
-    const rebootScreen = document.getElementById('reboot-screen');
-    rebootScreen.style.opacity = 1;
-    rebootScreen.style.pointerEvents = 'auto';
+        // Simulation de chargement
+        function simulateLoading() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 5;
+                if (progress > 100) progress = 100;
+                progressFill.style.width = `${progress}%`;
 
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 5000);
-  }
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    loadingDots.style.animation = 'none';
+                }
+            }, 200);
 
-  typeLine();
-</script>
+            // Animation des points de chargement
+            let dotCount = 0;
+            setInterval(() => {
+                dotCount = (dotCount + 1) % 4;
+                loadingDots.textContent = '.'.repeat(dotCount);
+            }, 500);
+        }
 
+        // Démarrage du terminal
+        function startTerminal() {
+            // Ajout des premières lignes
+            addLine("System initialized", "system");
+            addLine("Connecting to mainframe...", "connecting");
+            addLine("Authentication required", "warning");
+
+            // Simulation de saisie
+            simulateTyping();
+
+            // Ajout périodique de nouvelles lignes
+            setInterval(addRandomLine, 1500);
+        }
+
+        // Ajout d'une ligne dans le terminal
+        function addLine(text, type = "normal") {
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+
+            if (type === "prompt") {
+                line.innerHTML = `<span class="terminal-prompt">root@hacker:~$</span> <span class="terminal-input">${text}</span>`;
+            } else if (type === "system") {
+                line.innerHTML = `<span style="color: var(--success)">[SYSTEM]</span> ${text}`;
+            } else if (type === "warning") {
+                line.innerHTML = `<span style="color: var(--warning)">[WARNING]</span> ${text}`;
+            } else if (type === "error") {
+                line.innerHTML = `<span class="error-message">[ERROR]</span> <span class="flicker-animation">${text}</span>`;
+            } else {
+                line.textContent = text;
+            }
+
+            terminalBody.appendChild(line);
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+        }
+
+        // Simulation de saisie
+        function simulateTyping() {
+            const typingText = document.createElement('div');
+            typingText.className = 'typing-text';
+            typingText.id = 'typing-text';
+            typingText.textContent = 'root@hacker:~$ ';
+            terminalBody.appendChild(typingText);
+
+            const commandsToType = [
+                "sudo hack -a --force",
+                "Accessing mainframe...",
+                "Bypassing firewall...",
+                "Decrypting data...",
+                "Downloading files...",
+                "Hack successful!"
+            ];
+
+            let i = 0;
+            const typingInterval = setInterval(() => {
+                if (i >= commandsToType.length) {
+                    clearInterval(typingInterval);
+                    return;
+                }
+
+                // Effacer le texte précédent
+                typingText.textContent = 'root@hacker:~$ ';
+
+                // Ajouter le nouveau texte
+                const command = commandsToType[i];
+                let j = 0;
+                const charInterval = setInterval(() => {
+                    if (j >= command.length) {
+                        clearInterval(charInterval);
+                        i++;
+                        if (i < commandsToType.length) {
+                            setTimeout(() => {
+                                typingText.textContent = 'root@hacker:~$ ';
+                                typingText.style.animation = 'none';
+                                void typingText.offsetWidth;
+                                typingText.style.animation = 'typing 2s steps(40, end)';
+                            }, 1000);
+                        }
+                        return;
+                    }
+
+                    typingText.textContent += command[j];
+                    j++;
+                }, 50);
+            }, 3000);
+        }
+
+        // Ajout d'une ligne aléatoire
+        function addRandomLine() {
+            const randomCommand = commands[Math.floor(Math.random() * commands.length)];
+            const types = ["normal", "prompt", "system", "warning", "error"];
+            const randomType = types[Math.floor(Math.random() * types.length)];
+
+            addLine(randomCommand, randomType);
+        }
+
+        // Création de l'effet matrix
+        function createMatrixRain() {
+            const chars = '0123456789ABCDEF';
+            const containerWidth = matrixRain.offsetWidth;
+            const containerHeight = matrixRain.offsetHeight;
+
+            for (let i = 0; i < 100; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'matrix-drop';
+
+                // Position aléatoire
+                drop.style.left = Math.random() * containerWidth + 'px';
+
+                // Longueur aléatoire
+                const length = Math.floor(Math.random() * 20) + 10;
+                let text = '';
+                for (let j = 0; j < length; j++) {
+                    text += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                drop.textContent = text;
+
+                // Délai d'animation aléatoire
+                drop.style.animationDelay = Math.random() * 5 + 's';
+
+                matrixRain.appendChild(drop);
+            }
+        }
+
+        // Séquence de crash
+        function startCrashSequence() {
+            // Première phase - Erreurs mineures
+            setTimeout(() => {
+                addLine("WARNING: High memory usage detected", "warning");
+                addLine("ERROR: Segment fault in process 421", "error");
+                addLine("WARNING: System instability increasing", "warning");
+            }, 5000);
+
+            // Deuxième phase - Erreurs critiques
+            setTimeout(() => {
+                addLine("CRITICAL: Kernel panic detected", "error");
+                addLine("ERROR: Memory corruption in sector 0x4F2A", "error");
+                addLine("WARNING: System failure imminent", "warning");
+
+                // Activation des effets visuels
+                glitchEffect.style.display = 'block';
+                distortionEffect.style.display = 'block';
+
+                // Ajout d'erreurs visuelles
+                setInterval(() => {
+                    const randomX = Math.random() * window.innerWidth;
+                    const randomY = Math.random() * window.innerHeight;
+                    const glitch = document.createElement('div');
+                    glitch.style.position = 'absolute';
+                    glitch.style.left = `${randomX}px`;
+                    glitch.style.top = `${randomY}px`;
+                    glitch.style.width = `${Math.random() * 50 + 10}px`;
+                    glitch.style.height = `${Math.random() * 10 + 5}px`;
+                    glitch.style.backgroundColor = `rgba(255, 0, 0, ${Math.random() * 0.3 + 0.1})`;
+                    glitch.style.animation = `glitch 0.1s linear infinite`;
+                    glitchEffect.appendChild(glitch);
+
+                    setTimeout(() => {
+                        glitch.remove();
+                    }, 1000);
+                }, 200);
+
+                // Ajout d'erreurs aléatoires
+                setInterval(() => {
+                    const randomError = errorMessages[Math.floor(Math.random() * errorMessages.length)];
+                    addLine(randomError, "error");
+                }, 1000);
+            }, 10000);
+
+            // Troisième phase - Crash final
+            setTimeout(() => {
+                // Ajout d'erreurs fatales
+                addLine("FATAL ERROR: System crash", "error");
+                addLine("CRITICAL: All systems failing", "error");
+                addLine("EMERGENCY: Shutting down...", "error");
+
+                // Activation de l'écran d'erreur
+                errorScreen.style.display = 'block';
+                terminalContainer.style.display = 'none';
+
+                // Animation de l'écran d'erreur
+                setInterval(() => {
+                    const randomX = Math.random() * window.innerWidth;
+                    const randomY = Math.random() * window.innerHeight;
+                    const errorBlock = document.createElement('div');
+                    errorBlock.style.position = 'absolute';
+                    errorBlock.style.left = `${randomX}px`;
+                    errorBlock.style.top = `${randomY}px`;
+                    errorBlock.style.width = `${Math.random() * 100 + 50}px`;
+                    errorBlock.style.height = `${Math.random() * 50 + 20}px`;
+                    errorBlock.style.backgroundColor = `rgba(255, 0, 0, ${Math.random() * 0.2 + 0.1})`;
+                    errorBlock.style.animation = `distortion 0.5s infinite`;
+                    errorScreen.appendChild(errorBlock);
+
+                    setTimeout(() => {
+                        errorBlock.remove();
+                    }, 2000);
+                }, 100);
+
+                // Démarrage du redémarrage Windows
+                setTimeout(() => {
+                    errorScreen.style.display = 'none';
+                    windowsRebootScreen.style.display = 'flex';
+
+                    // Simulation du redémarrage Windows
+                    let progress = 0;
+                    const progressInterval = setInterval(() => {
+                        progress += 1;
+                        windowsProgressFill.style.width = `${progress}%`;
+
+                        if (progress >= 100) {
+                            clearInterval(progressInterval);
+                            setTimeout(() => {
+                                // Redirection vers la page d'accueil
+                                window.location.href = "index.html";
+                            }, 2000);
+                        }
+                    }, 50);
+                }, 5000);
+            }, 15000);
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', initTerminal);
+    </script>
 </body>
 </html>

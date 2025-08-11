@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <title>Jul-IA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="shortcut icon" href="Jul-IA_logo.png" />
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
   <style>
     /* === Reset & base === */
     html, body {
@@ -236,23 +239,6 @@
       0% { transform: rotate(0deg);}
       100% { transform: rotate(360deg);}
     }
-    /* Bouton nuit/jour */
-    #theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 30;
-      font-size: 1.5em;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #00ccff;
-      transition: color 0.3s;
-      user-select: none;
-    }
-    #theme-toggle:hover {
-      color: #0077cc;
-    }
 
     /* Responsive */
     @media (max-width: 600px) {
@@ -268,7 +254,6 @@
   <canvas id="particles"></canvas>
 
   <div id="logo-corner" title="Jul-IA">Jul-IA</div>
-  <button id="theme-toggle">☀️</button>
   <div id="cursor-dot"></div>
 
   <div id="center-container">
@@ -457,25 +442,6 @@
         startExperience();
       }
     });
-
-    // === Theme toggle button ===
-    const themeBtn = document.getElementById("theme-toggle");
-    themeBtn.onclick = () => {
-      if(document.body.getAttribute("data-theme") === "light") {
-        document.body.removeAttribute("data-theme");
-        themeBtn.textContent = "☀️";
-        localStorage.setItem("theme", "dark");
-      } else {
-        document.body.setAttribute("data-theme", "light");
-        themeBtn.textContent = "🌙";
-        localStorage.setItem("theme", "light");
-      }
-    };
-    // Charger le thème sauvegardé
-    if(localStorage.getItem("theme") === "light") {
-      document.body.setAttribute("data-theme", "light");
-      themeBtn.textContent = "🌙";
-    }
   </script>
 </body>
 </html>
