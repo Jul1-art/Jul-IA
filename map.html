@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Historique de géolocalisation</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #map {
+      height: 500px;
+      margin-bottom: 30px;
+    }
+    .day-group {
+      margin-bottom: 40px;
+    }
+    .day-title {
+      font-weight: bold;
+      font-size: 1.3em;
+      margin-bottom: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>🗺️ Historique de géolocalisation</h1>
+  <div id="map"></div>
+  <h2>📊 Positions triées par jour</h2>
+  <div id="history"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    async function getAddress(lat, lon) {
+      const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
+      try {
+        const response = await fetch(url, {
+          headers: { 'User-Agent': 'GeoTrackerApp/1.0' }
+        });
+        const data = await response.json();
+        const address = data.address;
+        const city = address.city || address.town || address.village || "Inconnue";
+        const road = address.road || "";
+        const houseNumber = address.house_number || "";
+        return `${road} ${houseNumber}, ${city}`;
+      } catch (error) {
+        console.error("Erreur de géocodage :", error);
+        return "Adresse inconnue";
+      }
+    }
+
+    async function displayHistory() {
+      const geoData = JSON.parse(localStorage.getItem('geoData')) || [];
+      if (geoData.length === 0) {
+        document.getElementById('history').textContent = "Aucune position enregistrée.";
+        return;
+      }
+
+      const map = L.map('map').setView([43.7, 7.1], 10);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      const grouped = {};
+
+      for (const entry of geoData) {
+        const date = new Date(entry.timestamp).toLocaleDateString('fr-FR');
+        if (!grouped[date]) grouped[date] = [];
+        grouped[date].push(entry);
+      }
+
+      const historyDiv = document.getElementById('history');
+
+      for (const date of Object.keys(grouped).sort().reverse()) {
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'day-group';
+
+        const title = document.createElement('div');
+        title.className = 'day-title';
+        title.textContent = `📅 ${date}`;
+        groupDiv.appendChild(title);
+
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        thead.innerHTML = `
+          <tr>
+            <th>🕒 Heure</th>
+            <th>📍 Latitude</th>
+            <th>📍 Longitude</th>
+            <th>🏠 Adresse</th>
+          </tr>
+        `;
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+
+        for (const entry of grouped[date]) {
+          const { latitude, longitude, timestamp } = entry;
+          const time = new Date(timestamp).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+          const address = await getAddress(latitude, longitude);
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${time}</td>
+            <td>${latitude.toFixed(6)}</td>
+            <td>${longitude.toFixed(6)}</td>
+            <td>${address}</td>
+          `;
+          tbody.appendChild(row);
+
+          L.marker([latitude, longitude])
+            .addTo(map)
+            .bindPopup(`<strong>${address}</strong><br>${date} ${time}`);
+        }
+
+        table.appendChild(tbody);
+        groupDiv.appendChild(table);
+        historyDiv.appendChild(groupDiv);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', displayHistory);
+  </script>
+</body>
+</html>

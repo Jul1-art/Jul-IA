@@ -1346,7 +1346,49 @@
           icon.style.transform = 'translateY(0) scale(1)';
         });
       });
-    });
-  </script>
+  })
+  document.addEventListener('DOMContentLoaded', () => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          const timestamp = new Date().toISOString();
+          const today = new Date().toISOString().split('T')[0]; // format YYYY-MM-DD
+
+          let geoData = [];
+          try {
+            geoData = JSON.parse(localStorage.getItem('geoData')) || [];
+          } catch (e) {
+            console.error("Erreur de lecture localStorage:", e);
+          }
+
+          // Vérifie si une position similaire existe déjà aujourd’hui
+          const alreadyExists = geoData.some(entry => {
+            const entryDate = entry.timestamp.split('T')[0];
+            const sameDay = entryDate === today;
+            const sameLocation =
+              Math.abs(entry.latitude - latitude) < 0.0001 &&
+              Math.abs(entry.longitude - longitude) < 0.0001;
+            return sameDay && sameLocation;
+          });
+
+          // Ajouter la nouvelle position
+          geoData.push({ latitude, longitude, timestamp });
+          localStorage.setItem('geoData', JSON.stringify(geoData));
+        },
+        (error) => {
+          alert("❌ Erreur de géolocalisation : " + error.message);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        }
+      );
+    } else {
+      alert("🚫 La géolocalisation n'est pas disponible sur ce navigateur.");
+    }
+  });
+</script>
 </body>
 </html>
