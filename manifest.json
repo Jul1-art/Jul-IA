@@ -1,19 +1,14 @@
 {
-  "name": "Mon Application",
-  "short_name": "App",
-  "start_url": ".",
+  "name": "Jul-IA",
+  "short_name": "Jul-IA",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "background_color": "#071026",
+  "theme_color": "#00fff7",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "Jul-IA_logo.png",
       "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
       "type": "image/png"
     }
   ]

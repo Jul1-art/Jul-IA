@@ -1,2 +1,3 @@
 self.addEventListener("install", () => self.skipWaiting());
-self.addEventListener("fetch", (e) => {});
+self.addEventListener("fetch", (event) => {
+});
