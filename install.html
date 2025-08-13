@@ -6,11 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="Jul-IA_logo.png" />
   <link rel="manifest" href="manifest.json" />
-  <script>
-   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js");
-   }
-  </script>
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/Jul-IA/sw.js").then(() => {
+      console.log("✅ Service worker actif");
+    });
+  }
+</script>
   <style>
     /* 🌙 Thème Jul-IA */
     :root {
