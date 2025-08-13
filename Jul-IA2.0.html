@@ -66,8 +66,10 @@
             gap: 8px;
         }
         .sidebar button:hover, .sidebar button.active {
-            background: var(--accent-color);
+            background: linear-gradient(90deg, var(--accent-color) 60%, #00bfae 100%);
             color: #181c24;
+            box-shadow: 0 2px 12px rgba(0,255,247,0.18);
+            transform: scale(1.04);
         }
         .sidebar button.active:hover {
             box-shadow: 0 0 0 4px rgba(0,255,247,0.18);
@@ -80,28 +82,12 @@
             margin-bottom: 18px;
             align-items: center;
         }
-        .theme-toggle {
-            padding: 8px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-primary);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-        }
-        .theme-toggle:hover {
-            background: var(--hover-bg);
-        }
         .theme-toggle:active #themeIcon {
             animation: rotateTheme 0.5s;
         }
         @keyframes rotateTheme {
-            0% { transform: rotate(0);}
-            100% { transform: rotate(360deg);}
+            0% { transform: rotate(0); }
+            100% { transform: rotate(360deg); }
         }
         .language-select {
             padding: 8px 12px;
@@ -153,17 +139,14 @@
             0% { background-position: 0 0; }
             100% { background-position: 100% 100%; }
         }
-        .message {
-            display: block;
-            font-size: 16px;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            background: none;
-            border: none;
-            box-shadow: none;
-            padding: 0;
-            animation: messageIn 0.5s cubic-bezier(.23,1.02,.53,.97) forwards;
-        }
+        /* Animation d'apparition des messages */
+@keyframes messagePop {
+  0% { opacity: 0; transform: translateY(30px) scale(0.95);}
+  100% { opacity: 1; transform: translateY(0) scale(1);}
+}
+.message {
+  animation: messagePop 0.5s cubic-bezier(.23,1.02,.53,.97) forwards;
+}
         .message.user {
             text-align: right;
             color: var(--accent-color);
@@ -171,28 +154,22 @@
         .message.bot {
             text-align: left;
             color: var(--text-primary);
-            white-space: pre-wrap; /* Permet les sauts de ligne */
+            white-space: pre-wrap;
             line-height: 1.6;
             font-size: 16px;
         }
-
-        .message.bot h1,
-        .message.bot h2,
-        .message.bot h3 {
+        .message.bot h1, .message.bot h2, .message.bot h3 {
             color: var(--accent-color);
             margin: 12px 0 6px;
             font-weight: bold;
         }
-
         .message.bot p {
             margin: 10px 0;
         }
-
         .message.bot ul {
             padding-left: 20px;
             margin: 12px 0;
         }
-
         .message.bot li {
             margin-bottom: 6px;
         }
@@ -253,9 +230,9 @@
             animation: bounceSend 0.2s;
         }
         @keyframes bounceSend {
-            0% { transform: scale(1);}
-            50% { transform: scale(1.08);}
-            100% { transform: scale(1);}
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
         }
         .send-btn::after {
             content: '';
@@ -310,17 +287,17 @@
             30% { transform: translateY(-10px); }
         }
         @media (max-width: 400px) {
-        .header h1 {
-            font-size: 18px;
-        }
-        .send-btn {
-            font-size: 14px;
-            padding: 10px;
-        }
-        .input-area input {
-            font-size: 14px;
-            padding: 10px;
-        }
+            .header h1 {
+                font-size: 18px;
+            }
+            .send-btn {
+                font-size: 14px;
+                padding: 10px;
+            }
+            .input-area input {
+                font-size: 14px;
+                padding: 10px;
+            }
         }
         @media (max-width: 900px) {
             .sidebar { width: 100px; padding: 10px 4px; }
@@ -329,7 +306,7 @@
             #chatbox { padding: 10px 4px; }
             .input-area { padding: 10px 4px; }
             .input-area {
-                padding-bottom: 30px; /* Espace supplémentaire en bas */
+                padding-bottom: 30px;
             }
         }
         @media (max-width: 600px) {
@@ -342,290 +319,299 @@
             .input-container input { font-size: 16px; padding: 12px 10px;}
             .send-btn { width: 100%; padding: 12px 0;}
             .input-area {
-                padding-bottom: 30px; /* Espace supplémentaire en bas */
+                padding-bottom: 30px;
             }
         }
-    .code-block {
-    background-color: #232837;
-    border-radius: 8px;
-    margin-top: 12px;
-    font-family: monospace;
-    overflow-x: auto;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-
-    .code-topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #1a1e29;
-    padding: 6px 12px;
-    font-size: 14px;
-    font-weight: bold;
-    color: var(--accent-color);
-    }
-
-    .copy-btn {
-    background-color: transparent;
-    border: 1px solid var(--accent-color);
-    color: var(--accent-color);
-    padding: 4px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    }
-
-    .copy-btn:hover {
-    background-color: var(--accent-color);
-    color: #181c24;
-    transform: scale(1.05);
-    }
-
-    pre {
-    margin: 0;
-    padding: 12px;
-    white-space: pre-wrap;
-    color: #e8eaed;
-    }
-    .action-buttons {
-        padding: 20px 40px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-        justify-content: center;
-    }
-
-    .action-buttons button {
-        background-color: var(--accent-color);
-        color: #181c24;
-        border: none;
-        border-radius: 30px;
-        padding: 12px 20px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 2px 6px rgba(0,255,247,0.2);
-        transition: transform 0.2s, background 0.3s;
-    }
-
-    .action-buttons button:hover {
-        background-color: #00e0d5;
-        transform: scale(1.05);
-    }
-    /*barre de question*/
-    .input-bar {
-        display: flex;
-        flex-direction: column;
-        padding: 20px 40px;
-        background-color: var(--bg-secondary);
-        border-top: 1px solid var(--border-color);
-        gap: 12px;
-    }
-    .input-bar input {
-        width: 100%;
-        padding: 14px 18px;
-        border-radius: 20px;
-        border: 1px solid var(--border-color);
-        font-size: 15px;
-        background: var(--bg-primary);
-        color: var(--text-primary);
-    }
-    .input-actions {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-    }
-    .icon-btn {
-        background: var(--bg-primary);
-        border: 1px solid var(--border-color);
-        border-radius: 10px;
-        color: var(--text-primary);
-        padding: 10px 14px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-    .icon-btn:hover {
-        background: var(--hover-bg);
-    }
-    .quick-reply {
-        background-color: var(--accent-color);
-        color: #181c24;
-        border: none;
-        border-radius: 20px;
-        padding: 10px 18px;
-        font-size: 14px;
-        cursor: pointer;
-        font-weight: 600;
-    }
-    .send-btn {
-        background-color: var(--accent-color);
-        color: #181c24;
-        border: none;
-        border-radius: 20px;
-        padding: 10px 20px;
-        font-size: 14px;
-        cursor: pointer;
-        font-weight: 600;
-    }
-.chat-input-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--bg-secondary);
-    padding: 14px 24px;
-    border-top: 1px solid var(--border-color);
-    position: relative;
-    gap: 12px;
+        .code-block {
+            background-color: #232837;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-family: monospace;
+            overflow-x: auto;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .code-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #1a1e29;
+            padding: 6px 12px;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        .copy-btn {
+            background-color: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .copy-btn:hover {
+            background-color: var(--accent-color);
+            color: #181c24;
+            transform: scale(1.05);
+        }
+        pre {
+            margin: 0;
+            padding: 12px;
+            white-space: pre-wrap;
+            color: #e8eaed;
+        }
+        .action-buttons {
+            padding: 20px 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+        }
+        .action-buttons button {
+            background-color: var(--accent-color);
+            color: #181c24;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,255,247,0.2);
+            transition: transform 0.2s, background 0.3s;
+        }
+        .action-buttons button:hover {
+            background-color: #00e0d5;
+            transform: scale(1.05);
+        }
+        .input-bar {
+            display: flex;
+            flex-direction: column;
+            padding: 20px 40px;
+            background-color: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            gap: 12px;
+        }
+        .input-bar input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            font-size: 15px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        .input-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .icon-btn {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .icon-btn:hover {
+            background: var(--hover-bg);
+        }
+        .quick-reply {
+            background-color: var(--accent-color);
+            color: #181c24;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 18px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .chat-input-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-secondary);
+            padding: 14px 24px;
+            border-top: 1px solid var(--border-color);
+            position: relative;
+            gap: 12px;
+        }
+        .left-side {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .jul-logo {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .jul-logo:hover {
+            transform: rotate(8deg) scale(1.1);
+            box-shadow: 0 0 8px rgba(0,255,247,0.4);
+        }
+        .quick-reply-btn {
+            background: var(--accent-color);
+            color: #181c24;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .chat-input-bar input {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+        .right-side {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .menu-toggle, #dynamicBtn {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 8px;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+        .dropdown-menu {
+            position: absolute;
+            right: 40px;
+            top: -115px;
+            background: var(--bg-sidebar);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1000;
+        }
+        .dropdown-menu.hidden {
+            display: none;
+        }
+        .dropdown-menu button {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .dropdown-menu button:hover {
+            background: var(--hover-bg);
+        }
+        .hidden {
+            display: none;
+        }
+        .file-display {
+            padding: 12px 24px;
+            background: var(--bg-sidebar);
+            color: var(--accent-color);
+            font-size: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .file-display.hidden {
+            display: none;
+        }
+        .chat-file {
+            margin-bottom: 6px;
+            padding: 6px 10px;
+            background-color: var(--bg-secondary);
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+            color: var(--accent-color);
+        }
+        /* Animations supplémentaires */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .conversation-removing {
+            animation: fadeOut 0.4s forwards;
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(-20px); }
+        }
+        .shake {
+            animation: shake 0.4s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .chat-renamed {
+            animation: pulse 1.2s;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        /* Fond animé avec particules */
+.animated-bg {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
 }
-
-.left-side {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.15;
+  background: var(--accent-color);
+  animation: floatParticle 12s linear infinite;
 }
-
-.jul-logo {
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-}
-
-.quick-reply-btn {
-    background: var(--accent-color);
-    color: #181c24;
-    border: none;
-    border-radius: 20px;
-    padding: 8px 12px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.chat-input-bar input {
-    flex: 1;
-    padding: 12px 16px;
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    font-size: 15px;
-}
-
-.right-side {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.menu-toggle, #dynamicBtn {
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 8px;
-    cursor: pointer;
-    color: var(--text-primary);
-    font-size: 16px;
-}
-
-.dropdown-menu {
-    position: absolute;
-    right: 40px;
-    top: -115px;
-    background: var(--bg-sidebar);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    z-index: 1000;
-}
-
-.dropdown-menu.hidden {
-    display: none;
-}
-
-.dropdown-menu button {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    border: none;
-    padding: 8px;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.dropdown-menu button:hover {
-    background: var(--hover-bg);
-}
-
-.hidden {
-    display: none;
-}
-.jul-logo {
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.jul-logo:hover {
-    transform: rotate(8deg) scale(1.1);
-    box-shadow: 0 0 8px rgba(0,255,247,0.4);
-}
-.file-display {
-    padding: 12px 24px;
-    background: var(--bg-sidebar);
-    color: var(--accent-color);
-    font-size: 15px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.file-display.hidden {
-    display: none;
-}
-.chat-file {
-    margin-bottom: 6px;
-    padding: 6px 10px;
-    background-color: var(--bg-secondary);
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 13px;
-    color: var(--accent-color);
+@keyframes floatParticle {
+  0% { transform: translateY(100vh) scale(0.7);}
+  100% { transform: translateY(-10vh) scale(1.2);}
 }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <div class="controls">
-            <button class="theme-toggle" onclick="toggleTheme()" title="Basculer le thème">
-                <span id="themeIcon">🌙</span>
-            </button>
             <select class="language-select" id="languageSelect" onchange="changeLanguage(this.value)">
                 <option value="fr">🇫🇷 Français</option>
                 <option value="en">🇺🇸 English</option>
                 <option value="de">🇩🇪 Deutsch</option>
             </select>
         </div>
-        <h2 id="conversationsTitle">Conversations</h2>
+        <h2 id="ConversationsTitle">Conversations</h2>
         <button onclick="startNewChat()" class="active">
-            <span>➕</span>
+            <span>+</span>
             <span id="newChatBtn">Nouvelle conversation</span>
         </button>
-        <ul id="conversationsList" style="list-style:none; padding:0; margin:10px 0 0 0;"></ul>
+        <ul id="ConversationsList" style="list-style:none; padding:0; margin:10px 0 0 0;"></ul>
     </div>
     <div class="main">
         <div class="header">
-            <h1>Jul-IA</h1>
+            <h1>Jul-IA 2.0</h1>
             <button onclick="window.location.href='Page_acceuil.html'" style="margin-left:20px;padding:10px 18px;background:var(--accent-color);color:#181c24;border:none;border-radius:20px;cursor:pointer;font-size:15px;font-weight:600;transition:background 0.2s;">
                 ⬅️ Accueil
             </button>
         </div>
         <div id="chatbox">
             <div class="empty-state">
-                <h3 id="welcome">Bienvenue sur Jul-IA</h3>
-                <p id="welcomeText">Commencez une conversation en tapant votre message ci-dessous.</p>
+                <h3 id="welcome">Bienvenue sur Jul-IA 2.0</h3>
+                <p id="welcomeText">Votre assistant personnel d'IA multilingue.</p>
             </div>
         </div>
         <div class="action-buttons">
@@ -645,12 +631,18 @@
                 <img src="Jul-IA_logo.png" alt="Jul-IA" class="jul-logo" />
                 <button class="quick-reply-btn">Réponse rapide ▼</button>
             </div>
-
-            <input type="text" id="userInput" placeholder="Pose ta question ici..." 
+            <input type="text" id="userInput" placeholder="Pose ta question ici..."
                 oninput="toggleSendIcon()" onkeydown="handleKeyPress(event)" />
-
             <div class="right-side">
-                <button class="menu-toggle" onclick="toggleDropdown(event)">➕</button>
+                <button class="menu-toggle" onclick="toggleDropdown(event)">
+                    <div style="width: 24px; height: 24px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" width="100%" height="100%">
+                           <line x1="12" y1="5" x2="12" y2="19"></line>
+                           <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </div>
+                </button>
                 <button id="dynamicBtn" onclick="handleDynamicClick()">🎙️</button>
                 <div id="dropdownMenu" class="dropdown-menu hidden">
                     <button onclick="startNewChat()">🆕 Nouvelle conversation</button>
@@ -660,23 +652,24 @@
             </div>
         </div>
     </div>
-</div>
-    </div>
 <script>
 const translations = {
     fr: {
-        conversations: "Conversations",
+        Conversations: "Conversations",
         newChat: "Nouvelle conversation",
         welcome: "Bienvenue sur Jul-IA 2.0",
-        welcomeText: "Votre assistant personnel d’IA multilingue.",
+        welcomeText: "Votre assistant personnel d'IA multilingue.",
         placeholder: "Tapez votre message ici...",
         send: "Envoyer",
         apiError: "❌ Erreur API : ",
         unexpectedResponse: "❌ Réponse inattendue du modèle.",
-        atLeastOneConversation: "Il doit rester au moins une conversation."
+        atLeastOneConversation: "Il doit rester au moins une conversation.",
+        rename: "Renommer",
+        delete: "Supprimer cette conversation",
+        renamePrompt: "Nouveau nom pour la conversation :"
     },
     en: {
-        conversations: "Conversations",
+        Conversations: "Conversations",
         newChat: "New chat",
         welcome: "Welcome to Jul-IA",
         welcomeText: "Your personal multilingual AI assistant.",
@@ -684,10 +677,13 @@ const translations = {
         send: "Send",
         apiError: "❌ API Error: ",
         unexpectedResponse: "❌ Unexpected model response.",
-        atLeastOneConversation: "At least one conversation must remain."
+        atLeastOneConversation: "At least one conversation must remain.",
+        rename: "Rename",
+        delete: "Delete this conversation",
+        renamePrompt: "New name for the conversation:"
     },
     de: {
-        conversations: "Unterhaltungen",
+        Conversations: "Unterhaltungen",
         newChat: "Neues Gespräch",
         welcome: "Willkommen bei Jul-IA",
         welcomeText: "Dein persönlicher, mehrsprachiger KI-Assistent.",
@@ -695,53 +691,142 @@ const translations = {
         send: "Senden",
         apiError: "❌ API-Fehler: ",
         unexpectedResponse: "❌ Unerwartete Modellantwort.",
-        atLeastOneConversation: "Es muss mindestens eine Konversation verbleiben."
+        atLeastOneConversation: "Es muss mindestens eine Konversation verbleiben.",
+        rename: "Umbenennen",
+        delete: "Dieses Gespräch löschen",
+        renamePrompt: "Neuer Name für das Gespräch:"
     }
 };
 
 let currentLang = 'fr';
-let conversations = [];
+let Conversations = [];
 let currentConversationIndex = 0;
 let isBotResponding = false;
+const MAX_Conversations = 50;
+const STORAGE_VERSION = 2;
+const STORAGE_KEY = `julia_conversations_v${STORAGE_VERSION}`;
+const payload = {
+    version: STORAGE_VERSION,
+    conversations: Conversations
+};
+localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
 
-function updateInterface() {
-    const t = translations[currentLang];
-    document.getElementById('conversationsTitle').textContent = t.conversations;
-    document.getElementById('newChatBtn').textContent = t.newChat;
-    document.getElementById('welcome').textContent = t.welcome;
-    document.getElementById('welcomeText').textContent = t.welcomeText;
-    document.getElementById('userInput').placeholder = t.placeholder;
-    document.getElementById('sendBtn').textContent = t.send;
-}
+// Structure de données améliorée pour les Conversations
+class Conversation {
+    constructor(name = '') {
+        this.id = this.generateId();
+        this.name = name || `${translations[currentLang].Conversations} ${Conversations.length + 1}`;
+        this.messages = [];
+        this.createdAt = new Date().toISOString();
+        this.updatedAt = new Date().toISOString();
+        this.metadata = {
+            summary: "",
+            tags: [],
+            isPinned: false
+        };
+    }
 
-function changeLanguage(lang) {
-    if (translations[lang]) {
-        currentLang = lang;
-        localStorage.setItem('language', lang);
-        updateInterface();
-        showConversation(currentConversationIndex);
+    generateId() {
+        return 'conv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    addMessage(sender, text) {
+        this.messages.push({
+            sender,
+            text,
+            timestamp: new Date().toISOString()
+        });
+        this.updatedAt = new Date().toISOString();
+    }
+
+    toJSON() {
+        return {
+            id: this.id,
+            name: this.name,
+            messages: this.messages,
+            createdAt: this.createdAt,
+            updatedAt: this.updatedAt,
+            metadata: this.metadata
+        };
     }
 }
 
-function toggleTheme() {
-    const body = document.body;
-    const themeIcon = document.getElementById('themeIcon');
-    body.classList.add('theme-transition');
-    setTimeout(() => body.classList.remove('theme-transition'), 700);
+// Charger les Conversations depuis le stockage local
+function loadConversations() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) throw new Error("Aucune donnée");
 
-    if (body.getAttribute('data-theme') === 'dark') {
-        body.removeAttribute('data-theme');
-        if (themeIcon) themeIcon.textContent = '🌙';
-        localStorage.setItem('theme', 'light');
-    } else {
-        body.setAttribute('data-theme', 'dark');
-        if (themeIcon) themeIcon.textContent = '☀️';
-        localStorage.setItem('theme', 'dark');
+        const parsed = JSON.parse(raw);
+
+        if (!parsed.version || !parsed.conversations) {
+            throw new Error("Format invalide");
+        }
+
+        if (parsed.version < STORAGE_VERSION) {
+            Conversations = migrateConversations(parsed.conversations, parsed.version);
+        } else {
+            Conversations = parsed.conversations;
+        }
+
+        if (Conversations.length === 0) {
+            Conversations.push(new Conversation());
+        }
+
+        currentConversationIndex = Math.min(currentConversationIndex, Conversations.length - 1);
+        saveConversations();
+    } catch (err) {
+        console.warn("⚠️ Erreur de chargement ou format corrompu :", err);
+        Conversations = [new Conversation()];
+        currentConversationIndex = 0;
+        saveConversations();
     }
 }
 
-// Remplace la fonction sendMessage par celle-ci pour enregistrer chaque question posée à l'IA
+function migrateConversations(oldConvs, oldVersion) {
+    const migrated = [];
 
+    oldConvs.forEach(conv => {
+        const newConv = new Conversation(conv.name);
+        newConv.messages = conv.messages || [];
+        newConv.createdAt = conv.createdAt || new Date().toISOString();
+        newConv.updatedAt = new Date().toISOString();
+        newConv.metadata = {
+            summary: "",
+            tags: [],
+            isPinned: false
+        };
+        migrated.push(newConv);
+    });
+
+    return migrated;
+}
+// Sauvegarder les Conversations dans le stockage local
+function saveConversations() {
+    try {
+        // Mettre à jour la date de modification
+        if (Conversations[currentConversationIndex]) {
+            Conversations[currentConversationIndex].updatedAt = new Date().toISOString();
+        }
+
+        localStorage.setItem(CONVERSATION_STORAGE_KEY, JSON.stringify(Conversations));
+    } catch (error) {
+        console.error("Erreur lors de la sauvegarde des Conversations:", error);
+    }
+}
+
+// Fonction pour ajouter un message à la conversation courante
+function addMessageToConversation(sender, text) {
+    if (!Conversations[currentConversationIndex]) {
+        Conversations[currentConversationIndex] = new Conversation();
+    }
+
+    Conversations[currentConversationIndex].addMessage(sender, text);
+    saveConversations();
+    updateConversationsList();
+}
+
+// Fonction pour envoyer un message
 async function sendMessage() {
     if (isBotResponding) return;
 
@@ -749,45 +834,25 @@ async function sendMessage() {
     const message = input.value.trim();
     if (!message) return;
 
-    // Réponse immédiate si on demande le nom du bot
+    // Réponse immédiate pour le nom du bot
     if (/quel.?est.?ton.?nom|comment.?tu.?t.?appelles?|who.?are.?you|your.?name|wie.?heißt.?du|wie.?ist.?dein.?name/i.test(message)) {
+        addMessageToConversation("user", message);
         addMessage("user", message);
         input.value = "";
         isBotResponding = true;
         showTyping();
+
         setTimeout(() => {
             hideTyping();
+            addMessageToConversation("bot", "Je m'appelle Jul-IA, ton assistant IA personnel.");
             addMessage("bot", "Je m'appelle Jul-IA, ton assistant IA personnel.");
             isBotResponding = false;
         }, 700);
         return;
     }
 
-    // Ajoute la question à la conversation courante
-    if (!conversations[currentConversationIndex]) {
-        conversations[currentConversationIndex] = {
-            name: `${translations[currentLang].conversations} ${currentConversationIndex + 1}`,
-            messages: []
-        };
-    }
-    conversations[currentConversationIndex].messages.push({ sender: "user", text: message });
-    localStorage.setItem('conversations', JSON.stringify(conversations));
-
-    // Ajoute la question à l'historique global
-    try {
-        let questions = [];
-        try {
-            questions = JSON.parse(localStorage.getItem('julia_questions') || '[]');
-        } catch { questions = []; }
-        questions.push({
-            question: message,
-            date: new Date().toISOString()
-        });
-        localStorage.setItem('julia_questions', JSON.stringify(questions));
-    } catch (e) {
-        console.warn("Erreur lors de l'enregistrement de la question :", e);
-    }
-
+    // Ajouter le message utilisateur
+    addMessageToConversation("user", message);
     addMessage("user", message);
     input.value = "";
     isBotResponding = true;
@@ -812,24 +877,26 @@ async function sendMessage() {
         });
 
         const data = await response.json();
-        const reply = data.choices?.[0]?.message?.content || "❌ Réponse vide du modèle.";
+        const reply = data.choices?.[0]?.message?.content || translations[currentLang].unexpectedResponse;
+
         window.mistralMessages.push({ role: "assistant", content: reply });
         hideTyping();
         animateBotText(reply);
     } catch (e) {
         hideTyping();
-        animateBotText("❌ Erreur API : " + e.message);
+        animateBotText(translations[currentLang].apiError + e.message);
     } finally {
         isBotResponding = false;
     }
 }
 
+// Fonction pour afficher les messages du bot avec animation
 function animateBotText(text) {
-  const messagesDiv = document.getElementById('chatbox');
-  const messageDiv = document.createElement('div');
-  messageDiv.classList.add('message', 'bot');
+    const messagesDiv = document.getElementById('chatbox');
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', 'bot');
 
-  const codeMatch = text.match(/```(\w+)?\n?([\s\S]*?)```/);
+    const codeMatch = text.match(/```(\w+)?\n?([\s\S]*?)```/);
   if (codeMatch) {
     const language = codeMatch[1] || 'code';
     const codeContent = codeMatch[2];
@@ -883,14 +950,14 @@ function animateBotText(text) {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
   // Sauvegarde dans la conversation
-  if (!conversations[currentConversationIndex]) {
-    conversations[currentConversationIndex] = {
-      name: `${translations[currentLang].conversations} ${currentConversationIndex + 1}`,
+  if (!Conversations[currentConversationIndex]) {
+    Conversations[currentConversationIndex] = {
+      name: `${translations[currentLang].Conversations} ${currentConversationIndex + 1}`,
       messages: []
     };
   }
-  conversations[currentConversationIndex].messages.push({ sender: "bot", text });
-  localStorage.setItem('conversations', JSON.stringify(conversations));
+  Conversations[currentConversationIndex].messages.push({ sender: "bot", text });
+  saveConversations();
 }
 
 // Ajout d'un message utilisateur (sans encadrement)
@@ -908,11 +975,11 @@ function addMessage(sender, text) {
 
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-    if (!conversations[currentConversationIndex]) {
-        conversations[currentConversationIndex] = { name: `${translations[currentLang].conversations} ${currentConversationIndex + 1}`, messages: [] };
+    if (!Conversations[currentConversationIndex]) {
+        Conversations[currentConversationIndex] = { name: `${translations[currentLang].Conversations} ${currentConversationIndex + 1}`, messages: [] };
     }
-    conversations[currentConversationIndex].messages.push({ sender, text });
-    localStorage.setItem('conversations', JSON.stringify(conversations));
+    Conversations[currentConversationIndex].messages.push({ sender, text });
+    saveConversations();
 }
 
 function showTyping() {
@@ -934,9 +1001,9 @@ function hideTyping() {
 }
 
 function startNewChat() {
-    const newIndex = conversations.length;
-    conversations.push({ name: `${translations[currentLang].newChat} ${newIndex + 1}`, messages: [] });
-    localStorage.setItem('conversations', JSON.stringify(conversations));
+    const newIndex = Conversations.length;
+    Conversations.push({ name: `${translations[currentLang].newChat} ${newIndex + 1}`, messages: [] });
+    saveConversations();
     showConversation(newIndex);
     updateConversationsList();
 }
@@ -946,7 +1013,7 @@ function showConversation(index) {
     const chatbox = document.getElementById('chatbox');
     chatbox.innerHTML = '';
 
-    const conv = conversations[index]?.messages || [];
+    const conv = Conversations[index]?.messages || [];
     if (conv.length === 0) {
         chatbox.innerHTML = `
             <div class="empty-state">
@@ -967,11 +1034,11 @@ function showConversation(index) {
 }
 
 function updateConversationsList() {
-    const list = document.getElementById('conversationsList');
+    const list = document.getElementById('ConversationsList');
     if (!list) return;
     list.innerHTML = '';
 
-    conversations.forEach((conv, i) => {
+    Conversations.forEach((conv, i) => {
         const li = document.createElement('li');
         li.style.marginBottom = '6px';
         li.style.display = 'flex';
@@ -988,7 +1055,7 @@ function updateConversationsList() {
 
         const chatNameSpan = document.createElement('span');
         chatNameSpan.classList.add('chat-name');
-        chatNameSpan.textContent = conv.name || `${translations[currentLang].conversations} ${i + 1}`;
+        chatNameSpan.textContent = conv.name || `${translations[currentLang].Conversations} ${i + 1}`;
         button.appendChild(chatNameSpan);
         li.appendChild(button);
 
@@ -1021,8 +1088,8 @@ function updateConversationsList() {
 }
 
 function deleteConversation(index) {
-    if (conversations.length <= 1) {
-        const list = document.getElementById('conversationsList');
+    if (Conversations.length <= 1) {
+        const list = document.getElementById('ConversationsList');
         const li = list.children[index];
         if (li) {
             li.classList.add('shake');
@@ -1032,16 +1099,16 @@ function deleteConversation(index) {
         return;
     }
 
-    const list = document.getElementById('conversationsList');
+    const list = document.getElementById('ConversationsList');
     const liToRemove = list.children[index];
     if (liToRemove) {
         liToRemove.classList.add('conversation-removing');
         setTimeout(() => {
-            conversations.splice(index, 1);
-            if (currentConversationIndex >= conversations.length) {
-                currentConversationIndex = conversations.length - 1;
+            Conversations.splice(index, 1);
+            if (currentConversationIndex >= Conversations.length) {
+                currentConversationIndex = Conversations.length - 1;
             }
-            localStorage.setItem('conversations', JSON.stringify(conversations));
+            saveConversations();
             updateConversationsList();
             showConversation(currentConversationIndex);
         }, 450);
@@ -1049,14 +1116,14 @@ function deleteConversation(index) {
 }
 
 function renameConversation(index) {
-    const currentName = conversations[index].name || `${translations[currentLang].conversations} ${index + 1}`;
+    const currentName = Conversations[index].name || `${translations[currentLang].Conversations} ${index + 1}`;
     const newName = prompt("Nouveau nom pour la conversation :", currentName);
     if (newName && newName.trim()) {
-        conversations[index].name = newName.trim();
-        localStorage.setItem('conversations', JSON.stringify(conversations));
+        Conversations[index].name = newName.trim();
+        saveConversations();
         updateConversationsList();
 
-        const list = document.getElementById('conversationsList');
+        const list = document.getElementById('ConversationsList');
         const li = list.children[index];
         if (li) {
             const chatNameSpan = li.querySelector('.chat-name');
@@ -1076,35 +1143,37 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     updateInterface();
 
-    const savedTheme = localStorage.getItem('theme');
-    const themeIcon = document.getElementById('themeIcon');
-    if (savedTheme === 'dark') {
-        document.body.setAttribute('data-theme', 'dark');
-        if (themeIcon) themeIcon.textContent = '☀️';
-    } else {
-        document.body.removeAttribute('data-theme');
-        if (themeIcon) themeIcon.textContent = '🌙';
-    }
-
-    const storedConversations = JSON.parse(localStorage.getItem('conversations') || '[]');
+    const storedConversations = JSON.parse(localStorage.getItem('Conversations') || '[]');
     if (storedConversations.length === 0) {
-        conversations.push({ name: `${translations[currentLang].conversations} 1`, messages: [] });
+        Conversations.push({ name: `${translations[currentLang].Conversations} 1`, messages: [] });
     } else {
-        try {
-        const stored = JSON.parse(localStorage.getItem("conversations"));
-        if (Array.isArray(stored) && stored.every(c => c.messages && Array.isArray(c.messages))) {
-            conversations = stored;
-        } else {
-            conversations = [{ name: "Conversation 1", messages: [] }];
-        }
-        } catch {
-        conversations = [{ name: "Conversation 1", messages: [] }];
-        }
+        Conversations = storedConversations.map(conv =>
+            Array.isArray(conv) ? { name: `${translations[currentLang].Conversations} ${Conversations.length + 1}`, messages: conv } : conv
+        );
     }
-    localStorage.setItem('conversations', JSON.stringify(conversations));
+    saveConversations();
 
     updateConversationsList();
     showConversation(currentConversationIndex);
+
+    // Fond animé
+    const bg = document.createElement('div');
+    bg.className = 'animated-bg';
+    document.body.appendChild(bg);
+
+    for (let i = 0; i < 24; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random() * 60 + 20;
+        p.style.width = `${size}px`;
+        p.style.height = `${size}px`;
+        p.style.left = `${Math.random() * 100}%`;
+        p.style.top = `${Math.random() * 100}%`;
+        p.style.background = `rgba(0,255,247,${Math.random() * 0.2 + 0.1})`;
+        p.style.animationDuration = `${Math.random() * 10 + 10}s`;
+        p.style.animationDelay = `${Math.random() * 8}s`;
+        bg.appendChild(p);
+    }
 });
 
 // Empêche l'envoi si le bot écrit
@@ -1153,14 +1222,14 @@ document.getElementById('userInput').addEventListener('keydown', function(e) {
         menu.classList.toggle("hidden");
     }
 
-// 📍 Met à jour l'icône micro/flèche selon le contenu
+// Met à jour l'icône micro/flèche selon le contenu
 function toggleSendIcon() {
     const input = document.getElementById("userInput");
     const dynamicBtn = document.getElementById("dynamicBtn");
     dynamicBtn.textContent = input.value.trim() ? "➡️" : "🎙️";
 }
 
-// 📤 Envoie le message ou active le micro
+// Envoie le message ou active le micro
 function handleDynamicClick() {
     const input = document.getElementById("userInput");
     if (input.value.trim()) {
@@ -1170,7 +1239,7 @@ function handleDynamicClick() {
     }
 }
 
-// ↩️ Gère la touche "Entrée"
+// Gère la touche "Entrée"
 function handleKeyPress(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
@@ -1178,14 +1247,14 @@ function handleKeyPress(event) {
     }
 }
 
-// 🔽 Ouvre/ferme le menu déroulant
+// Ouvre/ferme le menu déroulant
 function toggleDropdown(event) {
     event.stopPropagation();
     const menu = document.getElementById("dropdownMenu");
     menu.classList.toggle("hidden");
 }
 
-// 🧼 Ferme le menu si clic hors du + ou du menu
+// Ferme le menu si clic hors du + ou du menu
 document.addEventListener("click", function (e) {
     const menu = document.getElementById("dropdownMenu");
     const toggle = document.querySelector(".menu-toggle");
@@ -1194,7 +1263,7 @@ document.addEventListener("click", function (e) {
     }
 });
 
-// 📂 Gère l’envoi d’un fichier à l’IA
+// Gère l’envoi d’un fichier à l’IA
 function sendFileToAI(event) {
     const file = event.target.files[0];
     if (file) {
@@ -1202,18 +1271,18 @@ function sendFileToAI(event) {
         reader.onload = function(e) {
             const content = e.target.result;
 
-            // 🔹 Affiche le nom du fichier
+            // Affiche le nom du fichier
             document.getElementById("uploadedFileDisplay").classList.remove("hidden");
             document.getElementById("fileNameDisplay").textContent = file.name;
 
-            // 🔹 Ajoute le contenu du fichier dans le chat
+            // Ajoute le contenu du fichier dans le chat
             window.mistralMessages = window.mistralMessages || [];
             window.mistralMessages.push({
                 role: "user",
                 content: `Voici le contenu du fichier "${file.name}":\n\n${content}`
             });
 
-            sendMessage(); // Tu peux aussi créer une fonction dédiée "sendFileMessage()"
+            sendMessage();
         };
         reader.readAsText(file);
     }
@@ -1227,7 +1296,7 @@ function sendFileToAI(event) {
     reader.onload = function(e) {
         const content = e.target.result;
 
-        // 🔹 Affiche juste le nom du fichier au-dessus de la question
+        // Affiche juste le nom du fichier au-dessus de la question
         const messagesDiv = document.getElementById('chatbox');
 
         const display = document.createElement('div');
@@ -1247,13 +1316,6 @@ function sendFileToAI(event) {
         sendMessage();
     };
     reader.readAsText(file);
-}
-conversations[currentConversationIndex].messages.push({ sender: "user", text });
-localStorage.setItem('conversations', JSON.stringify(conversations));
-if (Array.isArray(storedConversations)) {
-    conversations = storedConversations;
-} else {
-    conversations = [{ name: "Conversation 1", messages: [] }];
 }
 </script>
 </body>
