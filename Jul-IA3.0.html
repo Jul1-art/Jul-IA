@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jul‑IA • Mistral (3 modèles)</title>
+  <link rel="icon" href="data:;base64,=">
+  <style>
+    :root{
+      --bg1:#0b1220;--bg2:#070d1a;--panel:#0f172a;--muted:#9aa0a6;--text:#eafaf9;--neon:#00fff7;--accent:#00bfae;--glass:rgba(255,255,255,.04);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(1200px 800px at 20% -10%,#0e1a2f 0%,#070d1a 35%,#050a16 60%,#04080f 100%);color:var(--text);}
+    .grid{display:grid;grid-template-columns:320px 1fr;gap:18px;height:100vh;padding:22px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.06);border-radius:14px;box-shadow:0 10px 40px rgba(2,6,23,.6);backdrop-filter:blur(6px)}
+    /* Sidebar */
+    .side{display:flex;flex-direction:column;padding:16px}
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+    .logo{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#00182f,#00344f);color:var(--neon);font-weight:900;box-shadow:0 0 24px rgba(0,255,247,.18)}
+    .muted{color:var(--muted)}
+    .models{display:grid;grid-template-columns:1fr;gap:8px;margin:8px 0 10px}
+    .mbtn{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid rgba(255,255,255,.06);background:transparent;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:700;transition:all .18s}
+    .mbtn:hover{transform:translateX(6px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,255,247,.1);}
+    .mbtn.active{background:linear-gradient(90deg,rgba(0,255,247,.07),rgba(0,191,174,.03));border-color:var(--accent)}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+    .tbtn{border:1px solid rgba(255,255,255,.06);background:transparent;color:var(--text);padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:600}
+    .tbtn:hover{border-color:var(--accent)}
+    /* Conversations */
+    .list{flex:1;overflow:auto;margin-top:8px;padding-right:6px}
+    .item{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.04);cursor:pointer}
+    .item:hover{background:rgba(255,255,255,.03)}
+    .itag{font-size:12px;color:var(--muted)}
+    .spacer{height:8px}
+    /* Main */
+    .main{display:flex;flex-direction:column;overflow:hidden}
+    .head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06)}
+    .title{display:flex;align-items:center;gap:10px}
+    .pill{font-size:12px;border:1px solid rgba(255,255,255,.14);padding:4px 8px;border-radius:999px;color:var(--muted)}
+    /* Chat */
+    .chat{flex:1;overflow:auto;padding:22px;display:flex;flex-direction:column;gap:14px;position:relative}
+    .msg{max-width:74%;padding:14px 16px;border-radius:14px;line-height:1.5;animation:bubble .3s ease-out;white-space:pre-wrap}
+    .msg.user{margin-left:auto;background:linear-gradient(180deg,rgba(0,191,174,.14),rgba(0,191,174,.06));border:1px solid rgba(0,191,174,.18);color:var(--text);font-weight:600}
+    .msg.bot{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08)}
+    .code{background:#0c1322;border:1px solid rgba(255,255,255,.08);padding:10px;border-radius:10px;margin-top:6px;overflow:auto}
+    .foot{display:flex;gap:10px;align-items:center;padding:14px;border-top:1px solid rgba(255,255,255,.06)}
+    .in{flex:1;border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--text);border-radius:12px;padding:12px 14px}
+    .send{background:var(--neon);color:#06121b;border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;box-shadow:0 10px 28px rgba(0,255,247,.1)}
+    .send:active{transform:scale(.98)}
+    .ghost{opacity:.6}
+    .typing{display:flex;gap:6px;align-items:center}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
+    .dot:nth-child(2){animation-delay:.12s}.dot:nth-child(3){animation-delay:.24s}
+    @keyframes blink{0%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-6px)}100%{opacity:.3;transform:translateY(0)}}
+    @keyframes bubble{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+    /* Dialog */
+    .modal{position:fixed;inset:0;display:none;place-items:center;background:radial-gradient(ellipse at center,rgba(0,0,0,.4),rgba(0,0,0,.6));backdrop-filter:blur(6px);z-index:40}
+    .modal.show{display:grid}
+    .mc{width:min(680px,92%);padding:18px;border-radius:14px} 
+    label{font-size:13px;color:var(--muted)}
+    input[type="password"],input[type="text"],textarea{width:100%;border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--text);border-radius:10px;padding:10px}
+    .row{display:flex;gap:10px}
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <aside class="card side" aria-label="Conversations">
+      <div class="brand">
+        <div class="logo">J</div>
+        <div>
+          <div style="font-weight:800">Jul‑IA</div>
+          <div class="muted" style="font-size:12px">3 modèles Mistral</div>
+        </div>
+      </div>
+      <div class="muted" style="font-size:12px">Modèle actif</div>
+      <div class="models">
+        <button class="mbtn" data-model="mistral-large">📝 Mistral‑Large <span class="pill">texte</span></button>
+        <button class="mbtn" data-model="codestral">💻 Codestral <span class="pill">code</span></button>
+        <button class="mbtn" data-model="mathstral-7b">🔢 Mathstral‑7B <span class="pill">maths</span></button>
+      </div>
+      <div class="toolbar">
+        <button class="tbtn" id="newBtn">➕ Nouveau</button>
+        <button class="tbtn" id="exportBtn">⬇️ Export</button>
+        <button class="tbtn" id="importBtn">⬆️ Import</button>
+        <button class="tbtn" id="clearBtn">🧹 Tout effacer</button>
+        <button class="tbtn" id="settingsBtn">⚙️</button>
+      </div>
+      <div class="list" id="convList"></div>
+      <div class="muted" style="font-size:12px;margin-top:8px">Sauvegarde automatique locale</div>
+    </aside>
+
+    <section class="card main" role="main">
+      <div class="head">
+        <div class="title">
+          <strong>Jul‑IA</strong>
+          <span class="pill" id="modelPill">—</span>
+        </div>
+        <div class="row">
+          <button class="tbtn" id="renameBtn">✏️ Renommer</button>
+          <button class="tbtn" id="deleteBtn">🗑️ Supprimer</button>
+          <button class="tbtn" id="stopBtn" title="Arrêter la génération">⏹️ Stop</button>
+        </div>
+      </div>
+      <div class="chat" id="chat"></div>
+      <div class="foot">
+        <input id="input" class="in" placeholder="Écris ton message…" />
+        <button id="send" class="send">Envoyer ▷</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Settings modal -->
+  <div class="modal" id="settingsModal">
+    <div class="card mc">
+      <h3 style="margin:6px 0 10px">Paramètres</h3>
+      <p class="muted" style="margin-top:-6px">Ta clé est stockée <b>localement</b>. Pour la production, utilise un proxy.</p>
+      <div class="row">
+        <div style="flex:2">
+          <label>Clé API Mistral</label>
+          <input id="apiKey" type="password" placeholder="sk-…" />
+        </div>
+        <div style="flex:1">
+          <label>Proxy (optionnel)</label>
+          <input id="proxy" type="text" placeholder="https://ton‑proxy.tld" />
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="tbtn" id="saveSettings">💾 Enregistrer</button>
+        <button class="tbtn" id="closeSettings">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/************** CONFIG **************/
+const MODEL_MAP = { // mapping imposé
+  "mistral-large": "mistral-large-latest",
+  "codestral": "codestral-latest",
+  "mathstral-7b": "open-math-7b"
+};
+const STORAGE = {
+  conv: "julIA.conversations.v3",
+  settings: "julIA.settings.v1",
+  selectedModel: "julIA.model.v1",
+  selectedConv: "julIA.current.v1"
+};
+
+/************** ÉTAT **************/
+let state = {
+  model: localStorage.getItem(STORAGE.selectedModel) || "mistral-large",
+  conversations: [],
+  currentId: localStorage.getItem(STORAGE.selectedConv) || null,
+  aborter: null,
+};
+
+/************** UTILS **************/
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const nowISO = () => new Date().toISOString();
+function uid(){return 'c_'+Math.random().toString(36).slice(2)+Date.now().toString(36)}
+function saveAll(){ localStorage.setItem(STORAGE.conv, JSON.stringify(state.conversations)); }
+function loadAll(){
+  try{ state.conversations = JSON.parse(localStorage.getItem(STORAGE.conv)||"[]"); }
+  catch{ state.conversations = []; }
+}
+function getSettings(){ try{ return JSON.parse(localStorage.getItem(STORAGE.settings)||"{}"); }catch{return {}} }
+function setSettings(s){ localStorage.setItem(STORAGE.settings, JSON.stringify(s)); }
+function activeConv(){ return state.conversations.find(c=>c.id===state.currentId) || null }
+function setActiveModel(key){ state.model = key; localStorage.setItem(STORAGE.selectedModel,key); $('#modelPill').textContent = key; $$('.mbtn').forEach(b=>b.classList.toggle('active', b.dataset.model===key)); }
+function ensureConv(){
+  if(!state.currentId){
+    const c = createConversation();
+    state.currentId = c.id; localStorage.setItem(STORAGE.selectedConv, c.id);
+  }
+}
+function createConversation(name){
+  const c = { id: uid(), name: name||"Conversation", model: state.model, messages: [], createdAt: nowISO(), updatedAt: nowISO() };
+  state.conversations.unshift(c); saveAll(); renderList(); return c;
+}
+function renameConversation(){ const c=activeConv(); if(!c) return; const n = prompt('Nouveau nom :', c.name||'Conversation'); if(n && n.trim()){ c.name=n.trim(); c.updatedAt=nowISO(); saveAll(); renderList(); }}
+function deleteConversation(){ const c=activeConv(); if(!c) return; if(!confirm('Supprimer cette conversation ?')) return; state.conversations = state.conversations.filter(x=>x.id!==c.id); saveAll(); if(!state.conversations.length){ const nc=createConversation(); state.currentId=nc.id; } else { state.currentId = state.conversations[0].id; } localStorage.setItem(STORAGE.selectedConv,state.currentId); renderList(); renderChat(); }
+
+/************** RENDER **************/
+function renderList(){
+  const box = $('#convList'); box.innerHTML='';
+  state.conversations.forEach(c=>{
+    const item = document.createElement('div'); item.className='item'; item.dataset.id=c.id;
+    const title = document.createElement('div'); title.style.flex='1'; title.innerHTML = `<div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.name||'Conversation'}</div><div class="itag">${new Date(c.updatedAt).toLocaleString()}</div>`;
+    const badge = document.createElement('span'); badge.className='pill'; badge.textContent=c.model;
+    item.appendChild(title); item.appendChild(badge);
+    item.addEventListener('click',()=>{ state.currentId=c.id; localStorage.setItem(STORAGE.selectedConv,c.id); renderChat(); renderList(); });
+    if(c.id===state.currentId) item.style.borderColor='var(--accent)';
+    box.appendChild(item);
+    box.appendChild(document.createElement('div')).className='spacer';
+  });
+}
+function renderChat(){
+  const c = activeConv(); const chat=$('#chat'); chat.innerHTML='';
+  if(!c){ chat.innerHTML='<div class="muted" style="margin:20px auto">Aucune conversation</div>'; return; }
+  $('#modelPill').textContent = c.model;
+  c.messages.forEach(m=> addMsg(m.role,m.content,false));
+  chat.scrollTop = chat.scrollHeight;
+}
+function addMsg(role, text, persist=true){
+  const wrap = document.createElement('div'); wrap.className='msg '+(role==='user'?'user':'bot');
+  if(/```[\s\S]*?```/.test(text)){
+    // rudimentary code fence render
+    const pre = document.createElement('pre'); pre.className='code'; pre.textContent = text.replace(/^```[a-z]*\n?/i,'').replace(/```$/,''); wrap.appendChild(pre);
+  } else { wrap.textContent = text; }
+  $('#chat').appendChild(wrap); $('#chat').scrollTop=$('#chat').scrollHeight;
+  if(persist){ const c=activeConv(); if(!c) return; c.messages.push({role, content:text}); c.updatedAt=nowISO(); saveAll(); renderList(); }
+  return wrap;
+}
+
+/************** STREAMING MISTRAL **************/
+async function chatMistral(userText){
+  const c = activeConv(); if(!c) return; const settings=getSettings();
+  const apiKey = settings.apiKey; if(!apiKey){ alert('Ajoute ta clé API Mistral (⚙️).'); return; }
+  const base = settings.proxy?.trim()? settings.proxy.trim().replace(/\/$/,'')+"/v1" : "https://api.mistral.ai/v1";
+
+  // push user
+  addMsg('user', userText);
+
+  // prepare stream request
+  const payload = {
+    model: MODEL_MAP[c.model] || MODEL_MAP[state.model],
+    messages: c.messages.concat({role:'user', content:userText}),
+    temperature: 0.2,
+    stream: true
+  };
+
+  // placeholder assistant
+  const botNode = addMsg('assistant','',false);
+
+  // Abort support
+  if(state.aborter) try{ state.aborter.abort(); }catch{}
+  state.aborter = new AbortController();
+
+  try{
+    const resp = await fetch(base+"/chat/completions",{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},
+      body:JSON.stringify(payload),
+      signal: state.aborter.signal
+    });
+    if(!resp.ok){ const t=await resp.text(); throw new Error('HTTP '+resp.status+' '+t); }
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let acc = '';
+    while(true){
+      const {value, done} = await reader.read(); if(done) break; acc += decoder.decode(value,{stream:true});
+      const lines = acc.split(/\n/); acc = lines.pop() || '';
+      for(const ln of lines){
+        const s = ln.trim(); if(!s) continue; if(!s.startsWith('data:')) continue;
+        const data = s.slice(5).trim(); if(data==='[DONE]'){ break; }
+        try{
+          const j = JSON.parse(data);
+          const delta = j.choices?.[0]?.delta?.content ?? '';
+          if(delta){ botNode.textContent += delta; $('#chat').scrollTop=$('#chat').scrollHeight; }
+        }catch(e){ /* ignore */ }
+      }
+    }
+    const finalText = botNode.textContent.trim();
+    const conv = activeConv(); conv.messages.push({role:'assistant', content: finalText}); conv.updatedAt=nowISO(); saveAll(); renderList();
+  }catch(err){
+    if(err.name==='AbortError'){
+      // stopped by user
+    }else{
+      botNode.textContent = '❌ Erreur : '+(err.message||String(err));
+      const conv = activeConv(); conv.messages.push({role:'assistant', content: botNode.textContent}); conv.updatedAt=nowISO(); saveAll();
+    }
+  }finally{ state.aborter=null; }
+}
+
+/************** ACTIONS **************/
+$('#send').addEventListener('click',()=>{
+  const v = $('#input').value.trim(); if(!v) return; $('#input').value=''; chatMistral(v);
+});
+$('#input').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('#send').click(); }});
+$('#stopBtn').addEventListener('click',()=>{ if(state.aborter) try{state.aborter.abort()}catch{} });
+
+$('#newBtn').addEventListener('click',()=>{ const c=createConversation(`Nouveau (${state.model})`); state.currentId=c.id; localStorage.setItem(STORAGE.selectedConv,c.id); renderList(); renderChat(); });
+$('#renameBtn').addEventListener('click',renameConversation);
+$('#deleteBtn').addEventListener('click',deleteConversation);
+$('#clearBtn').addEventListener('click',()=>{ if(confirm('Effacer TOUTES les conversations ?')){ state.conversations=[]; saveAll(); const c=createConversation(); state.currentId=c.id; localStorage.setItem(STORAGE.selectedConv,c.id); renderList(); renderChat(); }});
+$('#exportBtn').addEventListener('click',()=>{
+  const blob = new Blob([JSON.stringify({version:3, conversations:state.conversations},null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='julIA_conversations.json'; a.click(); URL.revokeObjectURL(a.href);
+});
+$('#importBtn').addEventListener('click',()=>{
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange=()=>{
+    const f=inp.files[0]; const r=new FileReader(); r.onload=e=>{ try{ const j=JSON.parse(e.target.result||'{}'); if(Array.isArray(j.conversations)){ state.conversations=j.conversations; saveAll(); state.currentId=state.conversations[0]?.id||null; localStorage.setItem(STORAGE.selectedConv,state.currentId||''); renderList(); renderChat(); } else alert('Fichier invalide'); }catch{ alert('JSON invalide'); } }; r.readAsText(f);
+  }; inp.click();
+});
+
+/************** PARAMÈTRES **************/
+$('#settingsBtn').addEventListener('click',()=>{$('#settingsModal').classList.add('show'); const s=getSettings(); $('#apiKey').value=s.apiKey||''; $('#proxy').value=s.proxy||'';});
+$('#closeSettings').addEventListener('click',()=>$('#settingsModal').classList.remove('show'));
+$('#saveSettings').addEventListener('click',()=>{ const s=getSettings(); s.apiKey=$('#apiKey').value.trim(); s.proxy=$('#proxy').value.trim(); setSettings(s); $('#settingsModal').classList.remove('show'); alert('✅ Paramètres enregistrés'); });
+
+/************** MODÈLES **************/
+$$('.mbtn').forEach(b=> b.addEventListener('click',()=>{ setActiveModel(b.dataset.model); const c=activeConv(); if(c){ c.model=state.model; c.updatedAt=nowISO(); saveAll(); renderList(); $('#modelPill').textContent=c.model; } }));
+
+/************** DÉMARRAGE **************/
+(function init(){
+  loadAll();
+  if(!state.conversations.length){ const c=createConversation('Bienvenue'); state.currentId=c.id; }
+  localStorage.setItem(STORAGE.selectedConv, state.currentId||'');
+  setActiveModel(state.model);
+  renderList(); renderChat();
+  // petit message d’accueil si chat vide
+  const c=activeConv(); if(c && !c.messages.length){ addMsg('assistant','Choisis un modèle et pose ta question. Les réponses sont en streaming pour être plus rapides ⚡️'); }
+})();
+</script>
+</body>
+</html>
