@@ -1,6 +1,13 @@
-const CACHE_NAME = "jul-ia-cache";
+const CACHE_NAME = "jul-ia-cache-v1";
 
+// 📁 Fichiers principaux à mettre en cache
 const FILES_TO_CACHE = [
+  "/Jul-IA/install.html",
+  "/Jul-IA/index.html",
+  "/Jul-IA/index.js",
+  "/Jul-IA/manifest.json",
+  "/Jul-IA/Jul-IA_logo.png",
+  "/Jul-IA/Capture_logo.png",
   "/Jul-IA/Documentation.html",
   "/Jul-IA/map.html",
   "/Jul-IA/Fichier.html",
@@ -8,21 +15,18 @@ const FILES_TO_CACHE = [
   "/Jul-IA/Jul-IA2.0.html",
   "/Jul-IA/Page_acceuil.html",
   "/Jul-IA/hack.html",
-  "/Jul-IA/index.html",
   "/Jul-IA/A_propos.html",
   "/Jul-IA/ia_autres.html",
-  "/Jul-IA/index.js",
   "/Jul-IA/Jul-IA3.0.html",
   "/Jul-IA/Connexion_page.html",
   "/Jul-IA/ia_images.html",
   "/Jul-IA/ia_video.html",
   "/Jul-IA/ia_textuelles.html",
   "/Jul-IA/Jul-IA.html",
-  "/Jul-IA/Jul-IA_logo.png",
-  "/Jul-IA/Laboratoire_CSS.html",
-  "/Jul-IA/manifest.json"
+  "/Jul-IA/Laboratoire_CSS.html"
 ];
 
+// 🎮 Fichiers de jeux à mettre en cache
 const GAME_FILES = [
   "/Jul-IA/Accueil_Pong.html",
   "/Jul-IA/Arkanoid.html",
@@ -34,7 +38,7 @@ const GAME_FILES = [
   "/Jul-IA/video-game.png"
 ];
 
-// Installation du service worker
+// 🛠️ Installation du service worker
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -44,7 +48,7 @@ self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
-// Activation et nettoyage des anciens caches
+// 🔄 Activation et nettoyage des anciens caches
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keyList) => {
@@ -60,7 +64,7 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Interception des requêtes
+// 🌐 Interception des requêtes
 self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
