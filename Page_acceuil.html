@@ -27,7 +27,8 @@
       --glow: 0 0 10px rgba(88, 166, 255, 0.3);
     }
 
-    * {
+    *
+    {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -234,6 +235,37 @@
 
     nav a:hover::after {
       width: 100%;
+    }
+
+    /* Bouton App spécial */
+    .app-btn {
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none !important;
+    }
+
+    .app-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 20px rgba(88, 166, 255, 0.5);
+      background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+    }
+
+    .app-btn::before {
+      content: "📱";
+      font-size: 1.1rem;
     }
 
     /* Dropdown menu for chat avec animations */
@@ -1075,6 +1107,15 @@
       .dropdown-content {
         min-width: 160px;
       }
+
+      .app-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+      }
+
+      .app-btn::before {
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
@@ -1098,6 +1139,7 @@
       <a href="#ai-list">IA populaires</a>
       <a href="Documentation.html">Documentation</a>
       <a href="A_propos.html">À propos</a>
+      <a href="install.html" class="app-btn">App</a>
       <div class="dropdown">
         <button class="dropdown-btn">Chat</button>
         <div class="dropdown-content">
@@ -1324,7 +1366,7 @@
       }, 5000);
 
       // Effet de glow sur les liens de navigation
-      const navLinks = document.querySelectorAll('nav a');
+      const navLinks = document.querySelectorAll('nav a:not(.app-btn)');
       navLinks.forEach(link => {
         link.addEventListener('mouseenter', () => {
           link.style.textShadow = '0 0 10px rgba(88, 166, 255, 0.5)';
@@ -1346,49 +1388,64 @@
           icon.style.transform = 'translateY(0) scale(1)';
         });
       });
-  })
-  document.addEventListener('DOMContentLoaded', () => {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          const timestamp = new Date().toISOString();
-          const today = new Date().toISOString().split('T')[0]; // format YYYY-MM-DD
 
-          let geoData = [];
-          try {
-            geoData = JSON.parse(localStorage.getItem('geoData')) || [];
-          } catch (e) {
-            console.error("Erreur de lecture localStorage:", e);
+      // Animation du bouton App
+      const appBtn = document.querySelector('.app-btn');
+      if (appBtn) {
+        appBtn.addEventListener('mouseenter', () => {
+          appBtn.style.transform = 'translateY(-3px) scale(1.05)';
+          appBtn.style.boxShadow = '0 6px 20px rgba(88, 166, 255, 0.5)';
+        });
+
+        appBtn.addEventListener('mouseleave', () => {
+          appBtn.style.transform = 'translateY(0) scale(1)';
+          appBtn.style.boxShadow = '0 4px 15px rgba(88, 166, 255, 0.3)';
+        });
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            const timestamp = new Date().toISOString();
+            const today = new Date().toISOString().split('T')[0]; // format YYYY-MM-DD
+
+            let geoData = [];
+            try {
+              geoData = JSON.parse(localStorage.getItem('geoData')) || [];
+            } catch (e) {
+              console.error("Erreur de lecture localStorage:", e);
+            }
+
+            // Vérifie si une position similaire existe déjà aujourd'hui
+            const alreadyExists = geoData.some(entry => {
+              const entryDate = entry.timestamp.split('T')[0];
+              const sameDay = entryDate === today;
+              const sameLocation =
+                Math.abs(entry.latitude - latitude) < 0.0001 &&
+                Math.abs(entry.longitude - longitude) < 0.0001;
+              return sameDay && sameLocation;
+            });
+
+            // Ajouter la nouvelle position
+            geoData.push({ latitude, longitude, timestamp });
+            localStorage.setItem('geoData', JSON.stringify(geoData));
+          },
+          (error) => {
+            alert("❌ Erreur de géolocalisation : " + error.message);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
           }
-
-          // Vérifie si une position similaire existe déjà aujourd’hui
-          const alreadyExists = geoData.some(entry => {
-            const entryDate = entry.timestamp.split('T')[0];
-            const sameDay = entryDate === today;
-            const sameLocation =
-              Math.abs(entry.latitude - latitude) < 0.0001 &&
-              Math.abs(entry.longitude - longitude) < 0.0001;
-            return sameDay && sameLocation;
-          });
-
-          // Ajouter la nouvelle position
-          geoData.push({ latitude, longitude, timestamp });
-          localStorage.setItem('geoData', JSON.stringify(geoData));
-        },
-        (error) => {
-          alert("❌ Erreur de géolocalisation : " + error.message);
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0
-        }
-      );
-    } else {
-      alert("🚫 La géolocalisation n'est pas disponible sur ce navigateur.");
-    }
-  });
-</script>
+        );
+      } else {
+        alert("🚫 La géolocalisation n'est pas disponible sur ce navigateur.");
+      }
+    });
+  </script>
 </body>
 </html>
