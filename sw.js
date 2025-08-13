@@ -1,37 +1,37 @@
 const CACHE_NAME = "jul-ia-cache";
 
 const FILES_TO_CACHE = [
-  "/Documentation.html",
-  "/map.html",
-  "/Fichier.html",
-  "/ia_voix.html",
-  "/Jul-IA2.0.html",
-  "/Page_acceuil.html",
-  "/hack.html",
-  "/index.html",
-  "/A_propos.html",
-  "/ia_autres.html",
-  "/index.js",
-  "/Jul-IA3.0.html",
-  "/Connexion_page.html",
-  "/ia_images.html",
-  "/ia_video.html",
-  "/ia_textuelles.html",
-  "/Jul-IA.html",
-  "/Jul-IA_logo.png",
-  "/Laboratoire_CSS.html",
-  "/manifest.json"
+  "/Jul-IA/Documentation.html",
+  "/Jul-IA/map.html",
+  "/Jul-IA/Fichier.html",
+  "/Jul-IA/ia_voix.html",
+  "/Jul-IA/Jul-IA2.0.html",
+  "/Jul-IA/Page_acceuil.html",
+  "/Jul-IA/hack.html",
+  "/Jul-IA/index.html",
+  "/Jul-IA/A_propos.html",
+  "/Jul-IA/ia_autres.html",
+  "/Jul-IA/index.js",
+  "/Jul-IA/Jul-IA3.0.html",
+  "/Jul-IA/Connexion_page.html",
+  "/Jul-IA/ia_images.html",
+  "/Jul-IA/ia_video.html",
+  "/Jul-IA/ia_textuelles.html",
+  "/Jul-IA/Jul-IA.html",
+  "/Jul-IA/Jul-IA_logo.png",
+  "/Jul-IA/Laboratoire_CSS.html",
+  "/Jul-IA/manifest.json"
 ];
 
 const GAME_FILES = [
-  "/Accueil_Pong.html",
-  "/Arkanoid.html",
-  "/Pac-Man.html",
-  "/Playground.html",
-  "/Pong.html",
-  "/Space_Invaders.html",
-  "/Tetris.html",
-  "/video-game.png"
+  "/Jul-IA/Accueil_Pong.html",
+  "/Jul-IA/Arkanoid.html",
+  "/Jul-IA/Pac-Man.html",
+  "/Jul-IA/Playground.html",
+  "/Jul-IA/Pong.html",
+  "/Jul-IA/Space_Invaders.html",
+  "/Jul-IA/Tetris.html",
+  "/Jul-IA/video-game.png"
 ];
 
 // Installation du service worker
