@@ -6,13 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="Jul-IA_logo.png" />
   <link rel="manifest" href="manifest.json" />
-<script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/Jul-IA/sw.js").then(() => {
-      console.log("✅ Service worker actif");
-    });
-  }
-</script>
+  <script>
+   if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js");
+   }
+  </script>
   <style>
     /* 🌙 Thème Jul-IA */
     :root {
@@ -229,8 +227,8 @@
   <div class="wave-background">
     <div class="wave"></div>
   </div>
-
   <div class="container">
+
     <!-- 🧠 En-tête avec logo -->
     <div class="header">
       <img src="Jul-IA_logo.png" alt="Logo Jul-IA" class="logo" />
@@ -242,10 +240,10 @@
 
     <!-- 🖼️ Galerie de captures -->
     <div class="screenshots">
-      <img src="Images/Jul-IA2.0_pc.png" alt="Interface Jul-IA 2.0" onclick="openLightbox(this.src)">
-      <img src="Images/PAge_accueil_pc.png" alt="Accueil Jul-IA PC" onclick="openLightbox(this.src)">
-      <img src="Images/Page_accueil_tablette.png" alt="Accueil Jul-IA tablette" onclick="openLightbox(this.src)">
-      <img src="Images/Page_accueil_tel.png" alt="Accueil Jul-IA mobile" onclick="openLightbox(this.src)">
+      <img src="Jul-IA2.0_pc.png" alt="Interface Jul-IA 2.0" onclick="openLightbox(this.src)">
+      <img src="PAge_accueil_pc.png" alt="Accueil Jul-IA PC" onclick="openLightbox(this.src)">
+      <img src="Page_accueil_tablette.png" alt="Accueil Jul-IA tablette" onclick="openLightbox(this.src)">
+      <img src="Page_accueil_tel.png" alt="Accueil Jul-IA mobile" onclick="openLightbox(this.src)">
     </div>
 
     <!-- 📝 Description -->
