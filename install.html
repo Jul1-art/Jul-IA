@@ -5,6 +5,12 @@
   <title>Jul-IA — Assistant IA intelligent</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="Jul-IA_logo.png" />
+  <link rel="manifest" href="manifest.json" />
+  <script>
+   if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js");
+   }
+  </script>
   <style>
     /* 🌙 Thème Jul-IA */
     :root {
