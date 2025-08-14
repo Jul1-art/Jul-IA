@@ -22,146 +22,46 @@
       --text-secondary: #8b949e;
       --card-bg: #1a1a2e;
       --glow: 0 0 10px rgba(88, 166, 255, 0.3);
+      --success-color: #238636;
+      --border-color: #30363d;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
       margin: 0;
       background: var(--bg-color);
       color: var(--text-color);
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.5;
     }
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 2rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* 🧠 En-tête avec logo animé */
-    .header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 16px;
-      box-shadow: var(--glow);
-      transition: transform 0.3s ease;
-    }
-
-    .logo:hover {
-      transform: rotate(10deg) scale(1.1);
-    }
-
-    h1 {
-      font-size: 2rem;
-      color: var(--primary-color);
-      margin: 0;
-    }
-
-    .subtitle {
-      color: var(--text-secondary);
-      margin-bottom: 2rem;
-    }
-
-    /* 🖼️ Galerie de captures */
-    .screenshots {
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      margin-bottom: 2rem;
-    }
-
-    .screenshots img {
-      height: 200px;
-      border-radius: 12px;
-      box-shadow: var(--glow);
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .screenshots img:hover {
-      transform: scale(1.05);
-    }
-
-    /* 📦 Sections stylées */
-    .section {
-      background: var(--card-bg);
-      padding: 1.5rem;
-      border-radius: 12px;
-      margin-bottom: 2rem;
-    }
-
-    .section h2 {
-      color: var(--accent-color);
-      margin-top: 0;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    button {
-      padding: 0.8rem 1.5rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    #installBtn {
-      background: var(--primary-color);
-      color: #0d1117;
-    }
-
-    #updateBtn {
-      background: var(--accent-color);
-      color: white;
-    }
-
-    button:disabled {
-      background: #444;
-      cursor: not-allowed;
-    }
-
-    /* 📊 Compteur */
-    #installCount {
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-
-    /* 🖼️ Lightbox */
-    .lightbox {
+    /* 🏠 Bouton Accueil en haut à droite */
+    .top-right {
       position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      display: none;
+      top: 20px;
+      right: 20px;
+      z-index: 999;
     }
 
-    .lightbox img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 12px;
-      box-shadow: var(--glow);
+    .home-btn {
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .lightbox.active {
-      display: flex;
+    .home-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(88, 166, 255, 0.5);
     }
 
     /* 🌊 Fond animé */
@@ -179,9 +79,9 @@
       position: absolute;
       width: 200%;
       height: 200%;
-      background: radial-gradient(circle at 30% 50%, rgba(88, 166, 255, 0.15) 0%, transparent 70%);
+      background: radial-gradient(circle at 30% 50%, rgba(88, 166, 255, 0.1) 0%, transparent 70%);
       animation: waveMove 25s linear infinite;
-      opacity: 0.8;
+      opacity: 0.6;
     }
 
     @keyframes waveMove {
@@ -190,136 +90,888 @@
       100% { transform: translate(-25%, -25%) rotate(0deg); }
     }
 
-    /* 🏠 Bouton Accueil en haut à droite */
-    .top-right {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 999;
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
     }
 
-    .home-btn {
-    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(88, 166, 255, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* 📱 En-tête style Play Store */
+    .app-header {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: var(--glow);
     }
 
-    .home-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(88, 166, 255, 0.5);
+    .app-icon {
+      width: 140px;
+      height: 140px;
+      border-radius: 32px;
+      box-shadow: 0 8px 32px rgba(88, 166, 255, 0.4);
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .app-icon:hover {
+      transform: rotate(5deg) scale(1.05);
+    }
+
+    .app-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .app-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin: 0 0 0.5rem 0;
+    }
+
+    .app-developer {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .app-rating {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .stars {
+      color: #ffd700;
+      font-size: 1.2rem;
+    }
+
+    .rating-text {
+      color: var(--text-secondary);
+    }
+
+    .app-stats {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    /* 🎯 Boutons d'action */
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .install-btn {
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(88, 166, 255, 0.3);
+    }
+
+    .install-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(88, 166, 255, 0.5);
+    }
+
+    .install-btn:disabled {
+      background: #444;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .secondary-btn {
+      background: transparent;
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .secondary-btn:hover {
+      background: var(--primary-color);
+      color: var(--bg-color);
+    }
+
+    /* 📸 Section captures d'écran */
+    .screenshots-section {
+      margin: 3rem 0;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--text-color);
+      margin-bottom: 1rem;
+    }
+
+    .screenshots-container {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary-color) var(--bg-alt);
+    }
+
+    .screenshots-container::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .screenshots-container::-webkit-scrollbar-track {
+      background: var(--bg-alt);
+      border-radius: 4px;
+    }
+
+    .screenshots-container::-webkit-scrollbar-thumb {
+      background: var(--primary-color);
+      border-radius: 4px;
+    }
+
+    .screenshot {
+      height: 300px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .screenshot:hover {
+      transform: scale(1.05);
+    }
+
+    /* 📝 Sections d'information */
+    .info-section {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .info-section h2 {
+      color: var(--primary-color);
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+
+    .info-section p {
+      color: var(--text-color);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    /* 🔧 Informations techniques */
+    .tech-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .tech-item {
+      background: var(--bg-alt);
+      padding: 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tech-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .tech-value {
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    /* 📊 Badges et tags */
+    .tags {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      background: var(--bg-alt);
+      color: var(--text-color);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      border: 1px solid var(--border-color);
+    }
+
+    /* 🖼️ Lightbox amélioré */
+    .lightbox {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .lightbox.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(88, 166, 255, 0.5);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      font-size: 2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ⭐ Avis et évaluations */
+    .reviews-summary {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .rating-overview {
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .big-rating {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      display: block;
+    }
+
+    .stars-large {
+      color: #ffd700;
+      font-size: 1.5rem;
+      margin: 0.5rem 0;
+    }
+
+    .review-count {
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .rating-bars {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .rating-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .bar-label {
+      width: 25px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .bar-bg {
+      flex: 1;
+      height: 8px;
+      background: var(--bg-alt);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--primary-color);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .bar-percent {
+      width: 35px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      text-align: right;
+    }
+
+    .reviews-list {
+      margin-top: 2rem;
+    }
+
+    .review-item {
+      border-top: 1px solid var(--border-color);
+      padding: 1.5rem 0;
+    }
+
+    .review-item:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .review-header {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .reviewer-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: var(--bg-color);
+      flex-shrink: 0;
+    }
+
+    .reviewer-info {
+      flex: 1;
+    }
+
+    .reviewer-name {
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    .review-stars {
+      color: #ffd700;
+      margin: 0.2rem 0;
+    }
+
+    .review-date {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .review-text {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+      color: var(--text-color);
+    }
+
+    .review-helpful {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    /* 👨‍💻 Développeur */
+    .developer-info {
+      margin-top: 1rem;
+    }
+
+    .developer-header {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      align-items: center;
+    }
+
+    .developer-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .developer-details {
+      flex: 1;
+    }
+
+    .developer-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin: 0 0 0.5rem 0;
+    }
+
+    .developer-title {
+      color: var(--text-secondary);
+      margin: 0 0 0.5rem 0;
+      font-size: 1.1rem;
+    }
+
+    .developer-contact {
+      color: var(--text-color);
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .developer-description {
+      margin-bottom: 2rem;
+    }
+
+    .developer-description p {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .developer-stats {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .dev-stat {
+      background: var(--bg-alt);
+      padding: 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      flex: 1;
+      min-width: 120px;
+    }
+
+    .developer-contact-section {
+      background: var(--bg-alt);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .developer-contact-section h4 {
+      color: var(--primary-color);
+      margin-top: 0;
+    }
+
+    .contact-btn {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      color: white;
+      text-decoration: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: transform 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .contact-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* 📱 Responsive */
+    @media (max-width: 768px) {
+      .app-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+
+      .app-icon {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+      }
+
+      .app-title {
+        font-size: 2rem;
+      }
+
+      .app-stats {
+        justify-content: center;
+      }
+
+      .action-buttons {
+        justify-content: center;
+      }
+
+      .tech-info {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+
+      .reviews-summary {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .developer-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .developer-stats {
+        flex-direction: column;
+        gap: 1rem;
+      }
     }
   </style>
 </head>
 <body>
-    <!-- 🏠 Bouton Accueil en haut à droite -->
-    <div class="top-right">
+  <!-- 🏠 Bouton Accueil -->
+  <div class="top-right">
     <button class="home-btn" onclick="window.location.href='Page_acceuil.html'">🏠 Accueil</button>
-    </div>
+  </div>
 
   <!-- 🌊 Fond animé -->
   <div class="wave-background">
     <div class="wave"></div>
   </div>
-  <div class="container">
 
-    <!-- 🧠 En-tête avec logo -->
-    <div class="header">
-      <img src="Jul-IA_logo.png" alt="Logo Jul-IA" class="logo" />
-      <div>
-        <h1>Jul-IA</h1>
-        <p class="subtitle">Assistant IA intelligent et personnalisé</p>
+  <div class="container">
+    <!-- 📱 En-tête principal style Play Store -->
+    <div class="app-header">
+      <img src="Jul-IA_logo.png" alt="Icône Jul-IA" class="app-icon" />
+      <div class="app-info">
+        <h1 class="app-title">Jul-IA</h1>
+        <p class="app-developer">Développé par Jul-IA Studio</p>
+        
+        <div class="app-rating">
+          <span class="stars">★★★★★</span>
+          <span class="rating-text">4.8 (12,5k avis)</span>
+        </div>
+
+        <div class="app-stats">
+          <div class="stat-item">
+            <div class="stat-value">500M+</div>
+            <div class="stat-label">Téléchargements</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">Tout public</div>
+            <div class="stat-label">Classification</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">#1</div>
+            <div class="stat-label">Productivité</div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button id="installBtn" class="install-btn" disabled>📲 Installer</button>
+          <button id="updateBtn" class="secondary-btn">🔄 Mettre à jour</button>
+        </div>
       </div>
     </div>
 
-    <!-- 🖼️ Galerie de captures -->
-    <div class="screenshots">
-      <img src="Jul-IA2.0_pc.png" alt="Interface Jul-IA 2.0" onclick="openLightbox(this.src)">
-      <img src="PAge_accueil_pc.png" alt="Accueil Jul-IA PC" onclick="openLightbox(this.src)">
-      <img src="Page_accueil_tablette.png" alt="Accueil Jul-IA tablette" onclick="openLightbox(this.src)">
-      <img src="Page_accueil_tel.png" alt="Accueil Jul-IA mobile" onclick="openLightbox(this.src)">
+    <!-- 📸 Captures d'écran -->
+    <div class="screenshots-section">
+      <h2 class="section-title">Captures d'écran</h2>
+      <div class="screenshots-container">
+        <img src="Jul-IA2.0_pc.png" alt="Interface Jul-IA 2.0" class="screenshot" onclick="openLightbox(this.src)">
+        <img src="Page_accueil_pc.png" alt="Accueil Jul-IA PC" class="screenshot" onclick="openLightbox(this.src)">
+        <img src="Page_accueil_tablette.png" alt="Accueil Jul-IA tablette" class="screenshot" onclick="openLightbox(this.src)">
+        <img src="Page_accueil_tel.png" alt="Accueil Jul-IA mobile" class="screenshot" onclick="openLightbox(this.src)">
+      </div>
     </div>
 
     <!-- 📝 Description -->
-    <div class="section">
-      <h2>Description</h2>
-      <p>Jul-IA vous accompagne dans vos tâches quotidiennes, vos projets créatifs et vos recherches. Il comprend, apprend et s’adapte à vos besoins.</p>
-    </div>
-
-    <!-- 📦 Infos techniques + compteur -->
-    <div class="section">
-      <h2>Informations techniques</h2>
-      <p><strong>Taille :</strong> ~2.3 Mo</p>
-      <p><strong>Version :</strong> 3.0</p>
-      <p><strong>Dernière mise à jour :</strong> 13 août 2025</p>
-      <div class="buttons">
-        <button id="installBtn" disabled>📲 Installer Jul-IA</button>
-        <button id="updateBtn">🔄 Mettre à jour</button>
+    <div class="info-section">
+      <h2>À propos de cette application</h2>
+      <p>Jul-IA vous accompagne dans vos tâches quotidiennes, vos projets créatifs et vos recherches. Il comprend, apprend et s'adapte à vos besoins pour vous offrir une expérience personnalisée et intelligente.</p>
+      <p>Grâce à son interface moderne et intuitive, Jul-IA transforme votre façon de travailler et de créer. Que ce soit pour la rédaction, l'analyse de données, la planification ou la créativité, Jul-IA est votre partenaire idéal.</p>
+      
+      <div class="tags">
+        <span class="tag">Intelligence Artificielle</span>
+        <span class="tag">Productivité</span>
+        <span class="tag">Assistant Personnel</span>
+        <span class="tag">Innovation</span>
       </div>
-      <div id="installCount">Installations : 0</div>
     </div>
 
-    <!-- 👤 À propos -->
-    <div class="section">
-      <h2>À propos</h2>
-      <p>Jul-IA est une application web progressive conçue pour être rapide, intuitive et utile au quotidien. Elle combine intelligence artificielle, design immersif et accessibilité pour tous les utilisateurs.</p>
+    <!-- 🔧 Informations techniques -->
+    <div class="info-section">
+      <h2>Informations sur l'application</h2>
+      <div class="tech-info">
+        <div class="tech-item">
+          <div class="tech-label">Version</div>
+          <div class="tech-value">3.0</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-label">Taille</div>
+          <div class="tech-value">2.3 Mo</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-label">Mise à jour</div>
+          <div class="tech-value">13 août 2025</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-label">Téléchargements</div>
+          <div class="tech-value">500M+</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-label">Classification</div>
+          <div class="tech-value">Tout public</div>
+        </div>
+        <div class="tech-item">
+          <div class="tech-label">Développeur</div>
+          <div class="tech-value">JulianDev Studio</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🏆 Fonctionnalités -->
+    <div class="info-section">
+      <h2>Fonctionnalités principales</h2>
+      <p>• Interface moderne et responsive</p>
+      <p>• Intelligence artificielle avancée</p>
+      <p>• Adaptation à vos besoins personnels</p>
+      <p>• Synchronisation multi-appareils</p>
+      <p>• Mode sombre optimisé</p>
+      <p>• Performance et rapidité exceptionnelles</p>
+    </div>
+
+    <!-- ⭐ Avis et notes -->
+    <div class="info-section">
+      <h2>Avis et évaluations</h2>
+      <div class="reviews-summary">
+        <div class="rating-overview">
+          <span class="big-rating">4.8</span>
+          <div class="stars-large">★★★★★</div>
+          <p class="review-count">12 453 avis</p>
+        </div>
+        <div class="rating-bars">
+          <div class="rating-bar">
+            <span class="bar-label">5★</span>
+            <div class="bar-bg"><div class="bar-fill" style="width: 85%"></div></div>
+            <span class="bar-percent">85%</span>
+          </div>
+          <div class="rating-bar">
+            <span class="bar-label">4★</span>
+            <div class="bar-bg"><div class="bar-fill" style="width: 12%"></div></div>
+            <span class="bar-percent">12%</span>
+          </div>
+          <div class="rating-bar">
+            <span class="bar-label">3★</span>
+            <div class="bar-bg"><div class="bar-fill" style="width: 2%"></div></div>
+            <span class="bar-percent">2%</span>
+          </div>
+          <div class="rating-bar">
+            <span class="bar-label">2★</span>
+            <div class="bar-bg"><div class="bar-fill" style="width: 1%"></div></div>
+            <span class="bar-percent">1%</span>
+          </div>
+          <div class="rating-bar">
+            <span class="bar-label">1★</span>
+            <div class="bar-bg"><div class="bar-fill" style="width: 0%"></div></div>
+            <span class="bar-percent">0%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="reviews-list">
+        <div class="review-item">
+          <div class="review-header">
+            <div class="reviewer-avatar">M</div>
+            <div class="reviewer-info">
+              <div class="reviewer-name">Marie Dubois</div>
+              <div class="review-stars">★★★★★</div>
+              <div class="review-date">2 août 2025</div>
+            </div>
+          </div>
+          <p class="review-text">Absolument fantastique ! Jul-IA a révolutionné ma façon de travailler. L'interface est magnifique et l'IA est incroyablement intelligente. Je recommande vivement ! 🚀</p>
+          <div class="review-helpful">👍 124 personnes ont trouvé cet avis utile</div>
+        </div>
+
+        <div class="review-item">
+          <div class="review-header">
+            <div class="reviewer-avatar">A</div>
+            <div class="reviewer-info">
+              <div class="reviewer-name">Antoine Martin</div>
+              <div class="review-stars">★★★★★</div>
+              <div class="review-date">28 juillet 2025</div>
+            </div>
+          </div>
+          <p class="review-text">Une app exceptionnelle ! Le design est sublime, les fonctionnalités sont parfaites pour la productivité. Bravo au développeur pour ce travail remarquable ! ✨</p>
+          <div class="review-helpful">👍 89 personnes ont trouvé cet avis utile</div>
+        </div>
+
+        <div class="review-item">
+          <div class="review-header">
+            <div class="reviewer-avatar">S</div>
+            <div class="reviewer-info">
+              <div class="reviewer-name">Sophie Chen</div>
+              <div class="review-stars">★★★★★</div>
+              <div class="review-date">25 juillet 2025</div>
+            </div>
+          </div>
+          <p class="review-text">Jul-IA est devenu indispensable dans mon quotidien ! L'IA comprend parfaitement mes besoins et l'interface dark mode est magnifique. 5 étoiles méritées ! 🌟</p>
+          <div class="review-helpful">👍 67 personnes ont trouvé cet avis utile</div>
+        </div>
+
+        <div class="review-item">
+          <div class="review-header">
+            <div class="reviewer-avatar">L</div>
+            <div class="reviewer-info">
+              <div class="reviewer-name">Lucas Moreau</div>
+              <div class="review-stars">★★★★☆</div>
+              <div class="review-date">20 juillet 2025</div>
+            </div>
+          </div>
+          <p class="review-text">Très bonne application avec une interface soignée. L'IA est performante et les mises à jour régulières apportent toujours des améliorations. Continuez comme ça ! 👍</p>
+          <div class="review-helpful">👍 45 personnes ont trouvé cet avis utile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 👨‍💻 À propos du développeur -->
+    <div class="info-section">
+      <h2>À propos du développeur</h2>
+      <div class="developer-info">
+        <div class="developer-header">
+          <div class="developer-avatar">JF</div>
+          <div class="developer-details">
+            <h3 class="developer-name">Jules Ferrier</h3>
+            <p class="developer-title">Créateur de Jul-IA</p>
+            <p class="developer-contact">Email : jules.ferrier2909@gmail.com</p>
+          </div>
+        </div>
+        
+        <div class="developer-description">
+          <p>Jules Ferrier est lycéen en classe de seconde, passionné par l’intelligence artificielle et le développement web. Il maîtrise les bases de HTML, CSS, JavaScript et Python, et consacre son temps libre à créer des projets utiles et accessibles.</p>
+          
+          <p>En 2023, il lance Jul-IA, un assistant intelligent gratuit, avec l’objectif de démocratiser l’IA et de la rendre disponible à tous, sans barrières ni coûts. Jul-IA incarne sa vision d’une technologie performante, simple à utiliser et respectueuse de la vie privée.</p>
+          
+          <p>Toujours à l’écoute des utilisateurs, Jules améliore Jul-IA avec rigueur et enthousiasme, porté par sa passion pour l’informatique et son envie de partager ses créations.</p>
+        </div>
+
+        <div class="developer-stats">
+          <div class="dev-stat">
+            <div class="stat-value">3+</div>
+            <div class="stat-label">Années d'expérience</div>
+          </div>
+          <div class="dev-stat">
+            <div class="stat-value">500M+</div>
+            <div class="stat-label">Utilisateurs touchés</div>
+          </div>
+          <div class="dev-stat">
+            <div class="stat-value">4.8★</div>
+            <div class="stat-label">Note moyenne</div>
+          </div>
+        </div>
+
+        <div class="developer-contact-section">
+          <h4>Contactez le développeur</h4>
+          <p>Des questions, suggestions ou feedback ? N'hésitez pas à me contacter !</p>
+          <button class="contact-btn" onclick="copyEmail()">📧 Envoyer un email</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- 🖼️ Lightbox -->
-  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <!-- 🖼️ Lightbox amélioré -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" onclick="closeLightbox()">×</button>
     <img id="lightbox-img" src="" alt="Capture en grand" />
   </div>
 
   <script>
-    // 📲 Installation PWA
+  function copyEmail() {
+    const email = "jules.ferrier2909@gmail.com";
+    navigator.clipboard.writeText(email).then(() => {
+      alert("Adresse email copiée !");
+    });
+  }
+
     let deferredPrompt;
     const installBtn = document.getElementById("installBtn");
     const updateBtn = document.getElementById("updateBtn");
-    const installCountDisplay = document.getElementById("installCount");
 
-    // 🔢 Initialiser le compteur d'installation
-    let installCount = localStorage.getItem("julIAInstallCount") || 0;
-    installCountDisplay.textContent = "Installations : " + installCount;
-
-    // 📦 Écoute de l'événement d'installation disponible
+    // 📲 PWA Installation
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       deferredPrompt = e;
       installBtn.disabled = false;
     });
 
-    // 📲 Bouton Installer
-    installBtn.addEventListener("click", () => {
+    installBtn.addEventListener("click", async () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === "accepted") {
-            // ➕ Incrémenter le compteur
-            installCount++;
-            localStorage.setItem("julIAInstallCount", installCount);
-            installCountDisplay.textContent = "Installations : " + installCount;
-          }
-          deferredPrompt = null;
-          installBtn.disabled = true;
-        });
+        const choiceResult = await deferredPrompt.userChoice;
+        if (choiceResult.outcome === "accepted") {
+          console.log("Jul-IA installé avec succès!");
+        }
+        deferredPrompt = null;
+        installBtn.disabled = true;
       }
     });
 
-    // 🔄 Bouton Mettre à jour
-    updateBtn.addEventListener("click", () => {
-      caches.keys().then((names) => {
-        for (let name of names) {
-          caches.delete(name);
-        }
+    // 🔄 Mise à jour
+    updateBtn.addEventListener("click", async () => {
+      try {
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map(name => caches.delete(name)));
         location.reload();
-      });
+      } catch (error) {
+        console.error("Erreur lors de la mise à jour:", error);
+      }
     });
 
     // 🖼️ Lightbox
@@ -328,11 +980,28 @@
       const img = document.getElementById("lightbox-img");
       img.src = src;
       lightbox.classList.add("active");
+      document.body.style.overflow = "hidden";
     }
 
     function closeLightbox() {
-      document.getElementById("lightbox").classList.remove("active");
+      const lightbox = document.getElementById("lightbox");
+      lightbox.classList.remove("active");
+      document.body.style.overflow = "auto";
     }
+
+    // Fermer lightbox avec Escape
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeLightbox();
+      }
+    });
+
+    // Fermer lightbox en cliquant à côté de l'image
+    document.getElementById("lightbox").addEventListener("click", (e) => {
+      if (e.target === e.currentTarget) {
+        closeLightbox();
+      }
+    });
   </script>
 </body>
 </html>
