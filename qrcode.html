@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Jul-IA QR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Fond techno pulsant */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, #3333ff 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: pulseCircle 3s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    @keyframes pulseCircle {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.3; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+    }
+
+    /* Particules flottantes */
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      animation: floatParticle 12s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes floatParticle {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-100vh) scale(0.5); opacity: 0; }
+    }
+
+    /* Bouton APP stylé */
+    .app-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 0.8rem 1.6rem;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #fff;
+      background: linear-gradient(45deg, #ff00cc, #3333ff);
+      border: none;
+      border-radius: 12px;
+      text-decoration: none;
+      box-shadow: 0 0 20px rgba(255, 0, 204, 0.6);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: pulseGlow 2s infinite;
+      z-index: 10;
+    }
+
+    .app-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px rgba(255, 0, 204, 0.9);
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 20px rgba(255, 0, 204, 0.6); }
+      50% { box-shadow: 0 0 30px rgba(255, 0, 204, 0.9); }
+      100% { box-shadow: 0 0 20px rgba(255, 0, 204, 0.6); }
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      animation: fadeInDown 2s ease;
+      z-index: 10;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* QR Code agrandi et animé */
+    .qr-container {
+      animation: floatQR 4s ease-in-out infinite;
+      z-index: 10;
+    }
+
+    .qr-container img {
+      width: 400px;
+      height: auto;
+      border-radius: 16px;
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.4);
+      transition: transform 0.3s ease;
+    }
+
+    .qr-container img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 60px rgba(255, 255, 255, 0.6);
+    }
+
+    @keyframes floatQR {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+      100% { transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <a href="install.html" class="app-button">APP</a>
+  <h1>Scannez-moi</h1>
+  <div class="qr-container">
+    <img src="Jul-IA_qr_install.png" alt="QR Code Jul-IA">
+  </div>
+
+  <!-- Génération des particules -->
+  <script>
+    for (let i = 0; i < 30; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.width = `${Math.random() * 8 + 4}px`;
+      particle.style.height = particle.style.width;
+      particle.style.left = `${Math.random() * 100}vw`;
+      particle.style.top = `${Math.random() * 100}vh`;
+      particle.style.animationDuration = `${Math.random() * 10 + 5}s`;
+      document.body.appendChild(particle);
+    }
+  </script>
+</body>
+</html>
