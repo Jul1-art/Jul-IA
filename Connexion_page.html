@@ -19,6 +19,7 @@
       --success-color: #4dff8d;
       --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       --border-radius: 16px;
+      --glow-color: rgba(88, 166, 255, 0.3);
     }
 
     * {
@@ -56,6 +57,7 @@
       border-radius: 50%;
       opacity: 0;
       animation: particleFloat 15s linear infinite;
+      box-shadow: 0 0 10px var(--glow-color);
     }
 
     @keyframes particleFloat {
@@ -81,6 +83,7 @@
       opacity: 0.1;
       animation: float 25s linear infinite;
       backdrop-filter: blur(5px);
+      box-shadow: 0 0 20px var(--glow-color);
     }
 
     @keyframes float {
@@ -106,6 +109,7 @@
       border-radius: 50%;
       opacity: 0.1;
       animation: pulse 8s ease-in-out infinite;
+      box-shadow: 0 0 30px var(--glow-color);
     }
 
     @keyframes pulse {
@@ -123,7 +127,7 @@
       }
     }
 
-    /* Conteneur de connexion */
+    /* Conteneur de connexion amélioré */
     .login-container {
       background: var(--card-bg);
       border: 1px solid rgba(88, 166, 255, 0.2);
@@ -137,27 +141,36 @@
       overflow: hidden;
       animation: fadeIn 0.8s ease-out, scaleIn 0.8s ease-out;
       backdrop-filter: blur(10px);
+      transition: var(--transition);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(88, 166, 255, 0.1) 0%, transparent 70%);
+      animation: rotate 15s linear infinite;
+      z-index: -1;
     }
 
-    @keyframes scaleIn {
-      from { transform: scale(0.95); }
-      to { transform: scale(1); }
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
-    /* Logo et titre */
+    .login-container:hover {
+      box-shadow: 0 12px 40px rgba(88, 166, 255, 0.3);
+      transform: translateY(-5px);
+    }
+
+    /* Logo et titre améliorés */
     .logo-container {
       margin-bottom: 1.5rem;
       animation: popIn 0.6s ease-out;
-    }
-
-    @keyframes popIn {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+      position: relative;
     }
 
     .logo {
@@ -177,12 +190,6 @@
       animation: rotate 1.5s ease-in-out;
     }
 
-    @keyframes rotate {
-      0% { transform: scale(1) rotate(0deg); }
-      50% { transform: scale(1.05) rotate(10deg); }
-      100% { transform: scale(1) rotate(0deg); }
-    }
-
     h2 {
       font-size: 1.8rem;
       margin-bottom: 1.5rem;
@@ -191,14 +198,29 @@
       background-clip: text;
       -webkit-text-fill-color: transparent;
       animation: shine 3s linear infinite;
+      position: relative;
     }
 
-    @keyframes shine {
-      0% { background-position: -200px 0; }
-      100% { background-position: 200px 0; }
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: underline 2s ease-in-out infinite;
     }
 
-    /* Champ de mot de passe */
+    @keyframes underline {
+      0% { transform: scaleX(0); }
+      50% { transform: scaleX(1); }
+      100% { transform: scaleX(0); }
+    }
+
+    /* Champ de mot de passe amélioré */
     .password-container {
       position: relative;
       margin-bottom: 1.5rem;
@@ -211,9 +233,15 @@
       text-align: left;
       color: var(--text-secondary);
       font-size: 0.9rem;
+      transition: var(--transition);
     }
 
-    input[type="password"] {
+    .password-container:hover label {
+      color: var(--primary-color);
+    }
+
+    input[type="password"],
+    input[type="text"] {
       width: 100%;
       padding: 12px 40px 12px 16px;
       border-radius: 8px;
@@ -225,47 +253,57 @@
       box-shadow: inset 0 0 6px rgba(88, 166, 255, 0.2);
     }
 
-    input[type="password"]:hover {
+    input[type="password"]:hover,
+    input[type="text"]:hover {
       border-color: rgba(88, 166, 255, 0.5);
       box-shadow: 0 0 8px rgba(88, 166, 255, 0.3);
     }
 
-    input[type="password"]:focus {
+    input[type="password"]:focus,
+    input[type="text"]:focus {
       outline: none;
       border-color: var(--primary-color);
-      box-shadow: 0 0 0 2px var(--primary-color);
+      box-shadow: 0 0 0 2px var(--primary-color), 0 0 15px rgba(88, 166, 255, 0.3);
       animation: inputGlow 1.5s infinite alternate;
     }
 
     @keyframes inputGlow {
       from { box-shadow: 0 0 0 2px var(--primary-color), 0 0 0 4px rgba(88, 166, 255, 0.2); }
-      to { box-shadow: 0 0 0 2px var(--primary-color), 0 0 8px 4px rgba(88, 166, 255, 0.4); }
+      to { box-shadow: 0 0 0 2px var(--primary-color), 0 0 15px 4px rgba(88, 166, 255, 0.4); }
     }
 
     .toggle-password {
       position: absolute;
       right: 10px;
       top: 50%;
-      transform: translateY(-50%);
+      transform: translateY(-20%);
       background: none;
       border: none;
       color: var(--text-secondary);
       cursor: pointer;
-      font-size: 0.9rem;
-      padding: 0 0.5rem;
-      height: 100%;
+      font-size: 1.1rem;
+      padding: 0;
+      height: 30px;
+      width: 30px;
       display: flex;
       align-items: center;
+      justify-content: center;
       transition: var(--transition);
       z-index: 2;
+      border-radius: 50%;
     }
 
     .toggle-password:hover {
       color: var(--primary-color);
-      transform: translateY(-50%) scale(1.1);
+      background-color: rgba(88, 166, 255, 0.1);
+      transform: translateY(-20%) scale(1.1);
     }
 
-    /* Bouton de connexion */
+    .toggle-password:active {
+      transform: translateY(-20%) scale(0.9);
+    }
+
+    /* Bouton de connexion amélioré */
     .login-button {
       width: 100%;
       padding: 14px;
@@ -308,7 +346,23 @@
       left: 100%;
     }
 
-    /* Messages d'erreur et de succès */
+    .login-button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transform: translateX(-100%);
+      transition: 0.5s;
+    }
+
+    .login-button:hover::after {
+      transform: translateX(100%);
+    }
+
+    /* Messages d'erreur et de succès améliorés */
     .message {
       color: var(--text-secondary);
       font-size: 0.9rem;
@@ -329,17 +383,17 @@
       animation: shake 0.5s ease-in-out;
     }
 
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-5px); }
-      40%, 80% { transform: translateX(5px); }
-    }
-
     .success-message {
       color: var(--success-color);
+      animation: bounce 0.5s ease-in-out;
     }
 
-    /* Overlay de verrouillage */
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Overlay de verrouillage amélioré */
     .locked-overlay {
       position: fixed;
       top: 0;
@@ -368,12 +422,20 @@
       text-align: center;
       max-width: 400px;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-      animation: pulse 1.5s infinite alternate;
+      position: relative;
+      overflow: hidden;
     }
 
-    @keyframes pulse {
-      from { transform: scale(1); }
-      to { transform: scale(1.05); }
+    .locked-message::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 107, 107, 0.1) 0%, transparent 70%);
+      animation: rotate 10s linear infinite;
+      z-index: -1;
     }
 
     .countdown {
@@ -381,6 +443,34 @@
       color: var(--primary-color);
       margin-top: 1rem;
       font-weight: bold;
+    }
+
+    /* Animations supplémentaires */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.95); }
+      to { transform: scale(1); }
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+
+    @keyframes pulseSuccess {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
   </style>
 </head>
@@ -497,11 +587,20 @@
 
       if (input.type === "password") {
         input.type = "text";
-        btn.textContent = "🔒";
+        btn.innerHTML = "👁️";
       } else {
         input.type = "password";
-        btn.textContent = "👁️";
+        btn.innerHTML = "🔒";
       }
+
+      // Animation de clic
+      btn.style.transform = 'translateY(-20%) scale(0.9)';
+      setTimeout(() => {
+        btn.style.transform = 'translateY(-20%) scale(1.1)';
+        setTimeout(() => {
+          btn.style.transform = 'translateY(-20%) scale(1)';
+        }, 100);
+      }, 100);
     }
 
     // Gestion du compteur de verrouillage
@@ -576,6 +675,9 @@
         const y = rect.top + rect.height / 2;
         createSuccessParticles(x, y);
 
+        // Animation de fond pour succès
+        createBackgroundPulse();
+
         setTimeout(() => {
           window.location.href = "Jul-IA3.0.html";
         }, 1000);
@@ -597,6 +699,13 @@
         if (attempts >= 3) {
           lockAccess();
         }
+      }
+    });
+
+    // Écouteur pour la touche Entrée
+    document.getElementById('pwd').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('loginForm').dispatchEvent(new Event('submit'));
       }
     });
 
@@ -644,9 +753,41 @@
       }
     }
 
+    // Animation de fond pour succès
+    function createBackgroundPulse() {
+      const pulse = document.createElement('div');
+      pulse.style.position = 'fixed';
+      pulse.style.top = '0';
+      pulse.style.left = '0';
+      pulse.style.width = '100%';
+      pulse.style.height = '100%';
+      pulse.style.background = 'rgba(77, 255, 141, 0.1)';
+      pulse.style.zIndex = '-1';
+      pulse.style.pointerEvents = 'none';
+      document.body.appendChild(pulse);
+
+      const animation = pulse.animate([
+        { transform: 'scale(0.5)', opacity: 0.5 },
+        { transform: 'scale(2)', opacity: 0 }
+      ], {
+        duration: 1000,
+        easing: 'ease-out'
+      });
+
+      animation.onfinish = () => {
+        pulse.remove();
+      };
+    }
+
     // Initialisation
     document.addEventListener('DOMContentLoaded', function() {
       initBackground();
+
+      // Animation de chargement
+      document.querySelector('.login-container').style.animation = 'fadeIn 0.8s ease-out, scaleIn 0.8s ease-out';
+
+      // Focus sur le champ de mot de passe au chargement
+      document.getElementById('pwd').focus();
     });
   </script>
 </body>
