@@ -1,315 +1,487 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Jul‑IA • Mistral (3 modèles)</title>
-  <link rel="icon" href="data:;base64,=">
-  <style>
-    :root{
-      --bg1:#0b1220;--bg2:#070d1a;--panel:#0f172a;--muted:#9aa0a6;--text:#eafaf9;--neon:#00fff7;--accent:#00bfae;--glass:rgba(255,255,255,.04);
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:radial-gradient(1200px 800px at 20% -10%,#0e1a2f 0%,#070d1a 35%,#050a16 60%,#04080f 100%);color:var(--text);}
-    .grid{display:grid;grid-template-columns:320px 1fr;gap:18px;height:100vh;padding:22px}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.06);border-radius:14px;box-shadow:0 10px 40px rgba(2,6,23,.6);backdrop-filter:blur(6px)}
-    /* Sidebar */
-    .side{display:flex;flex-direction:column;padding:16px}
-    .brand{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-    .logo{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#00182f,#00344f);color:var(--neon);font-weight:900;box-shadow:0 0 24px rgba(0,255,247,.18)}
-    .muted{color:var(--muted)}
-    .models{display:grid;grid-template-columns:1fr;gap:8px;margin:8px 0 10px}
-    .mbtn{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid rgba(255,255,255,.06);background:transparent;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:700;transition:all .18s}
-    .mbtn:hover{transform:translateX(6px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,255,247,.1);}
-    .mbtn.active{background:linear-gradient(90deg,rgba(0,255,247,.07),rgba(0,191,174,.03));border-color:var(--accent)}
-    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-    .tbtn{border:1px solid rgba(255,255,255,.06);background:transparent;color:var(--text);padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:600}
-    .tbtn:hover{border-color:var(--accent)}
-    /* Conversations */
-    .list{flex:1;overflow:auto;margin-top:8px;padding-right:6px}
-    .item{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.04);cursor:pointer}
-    .item:hover{background:rgba(255,255,255,.03)}
-    .itag{font-size:12px;color:var(--muted)}
-    .spacer{height:8px}
-    /* Main */
-    .main{display:flex;flex-direction:column;overflow:hidden}
-    .head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06)}
-    .title{display:flex;align-items:center;gap:10px}
-    .pill{font-size:12px;border:1px solid rgba(255,255,255,.14);padding:4px 8px;border-radius:999px;color:var(--muted)}
-    /* Chat */
-    .chat{flex:1;overflow:auto;padding:22px;display:flex;flex-direction:column;gap:14px;position:relative}
-    .msg{max-width:74%;padding:14px 16px;border-radius:14px;line-height:1.5;animation:bubble .3s ease-out;white-space:pre-wrap}
-    .msg.user{margin-left:auto;background:linear-gradient(180deg,rgba(0,191,174,.14),rgba(0,191,174,.06));border:1px solid rgba(0,191,174,.18);color:var(--text);font-weight:600}
-    .msg.bot{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08)}
-    .code{background:#0c1322;border:1px solid rgba(255,255,255,.08);padding:10px;border-radius:10px;margin-top:6px;overflow:auto}
-    .foot{display:flex;gap:10px;align-items:center;padding:14px;border-top:1px solid rgba(255,255,255,.06)}
-    .in{flex:1;border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--text);border-radius:12px;padding:12px 14px}
-    .send{background:var(--neon);color:#06121b;border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;box-shadow:0 10px 28px rgba(0,255,247,.1)}
-    .send:active{transform:scale(.98)}
-    .ghost{opacity:.6}
-    .typing{display:flex;gap:6px;align-items:center}
-    .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
-    .dot:nth-child(2){animation-delay:.12s}.dot:nth-child(3){animation-delay:.24s}
-    @keyframes blink{0%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-6px)}100%{opacity:.3;transform:translateY(0)}}
-    @keyframes bubble{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-    /* Dialog */
-    .modal{position:fixed;inset:0;display:none;place-items:center;background:radial-gradient(ellipse at center,rgba(0,0,0,.4),rgba(0,0,0,.6));backdrop-filter:blur(6px);z-index:40}
-    .modal.show{display:grid}
-    .mc{width:min(680px,92%);padding:18px;border-radius:14px} 
-    label{font-size:13px;color:var(--muted)}
-    input[type="password"],input[type="text"],textarea{width:100%;border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--text);border-radius:10px;padding:10px}
-    .row{display:flex;gap:10px}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Jul-IA • 3 modèles Mistral + Code Runner</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#070d1a;--bg2:#040913;--panel:#0e1628;--panel2:#0b1324;
+    --muted:#9aa0a6;--text:#eafaf9;--neon:#00fff7;--accent:#00bfae;--accent2:#8b5cf6;--danger:#ff4d4f;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    background:radial-gradient(1200px 800px at 20% -10%,#0f1b33 0%,#070d1a 35%,#050a16 60%,#04080f 100%);
+    color:var(--text);
+    overflow:hidden;
+  }
+  /* Animated blobs background */
+  .blobs::before,.blobs::after{content:"";position:fixed;inset:auto;filter:blur(60px);opacity:.45;z-index:0;pointer-events:none}
+  .blobs::before{width:520px;height:520px;left:-120px;top:-120px;background:radial-gradient(circle at 30% 30%,#00fff7 0%,transparent 60%);animation:float1 18s ease-in-out infinite}
+  .blobs::after{width:620px;height:620px;right:-160px;bottom:-160px;background:radial-gradient(circle at 70% 70%,#8b5cf6 0%,transparent 60%);animation:float2 22s ease-in-out infinite}
+  @keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
+  @keyframes float2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,-20px) scale(1.05)}}
+
+  .grid{position:relative;z-index:1;display:grid;grid-template-columns:320px 1fr 0px;gap:18px;height:100vh;padding:22px;transition:grid-template-columns .25s ease}
+  .grid.code-open{grid-template-columns:320px 1fr 38vw;}
+  .card{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.06);border-radius:14px;box-shadow:0 10px 40px rgba(2,6,23,.6);backdrop-filter:blur(6px)}
+  .side{display:flex;flex-direction:column;padding:16px;min-height:0}
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .logo{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,#00182f,#00344f);color:var(--neon);font-weight:900;box-shadow:0 0 24px rgba(0,255,247,.18)}
+  .muted{color:var(--muted)}
+
+  .models{display:grid;grid-template-columns:1fr;gap:8px;margin:8px 0 10px}
+  .mbtn{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid rgba(255,255,255,.06);background:transparent;color:var(--text);padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:700;transition:all .18s}
+  .mbtn:hover{transform:translateX(6px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,255,247,.1)}
+  .mbtn.active{background:linear-gradient(90deg,rgba(0,255,247,.07),rgba(0,191,174,.03));border-color:var(--accent)}
+  .mbtn .pill{font-size:12px;border:1px solid rgba(255,255,255,.14);padding:2px 8px;border-radius:999px;color:var(--muted)}
+
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+  .tbtn{border:1px solid rgba(255,255,255,.06);background:transparent;color:var(--text);padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:600}
+  .tbtn:hover{border-color:var(--accent)}
+
+  .multi{display:flex;align-items:center;gap:6px;margin-top:8px}
+  .switch{appearance:none;width:48px;height:26px;border-radius:999px;background:#1a2440;position:relative;outline:none;cursor:pointer;border:1px solid rgba(255,255,255,.12)}
+  .switch::after{content:"";position:absolute;width:22px;height:22px;border-radius:50%;left:2px;top:1px;background:#9aa0a6;transition:.2s}
+  .switch:checked{background:linear-gradient(90deg,#00fff7,#8b5cf6)}
+  .switch:checked::after{left:24px;background:white}
+
+  .list{flex:1;overflow:auto;margin-top:8px;padding-right:6px}
+  .item{display:flex;align-items:center;gap:8px;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.04);cursor:pointer;transition:.18s}
+  .item:hover{background:rgba(255,255,255,.03);transform:translateX(4px)}
+  .itag{font-size:12px;color:var(--muted)}
+  .spacer{height:8px}
+
+  .main{display:flex;flex-direction:column;overflow:hidden}
+  .head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 12px 18px;border-bottom:1px solid rgba(255,255,255,.06)}
+  .title{display:flex;align-items:center;gap:10px}
+  .pill{font-size:12px;border:1px solid rgba(255,255,255,.14);padding:4px 8px;border-radius:999px;color:var(--muted)}
+  .rightBtns{display:flex;gap:8px;align-items:center}
+
+  .chat{flex:1;overflow:auto;padding:22px;display:flex;flex-direction:column;gap:14px;position:relative;scroll-behavior:smooth}
+  .msg{max-width:74%;padding:14px 16px;border-radius:14px;line-height:1.5;animation:bubble .25s ease-out;white-space:pre-wrap}
+  .msg.user{margin-left:auto;background:linear-gradient(180deg,rgba(0,191,174,.18),rgba(0,191,174,.08));border:1px solid rgba(0,191,174,.22);color:var(--text);font-weight:600}
+  .msg.bot{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08)}
+
+  .lbl{display:inline-block;margin-bottom:6px;font-size:12px;opacity:.8}
+  .typing{display:flex;gap:6px;align-items:center}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
+  .dot:nth-child(2){animation-delay:.12s}.dot:nth-child(3){animation-delay:.24s}
+  @keyframes blink{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
+  @keyframes bubble{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+  .foot{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;padding:14px;border-top:1px solid rgba(255,255,255,.06)}
+  .in{width:100%;min-height:44px;max-height:160px;border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--text);border-radius:12px;padding:12px 14px;resize:vertical}
+
+  .send{background:var(--neon);color:#06121b;border:none;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer}
+  .toBottom{position:absolute;right:16px;bottom:16px;z-index:5;display:none}
+  .toBottom.show{display:block}
+  .toBottom button{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#021018;border:none;border-radius:999px;padding:10px 14px;font-weight:800;cursor:pointer}
+
+  /* Quick/Deep menu */
+  .menu{position:relative}
+  .menubtn{border:1px solid rgba(255,255,255,.14);background:transparent;color:var(--text);padding:8px 10px;border-radius:10px;cursor:pointer}
+  .dropdown{position:absolute;right:0;top:calc(100% + 6px);background:rgba(15,20,35,.96);border:1px solid rgba(255,255,255,.06);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.35);display:none;min-width:220px;z-index:5}
+  .dropdown.show{display:block}
+  .option{padding:10px 12px;cursor:pointer}
+  .option:hover{background:rgba(255,255,255,.06)}
+  .hint{font-size:11px;color:var(--muted)}
+
+  /* Code Runner (right panel) */
+  .coder{display:flex;flex-direction:column;min-width:0}
+  .codehead{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.06)}
+  .ctitle{font-weight:800}
+  .codebtns{display:flex;gap:8px}
+  .codebtn{border:1px solid rgba(255,255,255,.14);background:transparent;color:var(--text);padding:8px 10px;border-radius:10px;cursor:pointer}
+  .codearea{flex:1;display:grid;grid-template-rows:1fr 42%;gap:8px;padding:10px;min-height:0}
+  .editor{width:100%;height:100%;border:1px solid rgba(255,255,255,.12);background:#0b1120;color:var(--text);border-radius:10px;padding:10px;font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;resize:none}
+  .preview{border:1px solid rgba(255,255,255,.12);border-radius:10px;background:#0b1120;overflow:hidden}
+  .preview iframe{width:100%;height:100%;border:0;background:white}
+</style>
 </head>
-<body>
-  <div class="grid">
-    <aside class="card side" aria-label="Conversations">
-      <div class="brand">
-        <div class="logo">J</div>
-        <div>
-          <div style="font-weight:800">Jul‑IA</div>
-          <div class="muted" style="font-size:12px">3 modèles Mistral</div>
-        </div>
-      </div>
-      <div class="muted" style="font-size:12px">Modèle actif</div>
-      <div class="models">
-        <button class="mbtn" data-model="mistral-large">📝 Mistral‑Large <span class="pill">texte</span></button>
-        <button class="mbtn" data-model="codestral">💻 Codestral <span class="pill">code</span></button>
-        <button class="mbtn" data-model="mathstral-7b">🔢 Mathstral‑7B <span class="pill">maths</span></button>
-      </div>
-      <div class="toolbar">
-        <button class="tbtn" id="newBtn">➕ Nouveau</button>
-        <button class="tbtn" id="exportBtn">⬇️ Export</button>
-        <button class="tbtn" id="importBtn">⬆️ Import</button>
-        <button class="tbtn" id="clearBtn">🧹 Tout effacer</button>
-        <button class="tbtn" id="settingsBtn">⚙️</button>
-      </div>
-      <div class="list" id="convList"></div>
-      <div class="muted" style="font-size:12px;margin-top:8px">Sauvegarde automatique locale</div>
-    </aside>
+<body class="blobs">
+<div class="grid" id="grid">
+  <!-- SIDEBAR -->
+  <aside class="card side">
+    <div class="brand">
+      <div class="logo">J</div>
+      <div><div style="font-weight:800">Jul-IA</div><div class="muted" style="font-size:12px">3 modèles Mistral</div></div>
+    </div>
 
-    <section class="card main" role="main">
-      <div class="head">
-        <div class="title">
-          <strong>Jul‑IA</strong>
-          <span class="pill" id="modelPill">—</span>
-        </div>
-        <div class="row">
-          <button class="tbtn" id="renameBtn">✏️ Renommer</button>
-          <button class="tbtn" id="deleteBtn">🗑️ Supprimer</button>
-          <button class="tbtn" id="stopBtn" title="Arrêter la génération">⏹️ Stop</button>
-        </div>
-      </div>
-      <div class="chat" id="chat"></div>
-      <div class="foot">
-        <input id="input" class="in" placeholder="Écris ton message…" />
-        <button id="send" class="send">Envoyer ▷</button>
-      </div>
-    </section>
-  </div>
+    <div class="muted" style="font-size:12px">Modèle actif</div>
+    <div class="models">
+      <button class="mbtn" data-model="mistral-large">📝 Mistral-Large <span class="pill">texte</span></button>
+      <button class="mbtn" data-model="codestral">💻 Codestral <span class="pill">code</span></button>
+      <button class="mbtn" data-model="mathstral-7b">🔢 Mathstral-7B <span class="pill">maths</span></button>
+    </div>
 
-  <!-- Settings modal -->
-  <div class="modal" id="settingsModal">
-    <div class="card mc">
-      <h3 style="margin:6px 0 10px">Paramètres</h3>
-      <p class="muted" style="margin-top:-6px">Ta clé est stockée <b>localement</b>. Pour la production, utilise un proxy.</p>
-      <div class="row">
-        <div style="flex:2">
-          <label>Clé API Mistral</label>
-          <input id="apiKey" type="password" placeholder="sk-…" />
+    <div class="multi">
+      <input id="multi" class="switch" type="checkbox" />
+      <label for="multi" class="muted">Répondre avec les 3 modèles</label>
+    </div>
+
+    <div class="toolbar">
+      <button class="tbtn" id="newBtn">➕ Nouveau</button>
+      <button class="tbtn" id="renameBtn">✏️ Renommer</button>
+      <button class="tbtn" id="deleteBtn">🗑️ Supprimer</button>
+      <button class="tbtn" id="codeBtn">🧩 Code</button>
+    </div>
+
+    <div class="list" id="convList"></div>
+    <div class="muted" style="font-size:12px;margin-top:8px">Sauvegarde automatique locale</div>
+  </aside>
+
+  <!-- CHAT -->
+  <section class="card main" role="main">
+    <div class="head">
+      <div class="title"><strong>Jul-IA</strong> <span class="pill" id="modelPill">—</span></div>
+      <div class="rightBtns">
+        <div class="menu" id="speedMenu" style="display:none">
+          <button class="menubtn" id="speedBtn">Réponse ▾</button>
+          <div class="dropdown" id="dropdown">
+            <div class="option" data-speed="normal">Normal <div class="hint">réponse standard (mistral-large)</div></div>
+            <div class="option" data-speed="quick">Réponse rapide (2–3 s) <div class="hint">modèle léger, coupe tôt</div></div>
+            <div class="option" data-speed="deep">Think deeper (~30 s) <div class="hint">réponse plus détaillée</div></div>
+          </div>
         </div>
-        <div style="flex:1">
-          <label>Proxy (optionnel)</label>
-          <input id="proxy" type="text" placeholder="https://ton‑proxy.tld" />
-        </div>
-      </div>
-      <div class="row" style="margin-top:10px">
-        <button class="tbtn" id="saveSettings">💾 Enregistrer</button>
-        <button class="tbtn" id="closeSettings">Fermer</button>
+        <button class="tbtn" id="stopBtn" title="Arrêter">⏹️ Stop</button>
       </div>
     </div>
-  </div>
+
+    <div class="chat" id="chat">
+      <div class="toBottom" id="toBottom"><button>Revenir en bas ▽</button></div>
+    </div>
+
+    <div class="foot">
+      <div><textarea id="input" class="in" placeholder="Écris ton message… (Maj+Entrée = ligne)"></textarea></div>
+      <div><button id="send" class="send">Envoyer ▷</button></div>
+    </div>
+  </section>
+
+  <!-- CODE RUNNER (right) -->
+  <aside class="card coder" id="coder">
+    <div class="codehead">
+      <div class="ctitle">Code Runner</div>
+      <div class="codebtns">
+        <select id="langSel" class="codebtn">
+          <option value="auto">Auto</option>
+          <option value="javascript">JavaScript</option>
+          <option value="html">HTML</option>
+        </select>
+        <button class="codebtn" id="runCode">Exécuter</button>
+        <button class="codebtn" id="clearCode">Effacer</button>
+        <button class="codebtn" id="closeCode">Fermer</button>
+      </div>
+    </div>
+    <div class="codearea">
+      <textarea id="editor" class="editor" spellcheck="false" placeholder="// Le code détecté sera collé ici automatiquement"></textarea>
+      <div class="preview"><iframe id="preview" sandbox="allow-scripts allow-modals allow-downloads"></iframe></div>
+    </div>
+  </aside>
+</div>
 
 <script>
 /************** CONFIG **************/
-const MODEL_MAP = { // mapping imposé
+const API_KEY = "rZhHBEyvgPdhECcW00xVDq3r01VYZRGU"; // intégré côté client (à sécuriser côté serveur en prod)
+const MODEL_MAP = {
   "mistral-large": "mistral-large-latest",
   "codestral": "codestral-latest",
   "mathstral-7b": "open-math-7b"
 };
-const STORAGE = {
-  conv: "julIA.conversations.v3",
-  settings: "julIA.settings.v1",
-  selectedModel: "julIA.model.v1",
-  selectedConv: "julIA.current.v1"
-};
+// Modèle léger utilisé pour "Réponse rapide" (on tente open-mistral-7b, sinon fallback large)
+const QUICK_MODEL = "open-mistral-7b";
 
-/************** ÉTAT **************/
+/************** STATE **************/
 let state = {
-  model: localStorage.getItem(STORAGE.selectedModel) || "mistral-large",
-  conversations: [],
-  currentId: localStorage.getItem(STORAGE.selectedConv) || null,
+  model: localStorage.getItem("julIA.model") || "mistral-large",
+  conversations: JSON.parse(localStorage.getItem("julIA.conversations.v5") || "[]"),
+  current: localStorage.getItem("julIA.current") || null,
   aborter: null,
+  stickToBottom: true,
+  speed: localStorage.getItem("julIA.speed") || "normal" // normal | quick | deep
 };
 
-/************** UTILS **************/
 const $ = sel => document.querySelector(sel);
 const $$ = sel => Array.from(document.querySelectorAll(sel));
 const nowISO = () => new Date().toISOString();
-function uid(){return 'c_'+Math.random().toString(36).slice(2)+Date.now().toString(36)}
-function saveAll(){ localStorage.setItem(STORAGE.conv, JSON.stringify(state.conversations)); }
-function loadAll(){
-  try{ state.conversations = JSON.parse(localStorage.getItem(STORAGE.conv)||"[]"); }
-  catch{ state.conversations = []; }
-}
-function getSettings(){ try{ return JSON.parse(localStorage.getItem(STORAGE.settings)||"{}"); }catch{return {}} }
-function setSettings(s){ localStorage.setItem(STORAGE.settings, JSON.stringify(s)); }
-function activeConv(){ return state.conversations.find(c=>c.id===state.currentId) || null }
-function setActiveModel(key){ state.model = key; localStorage.setItem(STORAGE.selectedModel,key); $('#modelPill').textContent = key; $$('.mbtn').forEach(b=>b.classList.toggle('active', b.dataset.model===key)); }
-function ensureConv(){
-  if(!state.currentId){
-    const c = createConversation();
-    state.currentId = c.id; localStorage.setItem(STORAGE.selectedConv, c.id);
-  }
-}
-function createConversation(name){
-  const c = { id: uid(), name: name||"Conversation", model: state.model, messages: [], createdAt: nowISO(), updatedAt: nowISO() };
-  state.conversations.unshift(c); saveAll(); renderList(); return c;
-}
-function renameConversation(){ const c=activeConv(); if(!c) return; const n = prompt('Nouveau nom :', c.name||'Conversation'); if(n && n.trim()){ c.name=n.trim(); c.updatedAt=nowISO(); saveAll(); renderList(); }}
-function deleteConversation(){ const c=activeConv(); if(!c) return; if(!confirm('Supprimer cette conversation ?')) return; state.conversations = state.conversations.filter(x=>x.id!==c.id); saveAll(); if(!state.conversations.length){ const nc=createConversation(); state.currentId=nc.id; } else { state.currentId = state.conversations[0].id; } localStorage.setItem(STORAGE.selectedConv,state.currentId); renderList(); renderChat(); }
+const saveAll = () => localStorage.setItem("julIA.conversations.v5", JSON.stringify(state.conversations));
 
-/************** RENDER **************/
+function activeConv(){ return state.conversations.find(c=>c.id===state.current) || null; }
+function uid(){ return "c_"+Math.random().toString(36).slice(2)+Date.now().toString(36); }
+
+/************** CONVERSATIONS **************/
+function createConversation(name){
+  const c={ id:uid(), name:name||"Conversation", model:state.model, messages:[], createdAt:nowISO(), updatedAt:nowISO() };
+  state.conversations.unshift(c); state.current=c.id;
+  localStorage.setItem("julIA.current", state.current);
+  saveAll(); renderList(); renderChat(); return c;
+}
 function renderList(){
-  const box = $('#convList'); box.innerHTML='';
+  const box=$("#convList"); box.innerHTML="";
   state.conversations.forEach(c=>{
-    const item = document.createElement('div'); item.className='item'; item.dataset.id=c.id;
-    const title = document.createElement('div'); title.style.flex='1'; title.innerHTML = `<div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.name||'Conversation'}</div><div class="itag">${new Date(c.updatedAt).toLocaleString()}</div>`;
-    const badge = document.createElement('span'); badge.className='pill'; badge.textContent=c.model;
-    item.appendChild(title); item.appendChild(badge);
-    item.addEventListener('click',()=>{ state.currentId=c.id; localStorage.setItem(STORAGE.selectedConv,c.id); renderChat(); renderList(); });
-    if(c.id===state.currentId) item.style.borderColor='var(--accent)';
-    box.appendChild(item);
-    box.appendChild(document.createElement('div')).className='spacer';
+    const d=document.createElement("div"); d.className="item"; d.dataset.id=c.id;
+    d.innerHTML=`<div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.name}</div><div class="itag">${new Date(c.updatedAt).toLocaleString()}</div>`;
+    if(c.id===state.current) d.style.borderColor="var(--accent)";
+    d.onclick=()=>{ state.current=c.id; localStorage.setItem("julIA.current",state.current); renderList(); renderChat(); };
+    box.appendChild(d); box.appendChild(document.createElement("div")).className="spacer";
   });
 }
-function renderChat(){
-  const c = activeConv(); const chat=$('#chat'); chat.innerHTML='';
-  if(!c){ chat.innerHTML='<div class="muted" style="margin:20px auto">Aucune conversation</div>'; return; }
-  $('#modelPill').textContent = c.model;
-  c.messages.forEach(m=> addMsg(m.role,m.content,false));
-  chat.scrollTop = chat.scrollHeight;
+function renameConversation(){
+  const c=activeConv(); if(!c) return;
+  const n=prompt("Nouveau nom :", c.name); if(n&&n.trim()){ c.name=n.trim(); c.updatedAt=nowISO(); saveAll(); renderList(); }
 }
-function addMsg(role, text, persist=true){
-  const wrap = document.createElement('div'); wrap.className='msg '+(role==='user'?'user':'bot');
-  if(/```[\s\S]*?```/.test(text)){
-    // rudimentary code fence render
-    const pre = document.createElement('pre'); pre.className='code'; pre.textContent = text.replace(/^```[a-z]*\n?/i,'').replace(/```$/,''); wrap.appendChild(pre);
-  } else { wrap.textContent = text; }
-  $('#chat').appendChild(wrap); $('#chat').scrollTop=$('#chat').scrollHeight;
-  if(persist){ const c=activeConv(); if(!c) return; c.messages.push({role, content:text}); c.updatedAt=nowISO(); saveAll(); renderList(); }
+function deleteConversation(){
+  const c=activeConv(); if(!c) return;
+  if(!confirm("Supprimer cette conversation ?")) return;
+  state.conversations = state.conversations.filter(x=>x.id!==c.id);
+  saveAll();
+  if(!state.conversations.length){ createConversation("Nouvelle"); }
+  else { state.current=state.conversations[0].id; localStorage.setItem("julIA.current",state.current); }
+  renderList(); renderChat();
+}
+
+/************** CHAT UI **************/
+function setActiveModel(key){
+  state.model=key; localStorage.setItem("julIA.model",key);
+  $("#modelPill").textContent=key;
+  $$(".mbtn").forEach(b=>b.classList.toggle("active", b.dataset.model===key));
+  // afficher menu speed uniquement pour mistral-large
+  $("#speedMenu").style.display = (key==="mistral-large") ? "block" : "none";
+  const c=activeConv(); if(c){ c.model=key; c.updatedAt=nowISO(); saveAll(); renderList(); }
+}
+
+function addMsg(role,text,persist=true){
+  const wrap=document.createElement("div"); wrap.className="msg " + (role==="user"?"user":"bot");
+  wrap.appendChild(document.createTextNode(text));
+  $("#chat").appendChild(wrap);
+  if(persist){
+    const c=activeConv(); if(c){ c.messages.push({role,content:text}); c.updatedAt=nowISO(); saveAll(); renderList(); }
+  }
+  maybeScroll();
   return wrap;
 }
 
-/************** STREAMING MISTRAL **************/
-async function chatMistral(userText){
-  const c = activeConv(); if(!c) return; const settings=getSettings();
-  const apiKey = settings.apiKey; if(!apiKey){ alert('Ajoute ta clé API Mistral (⚙️).'); return; }
-  const base = settings.proxy?.trim()? settings.proxy.trim().replace(/\/$/,'')+"/v1" : "https://api.mistral.ai/v1";
-
-  // push user
-  addMsg('user', userText);
-
-  // prepare stream request
-  const payload = {
-    model: MODEL_MAP[c.model] || MODEL_MAP[state.model],
-    messages: c.messages.concat({role:'user', content:userText}),
-    temperature: 0.2,
-    stream: true
-  };
-
-  // placeholder assistant
-  const botNode = addMsg('assistant','',false);
-
-  // Abort support
-  if(state.aborter) try{ state.aborter.abort(); }catch{}
-  state.aborter = new AbortController();
-
-  try{
-    const resp = await fetch(base+"/chat/completions",{
-      method:'POST',
-      headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json'},
-      body:JSON.stringify(payload),
-      signal: state.aborter.signal
-    });
-    if(!resp.ok){ const t=await resp.text(); throw new Error('HTTP '+resp.status+' '+t); }
-
-    const reader = resp.body.getReader();
-    const decoder = new TextDecoder('utf-8');
-    let acc = '';
-    while(true){
-      const {value, done} = await reader.read(); if(done) break; acc += decoder.decode(value,{stream:true});
-      const lines = acc.split(/\n/); acc = lines.pop() || '';
-      for(const ln of lines){
-        const s = ln.trim(); if(!s) continue; if(!s.startsWith('data:')) continue;
-        const data = s.slice(5).trim(); if(data==='[DONE]'){ break; }
-        try{
-          const j = JSON.parse(data);
-          const delta = j.choices?.[0]?.delta?.content ?? '';
-          if(delta){ botNode.textContent += delta; $('#chat').scrollTop=$('#chat').scrollHeight; }
-        }catch(e){ /* ignore */ }
-      }
-    }
-    const finalText = botNode.textContent.trim();
-    const conv = activeConv(); conv.messages.push({role:'assistant', content: finalText}); conv.updatedAt=nowISO(); saveAll(); renderList();
-  }catch(err){
-    if(err.name==='AbortError'){
-      // stopped by user
-    }else{
-      botNode.textContent = '❌ Erreur : '+(err.message||String(err));
-      const conv = activeConv(); conv.messages.push({role:'assistant', content: botNode.textContent}); conv.updatedAt=nowISO(); saveAll();
-    }
-  }finally{ state.aborter=null; }
+function addTyping(label){
+  const m=document.createElement("div"); m.className="msg bot";
+  const pill=document.createElement("span"); pill.className="lbl pill"; pill.textContent=label||"";
+  const typing=document.createElement("div"); typing.className="typing"; typing.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  if(label) m.appendChild(pill);
+  m.appendChild(typing);
+  $("#chat").appendChild(m);
+  maybeScroll();
+  return m;
 }
 
-/************** ACTIONS **************/
-$('#send').addEventListener('click',()=>{
-  const v = $('#input').value.trim(); if(!v) return; $('#input').value=''; chatMistral(v);
+function renderChat(){
+  const chat=$("#chat"); chat.innerHTML='<div class="toBottom" id="toBottom"><button>Revenir en bas ▽</button></div>';
+  const c=activeConv(); if(!c) return;
+  $("#modelPill").textContent=c.model;
+  c.messages.forEach(m=> addMsg(m.role,m.content,false));
+  chat.scrollTop = chat.scrollHeight;
+}
+
+/************** AUTOSCROLL INTELLIGENT **************/
+function userIsNearBottom(){ const chat=$("#chat"); return (chat.scrollHeight - chat.scrollTop - chat.clientHeight) < 80; }
+$("#chat").addEventListener("scroll",()=>{ state.stickToBottom=userIsNearBottom(); $("#toBottom").classList.toggle("show", !state.stickToBottom); });
+$("#toBottom").addEventListener("click",()=>{ $("#chat").scrollTo({top:$("#chat").scrollHeight, behavior:"smooth"}); });
+function maybeScroll(){ if(state.stickToBottom){ $("#chat").scrollTop=$("#chat").scrollHeight; } }
+
+/************** CODE RUNNER (right panel) **************/
+const grid=$("#grid"), coder=$("#coder"), editor=$("#editor"), preview=$("#preview"), langSel=$("#langSel");
+function openCodePanel(){ grid.classList.add("code-open"); }
+function closeCodePanel(){ grid.classList.remove("code-open"); }
+$("#codeBtn").addEventListener("click", openCodePanel);
+$("#closeCode").addEventListener("click", closeCodePanel);
+$("#clearCode").addEventListener("click", ()=>{ editor.value=""; runInPreview(""); });
+
+function sniffCodeFrom(text){
+  // Cherche le dernier bloc ```lang\n ... ```
+  const re=/```(\w+)?\n([\s\S]*?)```/g; let m,last=null;
+  while((m=re.exec(text))!==null){ last={lang:(m[1]||"").toLowerCase(), code:m[2]}; }
+  return last;
+}
+function runInPreview(source){
+  const mode=(langSel.value==="auto"?"auto":langSel.value);
+  const looksHTML = mode==="html" || /<\s*html[\s>]/i.test(source) || /<\s*(head|body|script|style)\b/i.test(source);
+  let html="";
+  if(looksHTML){
+    html = source;
+  }else{
+    // Exécute JS dans un wrapper et log dans la page d'aperçu
+    html = `<!doctype html><meta charset="utf-8"><title>Preview</title>
+<style>body{font:14px/1.4 ui-monospace,Consolas,monospace;padding:12px}#log{white-space:pre-wrap}</style>
+<h3>Console</h3><pre id="log"></pre>
+<script>
+(function(){
+  const log = document.getElementById('log');
+  const write = (...a)=>{ try{ log.textContent += a.map(x=>typeof x==='object'?JSON.stringify(x):String(x)).join(' ') + "\\n"; }catch(e){ log.textContent += String(a) + "\\n"; } };
+  ['log','info','warn','error'].forEach(k=>{ const _old=console[k]; console[k]=(...args)=>{ write(...args); _old&&_old.apply(console,args); }; });
+  try{
+    ${source}
+  }catch(e){ console.error(e && e.stack || e); }
+})();
+<\/script>`;
+  }
+  preview.srcdoc = html;
+}
+
+$("#runCode").addEventListener("click", ()=> runInPreview(editor.value));
+
+/************** STREAMING MISTRAL **************/
+function buildMessagesForPayload(baseMessages, speed){
+  // Ajoute une consigne system pour quick/deep sans la persister
+  const msgs = [...baseMessages];
+  if(speed==="quick"){
+    msgs.unshift({role:'system', content:'Réponds très brièvement et directement (2–3 phrases maximum).'});
+  } else if(speed==="deep"){
+    msgs.unshift({role:'system', content:'Fais une réponse détaillée, bien structurée (titres courts, listes si utile). Évite d’exposer ton raisonnement interne.'});
+  }
+  return msgs;
+}
+
+async function streamChat(modelKey, userText, labelOverride=null, speedMode="normal"){
+  const conv=activeConv(); if(!conv) return;
+  // Ajoute le message utilisateur (préserve les retours à la ligne)
+  addMsg("user", userText, true);
+
+  // Élément "typing…" pendant l'attente
+  const typingNode = addTyping(labelOverride || modelKey);
+
+  // Prépare les messages pour l’API (sans champ model par message)
+  const payloadMessages = buildMessagesForPayload(conv.messages, speedMode);
+
+  // Choix du modèle effectif
+  let selectedModel = MODEL_MAP[modelKey] || MODEL_MAP[state.model];
+  if(modelKey==="mistral-large" && speedMode==="quick"){
+    selectedModel = QUICK_MODEL; // tentative modèle léger
+  } else if(modelKey==="mistral-large" && speedMode==="deep"){
+    selectedModel = MODEL_MAP["mistral-large"]; // modèle large
+  }
+
+  // Abort en cours ?
+  if(state.aborter) { try{ state.aborter.abort(); }catch(e){} }
+  state.aborter = new AbortController();
+
+  // Timer d’arrêt pour QUICK afin de vraiment couper court (~3s)
+  let quickTimer=null;
+  if(modelKey==="mistral-large" && speedMode==="quick"){
+    quickTimer = setTimeout(()=>{ try{ state.aborter && state.aborter.abort(); }catch(e){} }, 3200);
+  }
+
+  try{
+    const resp = await fetch("https://api.mistral.ai/v1/chat/completions",{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+API_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({ model:selectedModel, messages: payloadMessages, temperature:0.2, stream:true }),
+      signal: state.aborter.signal
+    });
+    if(!resp.ok){
+      let t=""; try{ t=await resp.text(); }catch{}
+      typingNode.innerHTML = "❌ Erreur API: " + t;
+      conv.messages.push({role:"assistant", content: typingNode.textContent}); conv.updatedAt=nowISO(); saveAll(); return;
+    }
+    const reader=resp.body.getReader(); const decoder=new TextDecoder('utf-8');
+    let acc="", final="";
+    while(true){
+      const {value, done}=await reader.read(); if(done) break;
+      acc += decoder.decode(value,{stream:true});
+      const lines = acc.split(/\n/); acc=lines.pop()||"";
+      for(const ln of lines){
+        const s = ln.trim(); if(!s || !s.startsWith("data:")) continue;
+        const data = s.slice(5).trim(); if(data==="[DONE]") continue;
+        try{
+          const j=JSON.parse(data);
+          const delta=(j.choices && j.choices[0] && j.choices[0].delta && j.choices[0].delta.content) || "";
+          if(delta){
+            if(typingNode.querySelector(".typing")) typingNode.innerHTML = (labelOverride||modelKey) ? `<span class="lbl pill">${labelOverride||modelKey}</span>` : "";
+            typingNode.appendChild(document.createTextNode(delta));
+            final += delta;
+            maybeScroll();
+          }
+        }catch{}
+      }
+    }
+    // Enregistre la réponse finale
+    conv.messages.push({role:"assistant", content: final}); conv.updatedAt=nowISO(); saveAll();
+
+    // Détection et ouverture auto du code runner si code dans la réponse
+    const blk = sniffCodeFrom(final);
+    if(blk){
+      openCodePanel();
+      editor.value = blk.code;
+      langSel.value = (blk.lang==="js"?"javascript": (blk.lang||"auto"));
+      runInPreview(editor.value);
+    }
+  }catch(err){
+    if(err.name!=="AbortError"){
+      typingNode.innerHTML = "❌ Erreur : " + (err.message||String(err));
+      conv.messages.push({role:"assistant", content: typingNode.textContent}); conv.updatedAt=nowISO(); saveAll();
+    }
+  }finally{
+    if(quickTimer) clearTimeout(quickTimer);
+    state.aborter=null;
+  }
+}
+
+/************** MULTI / SINGLE **************/
+async function sendMessage(){
+  const text = $("#input").value; // ne pas trim -> on garde les retours
+  if(!text) return;
+  $("#input").value="";
+  if($("#multi").checked){
+    await streamChat("mistral-large", text, "mistral-large" + (state.speed!=="normal" ? " • "+state.speed : ""), state.speed);
+    await streamChat("codestral", text, "codestral");
+    await streamChat("mathstral-7b", text, "mathstral-7b");
+  } else {
+    await streamChat(state.model, text, null, state.model==="mistral-large" ? state.speed : "normal");
+  }
+}
+
+/************** UI BINDINGS **************/
+$("#send").addEventListener("click", sendMessage);
+$("#input").addEventListener("keydown",e=>{ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); $("#send").click(); }});
+$("#stopBtn").addEventListener("click",()=>{ if(state.aborter) try{ state.aborter.abort(); }catch{} });
+
+$$(".mbtn").forEach(b=> b.addEventListener("click",()=> setActiveModel(b.dataset.model)));
+$("#newBtn").addEventListener("click",()=> createConversation("Nouvelle"));
+$("#renameBtn").addEventListener("click",renameConversation);
+$("#deleteBtn").addEventListener("click",deleteConversation);
+
+// Speed menu (only shows on mistral-large)
+const speedBtn=$("#speedBtn"), dropdown=$("#dropdown");
+$("#speedMenu").addEventListener("click", (e)=>{ dropdown.classList.toggle("show"); e.stopPropagation(); });
+document.addEventListener("click", ()=> dropdown.classList.remove("show") );
+dropdown.querySelectorAll(".option").forEach(opt=>{
+  opt.addEventListener("click", ()=>{
+    state.speed = opt.dataset.speed || "normal";
+    localStorage.setItem("julIA.speed", state.speed);
+    dropdown.classList.remove("show");
+    speedBtn.textContent = (state.speed==="normal" ? "Réponse ▾" : `Réponse (${state.speed}) ▾`);
+  });
 });
-$('#input').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('#send').click(); }});
-$('#stopBtn').addEventListener('click',()=>{ if(state.aborter) try{state.aborter.abort()}catch{} });
 
-$('#newBtn').addEventListener('click',()=>{ const c=createConversation(`Nouveau (${state.model})`); state.currentId=c.id; localStorage.setItem(STORAGE.selectedConv,c.id); renderList(); renderChat(); });
-$('#renameBtn').addEventListener('click',renameConversation);
-$('#deleteBtn').addEventListener('click',deleteConversation);
-$('#clearBtn').addEventListener('click',()=>{ if(confirm('Effacer TOUTES les conversations ?')){ state.conversations=[]; saveAll(); const c=createConversation(); state.currentId=c.id; localStorage.setItem(STORAGE.selectedConv,c.id); renderList(); renderChat(); }});
-$('#exportBtn').addEventListener('click',()=>{
-  const blob = new Blob([JSON.stringify({version:3, conversations:state.conversations},null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='julIA_conversations.json'; a.click(); URL.revokeObjectURL(a.href);
-});
-$('#importBtn').addEventListener('click',()=>{
-  const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange=()=>{
-    const f=inp.files[0]; const r=new FileReader(); r.onload=e=>{ try{ const j=JSON.parse(e.target.result||'{}'); if(Array.isArray(j.conversations)){ state.conversations=j.conversations; saveAll(); state.currentId=state.conversations[0]?.id||null; localStorage.setItem(STORAGE.selectedConv,state.currentId||''); renderList(); renderChat(); } else alert('Fichier invalide'); }catch{ alert('JSON invalide'); } }; r.readAsText(f);
-  }; inp.click();
-});
+// Code panel open when a code response appears is handled after stream; manual open button already bound
 
-/************** PARAMÈTRES **************/
-$('#settingsBtn').addEventListener('click',()=>{$('#settingsModal').classList.add('show'); const s=getSettings(); $('#apiKey').value=s.apiKey||''; $('#proxy').value=s.proxy||'';});
-$('#closeSettings').addEventListener('click',()=>$('#settingsModal').classList.remove('show'));
-$('#saveSettings').addEventListener('click',()=>{ const s=getSettings(); s.apiKey=$('#apiKey').value.trim(); s.proxy=$('#proxy').value.trim(); setSettings(s); $('#settingsModal').classList.remove('show'); alert('✅ Paramètres enregistrés'); });
-
-/************** MODÈLES **************/
-$$('.mbtn').forEach(b=> b.addEventListener('click',()=>{ setActiveModel(b.dataset.model); const c=activeConv(); if(c){ c.model=state.model; c.updatedAt=nowISO(); saveAll(); renderList(); $('#modelPill').textContent=c.model; } }));
-
-/************** DÉMARRAGE **************/
+/************** INIT **************/
 (function init(){
-  loadAll();
-  if(!state.conversations.length){ const c=createConversation('Bienvenue'); state.currentId=c.id; }
-  localStorage.setItem(STORAGE.selectedConv, state.currentId||'');
-  setActiveModel(state.model);
+  if(!state.conversations.length){
+    const c=createConversation("Bienvenue");
+    state.current=c.id;
+  } else if(!state.current){
+    state.current=state.conversations[0].id;
+  }
   renderList(); renderChat();
-  // petit message d’accueil si chat vide
-  const c=activeConv(); if(c && !c.messages.length){ addMsg('assistant','Choisis un modèle et pose ta question. Les réponses sont en streaming pour être plus rapides ⚡️'); }
+  setActiveModel(state.model);
+  speedBtn.textContent = (state.speed==="normal" ? "Réponse ▾" : `Réponse (${state.speed}) ▾`);
+  // Message d'accueil si vide
+  const c=activeConv();
+  if(c && !c.messages.length){
+    addMsg("assistant","Choisis un modèle et pose ta question.\n\n• Active « Répondre avec les 3 modèles » pour comparer.\n• Sur mistral-large, clique « Réponse » pour choisir : rapide (2–3 s) ou think deeper (~30 s).\n• Quand une réponse contient du code, le panneau « Code » s’ouvre à droite pour exécuter le JS/HTML.\n• Tu peux scroller en haut pendant que j’écris — j’essaie de ne pas te ramener en bas automatiquement.");
+  }
 })();
 </script>
 </body>
